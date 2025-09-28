@@ -2,7 +2,6 @@
 
 import ScreenLoader from '@/components/feedbacks/screen-loader';
 import {toast} from '@/components/ui/toast';
-import {ACCESS_TOKEN, REFRESH_TOKEN} from '@/constants/api-resources';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {useGlobalStore} from '@/hooks/stores/use-global-store';
 import {AccountStatus} from '@/types/user.types';
@@ -44,17 +43,6 @@ export const GoogleCallbackPage = () => {
 
     if (googleUser) {
       setUser(googleUser.user);
-      //will be remove later
-      //setSecureToken(googleUser.accessToken, googleUser.refreshToken);
-      // 15 minutes = 15 * 60 seconds
-      document.cookie = `${ACCESS_TOKEN}=${
-        googleUser.accessToken
-      }; Path=/; Max-Age=${15 * 60}; SameSite=None; Secure`;
-
-      // 7 days = 7 * 24 * 60 * 60 seconds
-      document.cookie = `${REFRESH_TOKEN}=${
-        googleUser.refreshToken
-      }; Path=/; Max-Age=${7 * 24 * 60 * 60}; SameSite=None; Secure`;
 
       const storedNext = localStorage.getItem('nextRoute') as string;
       localStorage.removeItem('nextRoute');
