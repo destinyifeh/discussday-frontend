@@ -89,12 +89,11 @@ export const LoginPage = () => {
   const handleLogin = async (credentials: loginFormData) => {
     setIsSubmitting(true);
     resetFormError();
-    // const res = await loginRequestAction3(credentials);
-    //  console.log(res, 'des80');
+
     loginUser(credentials, {
       onSuccess(response) {
         console.log(response, 'respoo');
-        const {user, accessToken, refreshToken} = response?.data ?? {};
+        const {user} = response?.data ?? {};
 
         if (!user) {
           toast.error('Login failed: incomplete response');

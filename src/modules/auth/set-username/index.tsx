@@ -82,7 +82,6 @@ export const SetUsernamePage = ({params}: PageParams) => {
   };
 
   const onSubmit = async (data: usernameFormData) => {
-    console.log(data, 'dataaa');
     setIsSubmitting(true);
     resetFormError();
     setupUser(data, {
@@ -90,7 +89,7 @@ export const SetUsernamePage = ({params}: PageParams) => {
         console.log(response, 'respoo');
         setUser(response.user);
         reset();
-        router.replace('/');
+        router.replace('/home');
       },
       onError(error: any, variables, context) {
         const {data} = error?.response ?? {};
@@ -99,7 +98,7 @@ export const SetUsernamePage = ({params}: PageParams) => {
           errorHandler(data.message);
           return;
         }
-        toast.error('Failed to send reset link. Please try again.');
+        toast.error('Failed to set username. Please try again.');
       },
       onSettled(data, error, variables, context) {
         setIsSubmitting(false);

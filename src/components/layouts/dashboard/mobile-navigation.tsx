@@ -9,6 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import {HTTP_STATUS_CODE} from '@/constants/api-resources';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {cn} from '@/lib/utils';
 import {logoutRequestAction} from '@/modules/auth/actions';
@@ -55,7 +56,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({children, title}) => {
   const handleLogout = async () => {
     try {
       const res = await logoutRequestAction();
-      if (res?.data?.code === '200') {
+      if (res?.data?.code === HTTP_STATUS_CODE.OK) {
         logout();
         toast.success('Successfully logged out.');
 

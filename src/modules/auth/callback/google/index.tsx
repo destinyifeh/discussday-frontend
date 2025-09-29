@@ -26,7 +26,7 @@ export const GoogleCallbackPage = () => {
   });
   console.log({error, googleUser});
   console.log(googleUser, 'googleuserr');
-  /* -------- handle side‑effects AFTER render ------------------ */
+
   useEffect(() => {
     if (error) {
       toast.error('Oops! Something went wrong. Please log in again.');
@@ -49,8 +49,6 @@ export const GoogleCallbackPage = () => {
       router.replace(storedNext);
     }
   }, [error, googleUser, router, setUser]);
-
-  /* -------- render phase -------------------------------------- */
 
   if (isLoading) {
     return <ScreenLoader />;
