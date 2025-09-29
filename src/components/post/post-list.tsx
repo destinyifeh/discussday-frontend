@@ -224,9 +224,8 @@ export const HomePostList = () => {
       return page < pages ? page + 1 : undefined;
     },
     placeholderData: previousData => previousData,
-    //refetchInterval: 5000, // Poll every 5s
-    //refetchInterval: 30000, //poll every 15s
-    // refetchIntervalInBackground: false,
+    refetchInterval: 30000, //poll every 15s
+    refetchIntervalInBackground: false,
   });
   useEffect(() => {
     setMounted(true);

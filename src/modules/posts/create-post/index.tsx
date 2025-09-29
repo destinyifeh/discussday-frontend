@@ -17,6 +17,7 @@ import {
 import {toast} from '@/components/ui/toast';
 import {Sections} from '@/constants/data';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
+import {usegoBack} from '@/hooks/use-smart-back';
 import {queryClient} from '@/lib/client/query-client';
 import {capitalizeName} from '@/lib/formatter';
 import {SectionName} from '@/types/section';
@@ -44,7 +45,7 @@ export const CreatePostPage = () => {
   const [showGuidelines, setShowGuidelines] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
-
+  const goBack = usegoBack('/home');
   const navigate = useRouter();
   const location = useSearchParams();
   const {slugId} = useParams<{slugId: string}>();
@@ -245,7 +246,7 @@ export const CreatePostPage = () => {
       <div className="sticky top-0 backdrop-blur-sm border-b z-10 bg-white/80 border-app-border dark:bg-background">
         <div className="px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={() => navigate.back()}>
+            <Button variant="ghost" size="icon" onClick={() => goBack()}>
               <ChevronLeft />
             </Button>
             <h1 className="text-xl font-bold">
