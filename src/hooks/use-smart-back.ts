@@ -13,10 +13,6 @@ export function usegoBack(defaultRoute: string = '/home') {
       if (typeof window !== 'undefined' && document.referrer) {
         previousUrl = document.referrer;
 
-        // This log will NOW run because the code only reaches here
-        // if the browser objects exist.
-        console.log('Referrer URL (from browser):', previousUrl);
-
         const currentOrigin = window.location.origin;
         const isInternal = previousUrl.startsWith(currentOrigin);
 
