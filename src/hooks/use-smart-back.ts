@@ -34,14 +34,15 @@ export function usegoBack(defaultRoute: string = '/home') {
         console.log(
           'Referrer not available or SSR context. Using router.back() as safe fallback.',
         );
-        router.back();
+        // router.back();
+        window.location.href = '/home';
       }
     } catch (err) {
       // This catch block is now mostly for unexpected, non-SSR errors.
       console.error('Unexpected error in goBack hook:', err);
       //router.back();
 
-      window.location.href = window.location.origin;
+      window.location.href = '/home';
     }
   }, [router, defaultRoute]);
 
