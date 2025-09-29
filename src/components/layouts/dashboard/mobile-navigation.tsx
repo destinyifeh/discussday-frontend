@@ -9,7 +9,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import {ACCESS_TOKEN, REFRESH_TOKEN} from '@/constants/api-resources';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {cn} from '@/lib/utils';
 import {logoutRequestAction} from '@/modules/auth/actions';
@@ -57,15 +56,9 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({children, title}) => {
     try {
       const res = await logoutRequestAction();
       if (res?.data?.code === '200') {
-        // removeCookieAccessToken();
-        // removeCookieRefreshToken();
         logout();
         toast.success('Successfully logged out.');
 
-        document.cookie = `${ACCESS_TOKEN}=; Path=/; Max-Age=0; SameSite=None; Secure`;
-
-        // Remove the refresh token
-        document.cookie = `${REFRESH_TOKEN}=; Path=/; Max-Age=0; SameSite=None; Secure`;
         router.push('/login');
       } else {
         toast.error(
