@@ -39,7 +39,9 @@ export function usegoBack(defaultRoute: string = '/home') {
     } catch (err) {
       // This catch block is now mostly for unexpected, non-SSR errors.
       console.error('Unexpected error in goBack hook:', err);
-      router.back();
+      //router.back();
+
+      window.location.href = window.location.origin;
     }
   }, [router, defaultRoute]);
 
