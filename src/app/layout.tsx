@@ -1,6 +1,4 @@
 import {ThemeProvider} from '@/app/providers/theme-provider';
-import {APP_DESCRIPTION, APP_NAME} from '@/constants/settings';
-import {Metadata} from 'next';
 import {
   DM_Sans,
   Geist,
@@ -62,11 +60,6 @@ const poppinsFont = Poppins({
   weight: '400',
   subsets: ['latin'],
 });
-
-export const metadata: Metadata = {
-  title: APP_NAME,
-  description: APP_DESCRIPTION,
-};
 
 export default function RootLayout({
   children,

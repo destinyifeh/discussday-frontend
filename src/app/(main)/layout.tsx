@@ -1,5 +1,5 @@
 import {PublicLayout} from '@/components/layouts/public';
-import {APP_DESCRIPTION, APP_NAME} from '@/constants/settings';
+import {APP_NAME} from '@/constants/settings';
 import type {Metadata} from 'next';
 import {Geist, Geist_Mono} from 'next/font/google';
 import '../globals.css';
@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: APP_NAME,
-  description: APP_DESCRIPTION,
+  title: `${APP_NAME} | Discover & Discuss`,
+  description: `Stay updated with the latest posts, trends, and conversations on ${APP_NAME}. Engage with topics that matter to you.`,
 };
 
 type LayoutProps = {

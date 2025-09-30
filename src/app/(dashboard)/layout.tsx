@@ -1,5 +1,5 @@
 import {DashboardLayout} from '@/components/layouts/dashboard';
-import {APP_DESCRIPTION, APP_NAME} from '@/constants/settings';
+import {APP_NAME} from '@/constants/settings';
 import type {Metadata} from 'next';
 import {Geist, Geist_Mono} from 'next/font/google';
 import '../globals.css';
@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: `${APP_NAME}-${APP_DESCRIPTION}`,
-  description: APP_DESCRIPTION,
+  title: `${APP_NAME} | Dashboard`,
+  description: `Control your account, track your contributions, and stay engaged with discussions on ${APP_NAME}.`,
 };
 
 type LayoutProps = {
