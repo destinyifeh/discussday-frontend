@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: `${APP_NAME} | Discover & Discuss`,
-  description: `Stay updated with the latest posts, trends, and conversations on ${APP_NAME}. Engage with topics that matter to you.`,
+  title: `${APP_NAME} | Join the Conversation`,
+  description: `Be part of the discussions that matter. Share your thoughts, and explore trending topics on ${APP_NAME}.`,
 };
 
 type LayoutProps = {
