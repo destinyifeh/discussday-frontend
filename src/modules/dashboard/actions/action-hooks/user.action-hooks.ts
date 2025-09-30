@@ -8,7 +8,12 @@ export const useUserActions = () => {
     mutationFn: userService.mailUser,
   });
 
+  const MailUs = useMutation({
+    mutationFn: userService.mailUs,
+  });
+
   return {
     sendMail,
+    MailUs,
   };
 };

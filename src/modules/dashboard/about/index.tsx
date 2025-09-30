@@ -146,7 +146,7 @@ export const AboutPage = () => {
                 <Button
                   asChild
                   className="text-white bg-app hover:bg-app/90 dark:bg-app/90 dark:hover:bg-app">
-                  <Link href="/help-center">Ask a Question</Link>
+                  <Link href="/help">Ask a Question</Link>
                 </Button>
                 {/* <Button variant="outline" asChild>
                   <Link href="/careers">Join Our Team</Link>

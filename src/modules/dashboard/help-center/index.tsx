@@ -177,10 +177,10 @@ export const HelpCenterPage = () => {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button variant="outline" className="flex items-center gap-2">
+                {/* <Button variant="outline" className="flex items-center gap-2">
                   <MessageCircle className="h-4 w-4" />
                   Live Chat
-                </Button>
+                </Button> */}
                 <Link href="/contact-support">
                   <Button className="flex items-center gap-2 bg-app hover:bg-app/90 dark:text-white">
                     <Mail className="h-4 w-4" />

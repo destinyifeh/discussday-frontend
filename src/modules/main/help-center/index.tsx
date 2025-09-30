@@ -6,7 +6,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import {Button} from '@/components/ui/button';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 
 export const PublicHelpCenterPage = () => {
@@ -318,7 +317,7 @@ export const PublicHelpCenterPage = () => {
                   </p>
                 </div>
 
-                <div>
+                {/* <div>
                   <h3 className="font-medium mb-2">Live Chat</h3>
                   <p className=" mb-3">
                     For immediate assistance, our live chat is available Monday
@@ -327,7 +326,7 @@ export const PublicHelpCenterPage = () => {
                   <Button className="bg-app text-white hover:bg-app/90">
                     Start Live Chat
                   </Button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

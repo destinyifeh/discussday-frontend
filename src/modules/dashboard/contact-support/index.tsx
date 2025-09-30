@@ -21,6 +21,9 @@ import {
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {toast} from '@/components/ui/toast';
+import {SUPPORT_EMAIL, SUPPORT_NAME} from '@/constants/settings';
+import {useAuthStore} from '@/hooks/stores/use-auth-store';
+import {MailUserDto} from '@/types/user.types';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {
   CheckCircle,
@@ -33,6 +36,7 @@ import {
 import Link from 'next/link';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
+import {useUserActions} from '../actions/action-hooks/user.action-hooks';
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -52,7 +56,8 @@ const formSchema = z.object({
 export const ContactSupportPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
+  const {currentUser} = useAuthStore(state => state);
+  const {MailUs} = useUserActions();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -64,15 +69,34 @@ export const ContactSupportPage = () => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log(values, 'values');
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      toast.success('Your message has been sent successfully!');
-      form.reset();
-    }, 1500);
+    const payload: MailUserDto = {
+      ...values,
+      username: SUPPORT_NAME,
+      email: 'destechofficial@gmail.com',
+      senderName: values.name,
+      senderEmail: values.email,
+    };
+
+    console.log(payload, 'email payload');
+    MailUs.mutate(payload, {
+      onSuccess(data, variables, context) {
+        form.reset();
+        toast.success(
+          `Your email was successfully sent to ${SUPPORT_EMAIL} 🎉`,
+        );
+      },
+      onError(error, variables, context) {
+        toast.error(
+          `Oops! We couldn’t send your email to ${SUPPORT_EMAIL}. Please try again.`,
+        );
+      },
+      onSettled(data, error, variables, context) {
+        setIsSubmitting(false);
+      },
+    });
   };
 
   const supportSections = [
@@ -140,10 +164,10 @@ export const ContactSupportPage = () => {
                   <Mail className="h-5 w-5 text-app" />
                   <span>support@discussday.com</span>
                 </div>
-                <div className="flex items-center gap-3">
+                {/* <div className="flex items-center gap-3">
                   <PhoneCall className="h-5 w-5 text-app" />
                   <span>+1 (555) 123-4567</span>
-                </div>
+                </div> */}
                 <div className="mt-6">
                   <p className="mb-2 text-muted-foreground">Response Time</p>
                   <p>

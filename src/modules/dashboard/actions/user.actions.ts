@@ -125,6 +125,10 @@ class UserService {
   async mailUser(payload: MailUserDto) {
     return await api.post(`/user/mail`, payload);
   }
+
+  async mailUs(payload: MailUserDto) {
+    return await api.post(`/admin/mail`, payload);
+  }
 }
 
 export const userService = new UserService();
