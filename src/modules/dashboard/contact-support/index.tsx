@@ -75,7 +75,7 @@ export const ContactSupportPage = () => {
     const payload: MailUserDto = {
       ...values,
       username: SUPPORT_NAME,
-      email: 'destechofficial@gmail.com',
+      email: SUPPORT_EMAIL,
       senderName: values.name,
       senderEmail: values.email,
     };
