@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: `${APP_NAME} | Sign in & Sign up`,
+  title: `${APP_NAME} | Account Access`,
   description: `Access your ${APP_NAME} account or create a new one to join our community. Secure login and easy signup.`,
 };
 
