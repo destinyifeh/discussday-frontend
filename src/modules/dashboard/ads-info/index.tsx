@@ -11,7 +11,7 @@ export const AdsInfoPage = () => {
       <div>
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-4">Advertising Information</h1>
+            <h1 className="text-3xl font-bold mb-4">Advertising Information</h1>
             <p className="text-xl max-w-2xl mx-auto">
               Learn about how advertising works on Discussday and our commitment
               to user experience.
@@ -100,7 +100,7 @@ export const AdsInfoPage = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="font-bold text-2xl">
-                  Types of Ads on Discuss
+                  Types of Ads on Discussday
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose max-w-none">
@@ -112,7 +112,7 @@ export const AdsInfoPage = () => {
                       clearly marked as sponsored.
                     </p>
                   </div>
-                  <div>
+                  {/* <div>
                     <h4 className="font-bold">Banner Ads</h4>
                     <p>
                       Display advertisements that appear at the top or bottom of
@@ -132,7 +132,7 @@ export const AdsInfoPage = () => {
                       Ads that match the look and feel of regular content while
                       being clearly labeled.
                     </p>
-                  </div>
+                  </div> */}
                 </div>
               </CardContent>
             </Card>
@@ -223,10 +223,10 @@ export const AdsInfoPage = () => {
                   <Button
                     asChild
                     className="text-white bg-app hover:bg-app/90 dark:bg-app/90 dark:hover:bg-app">
-                    <Link href="/help">Ask a Question</Link>
+                    <Link href="/help-center">Ask a Question</Link>
                   </Button>
                   <Button variant="outline" asChild className="">
-                    <Link href="/advertise" className="">
+                    <Link href="/register" className="">
                       Advertise With Us
                     </Link>
                   </Button>

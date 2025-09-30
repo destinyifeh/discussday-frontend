@@ -102,15 +102,15 @@ export const AboutPage = () => {
           </div>
 
           {/* Team Section */}
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle>Our Team</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="mb-6">
-                Discuss is built by a passionate team of developers, designers,
-                and community managers who are committed to creating the best
-                possible experience for our users.
+                Discussday is built by a passionate team of developers,
+                designers, and community managers who are committed to creating
+                the best possible experience for our users.
               </p>
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center">
@@ -130,7 +130,7 @@ export const AboutPage = () => {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Contact Section */}
           <Card className="mt-5">
