@@ -515,12 +515,14 @@ const PostCard = ({
               )} */}
 
               {!isInDetailView && post.images && post.images.length > 0 && (
-                <div className="mt-3 rounded-xl overflow-hidden">
+                <div
+                  className="mt-3 rounded-xl overflow-hidden"
+                  style={{aspectRatio: '16/9'}}>
                   <img
                     src={post.images[0].secure_url}
                     alt="Post attachment"
-                    // className="w-full h-full object-cover"
-                    className="w-full h-auto max-h-96 object-cover"
+                    className="w-full h-full object-cover"
+                    // className="w-full h-auto max-h-96 object-cover"
                     loading="lazy"
                   />
                 </div>

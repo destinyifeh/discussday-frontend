@@ -250,12 +250,14 @@ const AdCard = ({
                 // </div>
 
                 // <div className="mt-3 rounded-xl overflow-hidden h-96">
-                <div className="mt-3 rounded-xl overflow-hidden">
+                <div
+                  className="mt-3 rounded-xl overflow-hidden"
+                  style={{aspectRatio: '16/9'}}>
                   <img
                     src={ad.imageUrl}
                     alt="Ad attachment"
-                    //className="w-full h-full object-cover"
-                    className="w-full h-auto max-h-96 object-cover"
+                    className="w-full h-full object-cover"
+                    // className="w-full h-auto max-h-96 object-cover"
                     loading="lazy"
                   />
                 </div>
