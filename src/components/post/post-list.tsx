@@ -291,8 +291,9 @@ export const HomePostList = () => {
         data={postsData}
         onScroll={handleScroll}
         ref={virtuosoRef}
-        // defaultItemHeight={320}
-        //increaseViewportBy={200}
+        defaultItemHeight={150}
+        increaseViewportBy={400}
+        overscan={200}
         components={{
           Header: () => (
             <div className="mt-15 md:mt-0">
@@ -399,9 +400,6 @@ export const HomePostList = () => {
             handleFetchNext();
           }
         }}
-        computeItemKey={(index, post) =>
-          post._type === 'ad' ? `ad-${post.data._id}` : `post-${post.data._id}`
-        }
         itemContent={(index, post) => {
           if (status === 'pending') {
             return <PostSkeleton />;
@@ -410,9 +408,9 @@ export const HomePostList = () => {
               return null;
             }
             if (post._type === 'ad') {
-              return <AdCard ad={post.data} />;
+              return <AdCard ad={post.data} key={post.data._id} />;
             }
-            return <PostCard post={post.data} />;
+            return <PostCard post={post.data} key={post.data._id} />;
           }
         }}
       />
