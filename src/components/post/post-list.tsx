@@ -292,8 +292,8 @@ export const HomePostList = () => {
         onScroll={handleScroll}
         ref={virtuosoRef}
         defaultItemHeight={150}
-        increaseViewportBy={400}
-        overscan={200}
+        increaseViewportBy={200}
+        overscan={100}
         components={{
           Header: () => (
             <div className="mt-15 md:mt-0">
