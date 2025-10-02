@@ -60,7 +60,7 @@ export const AdPlanPage = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload3 = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > MAX_FILE_SIZE) {
@@ -130,6 +130,48 @@ export const AdPlanPage = () => {
     };
 
     img.src = URL.createObjectURL(file);
+  };
+
+  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error('Image size should be less than 5MB');
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select a valid image file');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const img = new Image();
+        img.onload = () => {
+          // ✅ You now have width & height
+          const width = img.width;
+          const height = img.height;
+
+          console.log(width, height, 'width, height');
+
+          setPreviewData(prev => ({
+            ...prev,
+            image: file,
+            imageUrl: reader.result as string,
+            imageWidth: width,
+            imageHeight: height,
+            useTextOnly: false,
+          }));
+
+          console.log('Image dimensions:', width, height);
+        };
+
+        img.src = reader.result as string;
+      };
+
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmitForApproval = () => {

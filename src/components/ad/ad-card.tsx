@@ -47,7 +47,6 @@ const AdCard = ({
   const [sharePopoverOpen, setSharePopoverOpen] = useState(false);
   const {updateAdClicksRequest} = useAdActions();
   const navigate = useRouter();
-
   const shouldQuery = !!ad._id;
   const {error, data: impressionData} = useQuery({
     queryKey: ['ad-impressions-count', ad._id],
@@ -253,10 +252,7 @@ const AdCard = ({
                 <div
                   className="mt-3 rounded-xl overflow-hidden"
                   style={{
-                    aspectRatio:
-                      ad.imageWidth && ad.imageHeight
-                        ? `${ad.imageWidth}/${ad.imageHeight}`
-                        : '1/1',
+                    aspectRatio: `${ad.imageWidth}/${ad.imageHeight}`,
                   }}>
                   <img
                     src={ad.imageUrl}
