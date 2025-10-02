@@ -43,6 +43,8 @@ export enum PostStatus {
 export type ImageProps = {
   secure_url: string;
   public_id: string;
+  width: number;
+  height: number;
 };
 export interface PostFeedProps {
   _id: string;

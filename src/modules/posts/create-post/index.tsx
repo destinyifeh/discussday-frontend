@@ -148,6 +148,7 @@ export const CreatePostPage = () => {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
+
     if (!files) return;
 
     if (imageUrls.length + files.length > 4) {

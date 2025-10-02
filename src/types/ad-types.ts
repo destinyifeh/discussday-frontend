@@ -56,13 +56,15 @@ export interface AdProps {
   rejectedDate?: string;
   pausedDate?: string;
   rejectionReason?: string;
-  content?: string; // for sponsored ads
-  targetUrl: string; // for banner ads
-  imageUrl?: string; // for banner ads
+  content?: string;
+  targetUrl: string;
+  imageUrl?: string;
   callToAction: AdCTA;
   title: string;
   section: string;
   duration?: string;
+  imageWidth?: number;
+  imageHeight?: number;
 }
 
 export type DurationValue = '7' | '14' | '30';
