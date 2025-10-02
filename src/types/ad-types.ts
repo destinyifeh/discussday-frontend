@@ -94,4 +94,6 @@ export interface AdPerformanceData {
   imageUrl?: string;
   duration: string;
   expirationDate?: any;
+  imageWidth?: number;
+  imageHeight?: number;
 }

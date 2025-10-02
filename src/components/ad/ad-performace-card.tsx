@@ -57,6 +57,7 @@ export const AdPerformanceCard = ({ad}: {ad: AdPerformanceData}) => {
     return Number(adCtr.toFixed(2)); // round to 2 decimal places
   };
 
+  console.log(ad, 'adoooo223');
   return (
     <Card key={ad._id} className="verflow-hidden">
       <CardHeader className="pb-2">
@@ -94,7 +95,11 @@ export const AdPerformanceCard = ({ad}: {ad: AdPerformanceData}) => {
         </div>
 
         {ad.imageUrl && (
-          <div className="mb-3 rounded-lg overflow-hidden aspect-[4/3] bg-gray-100 flex items-center justify-center">
+          <div
+            className="mb-3 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center"
+            style={{
+              aspectRatio: `${ad.imageWidth}/${ad.imageHeight}`,
+            }}>
             <img
               src={ad.imageUrl}
               alt={ad.title}
