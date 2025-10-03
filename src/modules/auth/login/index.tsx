@@ -1,6 +1,6 @@
 'use client';
 
-import {AppLogo} from '@/components/app-logo';
+import {CustomLogo} from '@/components/app-logo';
 import {Button} from '@/components/ui/button';
 import {
   Card,
@@ -161,13 +161,17 @@ export const LoginPage = () => {
                 </g>
               </svg> */}
             <Link href="/">
-              <AppLogo
+              {/* <AppLogo
                 color="text-white"
                 mdSize="md:text-4xl"
                 center="text-left"
                 title="Discussday Forum"
                 mb="mb-4"
-              />
+              /> */}
+
+              <Link href="/">
+                <CustomLogo logo="/logo_white.png" width={250} height={100} />
+              </Link>
             </Link>
             <h1 className="text-3xl font-bold mb-4">Welcome back!</h1>
             <p className="text-lg mb-6">
@@ -207,8 +211,12 @@ export const LoginPage = () => {
                   </g>
                 </svg> */}
 
-                <Link href="/">
+                {/* <Link href="/">
                   <AppLogo color="text-app" mdSize="md:text-4xl" mb="mb-0" />
+                </Link> */}
+
+                <Link href="/" className="">
+                  <CustomLogo logo="/logo_blue.png" width={250} height={100} />
                 </Link>
               </div>
               <CardTitle className="text-2xl">Sign in to Forum</CardTitle>

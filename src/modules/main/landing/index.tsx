@@ -1,7 +1,9 @@
 'use client';
 
 import {AppFooter} from '@/components/app-footer';
+import {CustomLogo} from '@/components/app-logo';
 import {Button} from '@/components/ui/button';
+import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 
 export const LandingPage = () => {
@@ -64,9 +66,13 @@ export const LandingPage = () => {
             </g>
           </svg> */}
 
-          <h1 className="text-3xl text-app text-center font-bold mb-8 md:hidden">
+          {/* <h1 className="text-3xl text-app text-center font-bold mb-8 md:hidden">
             Discussday
-          </h1>
+          </h1> */}
+
+          <Link href="/" className="mb-8 md:hidden">
+            <CustomLogo logo="/logo_blue.png" width={200} height={200} />
+          </Link>
 
           {/* <h1 className="text-center text-5xl md:text-6xl font-bold mb-12">
             Happening now

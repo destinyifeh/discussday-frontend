@@ -1,4 +1,5 @@
 'use client';
+import {CustomLogo} from '@/components/app-logo';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
@@ -174,9 +175,13 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({children, title}) => {
             </div>
           </SheetContent>
         </Sheet>
-
-        <h1 className="text-xl font-bold">{title ? title : ' Discussday'}</h1>
-
+        {title ? (
+          <h1 className="text-xl font-bold">{title}</h1>
+        ) : (
+          <Link href="/home">
+            <CustomLogo logo="/logo_black.png" width={120} height={100} />
+          </Link>
+        )}
         <Button
           variant="ghost"
           size="icon"

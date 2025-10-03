@@ -1,4 +1,5 @@
 import {cn} from '@/lib/utils';
+import Image from 'next/image';
 import {FC} from 'react';
 
 interface AppLogoProps {
@@ -8,6 +9,12 @@ interface AppLogoProps {
   mdSize?: string;
   mb?: string;
   center?: string;
+}
+interface CustomLogoProps {
+  logo: string;
+
+  height?: number;
+  width?: number;
 }
 
 export const AppLogo: FC<AppLogoProps> = ({
@@ -30,5 +37,11 @@ export const AppLogo: FC<AppLogoProps> = ({
       )}>
       {title ?? 'Discussday'}
     </h1>
+  );
+};
+
+export const CustomLogo: FC<CustomLogoProps> = ({logo, height, width}) => {
+  return (
+    <Image src={logo} alt="Logo" width={width ?? 140} height={height ?? 140} />
   );
 };

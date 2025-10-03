@@ -1,5 +1,6 @@
 'use client';
 
+import {CustomLogo} from '@/components/app-logo';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -189,7 +190,11 @@ export const SidebarLayoutLeft = () => {
           <img src="/logo.svg" alt="Logo" className="h-8 w-8" />
         </div> */}
         <div className="p-2 flex items-center justify-between">
-          <h1 className="text-xl font-bold">Discussday</h1>
+          {/* <h1 className="text-xl font-bold">Discussday</h1> */}
+          <Link href="/home">
+            <CustomLogo logo="/logo_black.png" />
+          </Link>
+
           <Button
             variant="ghost"
             size="icon"
@@ -350,7 +355,8 @@ export const SidebarLayoutRight = () => {
     <aside className="hidden lg:flex flex-col w-80 h-screen border-0 p-4 border-app-border ">
       <div className="sticky top-4 space-y-4">
         <div className="rounded-lg p-4 bg-app-hover dark:bg-background border border-app-border">
-          <h2 className="font-bold text-xl mb-4">Discussday</h2>
+          <h2 className="font-bold text-xl mb-4">Discuss</h2>
+
           <div className="flex flex-row flex-wrap items-center">
             {Sections.map(section => (
               <Link
