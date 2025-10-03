@@ -1,6 +1,6 @@
 'use client';
 
-import {AppLogo} from '@/components/app-logo';
+import {CustomLogo} from '@/components/app-logo';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import {Button} from '@/components/ui/button';
 import {
@@ -198,13 +198,7 @@ export const RegisterPage = () => {
                 </g>
               </svg> */}
             <Link href="/">
-              <AppLogo
-                color="text-white"
-                mdSize="md:text-4xl"
-                center="text-left"
-                title="Discussday Forum"
-                mb="mb-4"
-              />
+              <CustomLogo logo="/logo_white.png" width={200} height={100} />
             </Link>
             <h1 className="text-3xl font-bold mb-4">Join our community</h1>
             <p className="text-lg mb-6">
@@ -231,7 +225,7 @@ export const RegisterPage = () => {
         <div className="w-full md:flex-1">
           <Card className="border-0 shadow-none">
             <CardHeader>
-              <div className="flex justify-center mb-4">
+              <div className="flex justify-center mb-0">
                 {/* <svg
                   viewBox="0 0 24 24"
                   aria-hidden="true"
@@ -243,8 +237,9 @@ export const RegisterPage = () => {
                     />
                   </g>
                 </svg> */}
-                <Link href="/">
-                  <AppLogo color="text-app" mdSize="md:text-4xl" mb="mb-0" />
+
+                <Link href="/" className="">
+                  <CustomLogo logo="/logo_blue.png" width={200} height={100} />
                 </Link>
               </div>
               <CardTitle className="text-2xl">Create your account</CardTitle>

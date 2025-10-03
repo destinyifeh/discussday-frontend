@@ -160,8 +160,8 @@ export const LoginPage = () => {
                   />
                 </g>
               </svg> */}
-            <Link href="/">
-              {/* <AppLogo
+
+            {/* <AppLogo
                 color="text-white"
                 mdSize="md:text-4xl"
                 center="text-left"
@@ -169,10 +169,10 @@ export const LoginPage = () => {
                 mb="mb-4"
               /> */}
 
-              <Link href="/">
-                <CustomLogo logo="/logo_white.png" width={200} height={100} />
-              </Link>
+            <Link href="/">
+              <CustomLogo logo="/logo_white.png" width={200} height={100} />
             </Link>
+
             <h1 className="text-3xl font-bold mb-4">Welcome back!</h1>
             <p className="text-lg mb-6">
               Join the conversation on the world's most interactive forum

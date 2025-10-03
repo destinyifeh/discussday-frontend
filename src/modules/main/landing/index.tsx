@@ -26,9 +26,13 @@ export const LandingPage = () => {
                   />
                 </g>
               </svg> */}
-            <h1 className="text-4xl text-white text-center md:text-4xl font-bold mb-8">
+            {/* <h1 className="text-4xl text-white text-center md:text-4xl font-bold mb-8">
               Discussday Forum
-            </h1>
+            </h1> */}
+
+            <Link href="/" className="mb-0">
+              <CustomLogo logo="/logo_white.png" width={220} height={200} />
+            </Link>
 
             <div className="hidden md:block text-white">
               <h1 className="text-3xl font-bold mb-6">Join our community</h1>

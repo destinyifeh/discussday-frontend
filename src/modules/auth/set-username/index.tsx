@@ -1,6 +1,6 @@
 'use client';
 
-import {AppLogo} from '@/components/app-logo';
+import {CustomLogo} from '@/components/app-logo';
 import {Button} from '@/components/ui/button';
 import {
   Card,
@@ -131,13 +131,7 @@ export const SetUsernamePage = ({params}: PageParams) => {
         <div className="hidden md:flex flex-1 items-center justify-center rounded-l-lg p-8 text-white bg-app/90 dark:bg-app">
           <div>
             <Link href="/">
-              <AppLogo
-                color="text-white"
-                mdSize="md:text-4xl"
-                center="text-left"
-                title="Discussday Forum"
-                mb="mb-4"
-              />
+              <CustomLogo logo="/logo_white.png" width={200} height={100} />
             </Link>
             <h1 className="text-3xl font-bold mb-4">Set your username</h1>
             <p className="text-lg mb-6">
@@ -163,9 +157,9 @@ export const SetUsernamePage = ({params}: PageParams) => {
         <div className="w-full md:flex-1">
           <Card className="border-0 shadow-none">
             <CardHeader>
-              <div className="flex justify-center mb-4">
+              <div className="flex justify-center mb-0">
                 <Link href="/">
-                  <AppLogo color="text-app" mdSize="md:text-4xl" mb="0" />
+                  <CustomLogo logo="/logo_blue.png" width={200} height={100} />
                 </Link>
               </div>
               <CardTitle className="text-2xl text-center">
