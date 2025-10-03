@@ -293,7 +293,7 @@ export const HomePostList = () => {
         ref={virtuosoRef}
         components={{
           Header: () => (
-            <div className="mt-20 md:mt-0">
+            <div className="mt-25 md:mt-0">
               {!allowTab && (
                 <Tabs
                   defaultValue="for-you"
