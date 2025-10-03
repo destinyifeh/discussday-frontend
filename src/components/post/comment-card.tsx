@@ -369,7 +369,10 @@ const CommentCard = ({
               comment.images.map((img, idx) => (
                 <div
                   key={img.public_id || idx}
-                  className="mt-3 aspect-[4/3] rounded-lg overflow-hidden">
+                  className="mt-3 rounded-lg overflow-hidden"
+                  style={{
+                    aspectRatio: `${img.width}/${img.height}`,
+                  }}>
                   <img
                     src={img.secure_url}
                     alt={`comment attachment ${idx + 1}`}
