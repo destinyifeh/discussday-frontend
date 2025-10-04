@@ -1,4 +1,5 @@
 import {ThemeProvider} from '@/app/providers/theme-provider';
+import Analytics from '@/config/analytics';
 import {APP_NAME} from '@/constants/settings';
 import {Metadata} from 'next';
 import {
@@ -84,6 +85,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <head>
+          <Analytics />
+        </head>
+      </head>
       <body className={`${interFont.className}  antialiased`}>
         <ThemeProvider
           attribute="class"
