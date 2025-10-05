@@ -69,12 +69,34 @@ export const metadata: Metadata = {
   description: `Be part of the discussions that matter. Share your thoughts, and explore trending topics on ${APP_NAME}.`,
   icons: {
     icon: [
-      {url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png'},
-      {url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png'},
-      {url: '/favicon-192x192.png', sizes: '192x192', type: 'image/png'},
-      {url: '/favicon-512x512.png', sizes: '512x512', type: 'image/png'},
+      {url: '/discussday_optimized_favicon.ico'},
+      {
+        url: '/discussday_optimized_favicon_16x16.png',
+        sizes: '16x16',
+        type: 'image/png',
+      },
+      {
+        url: '/discussday_optimized_favicon_32x32.png',
+        sizes: '32x32',
+        type: 'image/png',
+      },
+      {
+        url: '/discussday_optimized_favicon_48x48.png',
+        sizes: '48x48',
+        type: 'image/png',
+      },
+      {
+        url: '/discussday_optimized_favicon_64x64.png',
+        sizes: '64x64',
+        type: 'image/png',
+      },
+      {
+        url: '/discussday_optimized_favicon_128x128.png',
+        sizes: '128x128',
+        type: 'image/png',
+      },
     ],
-    apple: '/apple-touch-icon.png',
+    apple: '/discussday_optimized_favicon_180x180.png',
   },
 };
 
@@ -86,9 +108,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <head>
-          <Analytics />
-        </head>
+        <Analytics />
       </head>
       <body className={`${interFont.className}  antialiased`}>
         <ThemeProvider
