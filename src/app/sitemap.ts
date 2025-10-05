@@ -46,6 +46,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
 
+    {
+      url: `${APP_URL}/privacy-policy`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+
+    {
+      url: `${APP_URL}/terms-of-service`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${APP_URL}/ads-info`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+
     // Dynamic sections
     ...Sections.map((section: {name: string}) => ({
       url: `${APP_URL}/discuss/${section.name.toLowerCase()}`,
