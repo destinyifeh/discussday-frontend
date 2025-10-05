@@ -240,7 +240,7 @@ export const AdPaymentPage = () => {
                           <div className="space-y-2">
                             <Label htmlFor="amount">Amount</Label>
                             <Input
-                              disabled
+                              disabled={false}
                               id="amount"
                               placeholder=""
                               value={amount}
