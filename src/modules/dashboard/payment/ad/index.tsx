@@ -82,6 +82,11 @@ export const AdPaymentPage = () => {
         phoneNumber: phoneNumber,
         adId: adData._id,
         ownerId: adData.owner._id,
+        username: adData.owner.username,
+        plan: adData.plan,
+        price: adData.price,
+        duration: adData.duration,
+        title: adData.title,
       },
     };
 
