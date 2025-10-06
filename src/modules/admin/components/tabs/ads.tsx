@@ -2,6 +2,7 @@
 
 import {FC, Fragment, useMemo, useRef, useState} from 'react';
 
+import AdCard from '@/components/ad/ad-card';
 import {LoadingMore, LoadMoreError} from '@/components/feedbacks';
 import ErrorFeedback from '@/components/feedbacks/error-feedback';
 import AdSkeleton from '@/components/skeleton/ad-skeleton';
@@ -39,10 +40,13 @@ export const AdTab: FC<AdProps> = ({
   filterSection,
   filterStatus,
 }) => {
+  const [activateAdDialog, setActivateAdDialog] = useState(false);
+  const [previewAdDialog, setPreviewAdDialog] = useState(false);
+  const [approveAdDialog, setApproveAdDialog] = useState(false);
   const [rejectAdDialog, setRejectAdDialog] = useState(false);
   const [pauseAdDialog, setPauseAdDialog] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
-  const [selectedAd, setSelectedAd] = useState<string>('');
+  const [selectedAd, setSelectedAd] = useState<any>('');
   const [selectedOwner, setSelectedOwner] = useState<string>('');
   const lastScrollTop = useRef(0);
   const [submittingApproval, setSubmittingApproval] = useState(false);
@@ -138,6 +142,17 @@ export const AdTab: FC<AdProps> = ({
     setRejectAdDialog(true);
   };
 
+  const handleOpenApproveAdDialog = (adId: string, ownerId: string) => {
+    setSelectedAd(adId);
+    setSelectedOwner(ownerId);
+    setApproveAdDialog(true);
+  };
+
+  const handleOpenPreviewAdDialog = (ad: any) => {
+    setSelectedAd(ad);
+    setPreviewAdDialog(true);
+  };
+
   const handlePauseAd = () => {
     if (!rejectReason) {
       toast.error('Please provide a reason for pausing');
@@ -183,16 +198,22 @@ export const AdTab: FC<AdProps> = ({
     setPauseAdDialog(true);
   };
 
-  const handleApproveAd = (adId: string, ownerId: string) => {
+  const handleOpenActivateAdDialog = (adId: string, ownerId: string) => {
+    setSelectedAd(adId);
+    setSelectedOwner(ownerId);
+    setActivateAdDialog(true);
+  };
+
+  const handleApproveAd = () => {
     setSubmittingApproval(true);
     const data = {
-      ownerId,
-      adId,
+      ownerId: selectedOwner,
+      adId: selectedAd,
     };
     approveAdRequest.mutate(data, {
       onSuccess(data, variables, context) {
         console.log(data, 'ad approval');
-        toast.success(`Advertisement #${adId} has been approved`);
+        toast.success(`Advertisement #${selectedAd} has been approved`);
         queryClient.invalidateQueries({
           queryKey: ['admin-ads', debouncedSearch],
         });
@@ -210,11 +231,13 @@ export const AdTab: FC<AdProps> = ({
       onSettled(data, error, variables, context) {
         setSubmittingApproval(false);
         setSubmittingPause(false);
+        setApproveAdDialog(false);
       },
     });
   };
 
   const handleResumeAd = (adId: string, ownerId: string) => {
+    setSelectedAd(adId);
     setSubmittingResume(true);
     const data = {
       ownerId,
@@ -245,16 +268,17 @@ export const AdTab: FC<AdProps> = ({
     });
   };
 
-  const handleActivateAd = (adId: string, ownerId: string) => {
+  const handleActivateAd = () => {
     setSubmittingActivation(true);
+
     const data = {
-      ownerId,
-      adId,
+      ownerId: selectedOwner,
+      adId: selectedAd,
     };
     activateAdRequest.mutate(data, {
       onSuccess(data, variables, context) {
         console.log(data, 'ad activated');
-        toast.success(`Advertisement #${adId} has been activated`);
+        toast.success(`Advertisement #${selectedAd} has been activated`);
         queryClient.invalidateQueries({
           queryKey: ['admin-ads', debouncedSearch],
         });
@@ -272,6 +296,7 @@ export const AdTab: FC<AdProps> = ({
       onSettled(data, error, variables, context) {
         setSubmittingActivation(false);
         setSubmittingPause(false);
+        setActivateAdDialog(false);
       },
     });
   };
@@ -310,9 +335,10 @@ export const AdTab: FC<AdProps> = ({
 
   return (
     <Fragment>
-      <div className="space-y-4">
+      <div className="">
         <Virtuoso
-          className="custom-scrollbar min-h-screen"
+          className="custom-scrollbar"
+          style={{height: '100vh'}}
           data={adData}
           onScroll={handleScroll}
           ref={virtuosoRef}
@@ -380,6 +406,7 @@ export const AdTab: FC<AdProps> = ({
                           <Badge variant="outline">
                             Duration: {ad.duration} days
                           </Badge>
+                          <Badge variant="outline">Plan: {ad.plan}</Badge>
                           <Badge variant="secondary">{ad.status}</Badge>
                         </div>
 
@@ -396,9 +423,7 @@ export const AdTab: FC<AdProps> = ({
                           size="sm"
                           className="mt-2"
                           onClick={() => {
-                            toast.info(
-                              'Ad preview functionality would be implemented here',
-                            );
+                            handleOpenPreviewAdDialog(ad);
                           }}>
                           Preview Ad
                         </Button>
@@ -414,7 +439,9 @@ export const AdTab: FC<AdProps> = ({
                               handleOpenPauseAdDialog(ad._id, ad.owner._id)
                             }>
                             <CheckCircle size={16} className="mr-1" />
-                            {submittingPause ? 'Pausing' : 'Pause'}
+                            {submittingPause && selectedAd === ad._id
+                              ? 'Pausing'
+                              : 'Pause'}
                           </Button>
                         )}
 
@@ -424,10 +451,12 @@ export const AdTab: FC<AdProps> = ({
                             size="sm"
                             className="bg-yellow-600 hover:bg-yellow-700"
                             onClick={() =>
-                              handleActivateAd(ad._id, ad.owner._id)
+                              handleOpenActivateAdDialog(ad._id, ad.owner._id)
                             }>
                             <CheckCircle size={16} className="mr-1" />
-                            {submittingActivation ? 'Activating' : 'Activate'}
+                            {submittingActivation && selectedAd === ad._id
+                              ? 'Activating'
+                              : 'Activate'}
                           </Button>
                         )}
 
@@ -440,7 +469,9 @@ export const AdTab: FC<AdProps> = ({
                               handleResumeAd(ad._id, ad.owner._id)
                             }>
                             <CheckCircle size={16} className="mr-1" />
-                            {submittingResume ? 'Resuming' : 'Resume'}
+                            {submittingResume && selectedAd === ad._id
+                              ? 'Resuming'
+                              : 'Resume'}
                           </Button>
                         )}
 
@@ -450,10 +481,12 @@ export const AdTab: FC<AdProps> = ({
                             size="sm"
                             className="bg-green-600 hover:bg-green-700"
                             onClick={() =>
-                              handleApproveAd(ad._id, ad.owner._id)
+                              handleOpenApproveAdDialog(ad._id, ad.owner._id)
                             }>
                             <CheckCircle size={16} className="mr-1" />
-                            {submittingApproval ? 'Approving' : ' Approve'}
+                            {submittingApproval && selectedAd === ad._id
+                              ? 'Approving'
+                              : ' Approve'}
                           </Button>
                         )}
 
@@ -466,10 +499,12 @@ export const AdTab: FC<AdProps> = ({
                               size="sm"
                               className="bg-green-600 hover:bg-green-700"
                               onClick={() =>
-                                handleApproveAd(ad._id, ad.owner._id)
+                                handleOpenApproveAdDialog(ad._id, ad.owner._id)
                               }>
                               <CheckCircle size={16} className="mr-1" />
-                              {submittingApproval ? 'Approving' : ' Approve'}
+                              {submittingApproval && selectedAd === ad._id
+                                ? 'Approving'
+                                : ' Approve'}
                             </Button>
 
                             <Button
@@ -482,7 +517,9 @@ export const AdTab: FC<AdProps> = ({
                                 handleOpenRejectAdDialog(ad._id, ad.owner._id)
                               }>
                               <XCircle size={16} className="mr-1" />{' '}
-                              {submittingRejection ? 'Rejecting...' : 'Reject'}
+                              {submittingRejection && selectedAd === ad._id
+                                ? 'Rejecting...'
+                                : 'Reject'}
                             </Button>
                           </>
                         )}
@@ -536,9 +573,63 @@ export const AdTab: FC<AdProps> = ({
             </Button>
             <Button
               variant="destructive"
-              disabled={submittingRejection}
+              disabled={submittingRejection || !rejectReason}
               onClick={handleRejectAd}>
               {submittingRejection ? 'Rejecting...' : 'Reject'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Approve Ad Dialog */}
+      <Dialog open={approveAdDialog} onOpenChange={setApproveAdDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Approve Advertisement</DialogTitle>
+            <DialogDescription>
+              Please are you sure you want to approve this advertisement?
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+            <Button
+              disabled={submittingApproval}
+              variant="outline"
+              onClick={() => setApproveAdDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={submittingApproval}
+              onClick={handleApproveAd}>
+              {submittingApproval ? 'Approving...' : 'Approve'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Activate Ad Dialog */}
+      <Dialog open={activateAdDialog} onOpenChange={setActivateAdDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Activate Advertisement</DialogTitle>
+            <DialogDescription>
+              Please are you sure you want to activate this advertisement?
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+            <Button
+              disabled={submittingApproval}
+              variant="outline"
+              onClick={() => setActivateAdDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={submittingApproval}
+              onClick={handleActivateAd}>
+              {submittingActivation ? 'Activating...' : 'Activate'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -579,6 +670,30 @@ export const AdTab: FC<AdProps> = ({
               disabled={submittingPause}
               onClick={handlePauseAd}>
               {submittingRejection ? 'Pausing...' : 'Pause'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Preview Ad Dialog */}
+
+      <Dialog open={previewAdDialog} onOpenChange={setPreviewAdDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Preview Advertisement</DialogTitle>
+            <DialogDescription>
+              You are previewing the ad titled "{selectedAd?.title}"
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <AdCard ad={selectedAd} />
+          </div>
+          <DialogFooter>
+            <Button
+              disabled={submittingPause}
+              variant="outline"
+              onClick={() => setPreviewAdDialog(false)}>
+              Cancel
             </Button>
           </DialogFooter>
         </DialogContent>
