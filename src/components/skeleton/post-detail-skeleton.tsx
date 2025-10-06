@@ -5,7 +5,7 @@ import PostSkeleton from './post-skeleton';
 const PostDetailSkeleton = () => {
   return (
     <div>
-      <PageHeader title="Post" />
+      <PageHeader title="Discuss" />
       <div className="pb-2 border-b border-app-border">
         <PostSkeleton />
       </div>
