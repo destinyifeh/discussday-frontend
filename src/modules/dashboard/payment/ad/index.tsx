@@ -97,7 +97,6 @@ export const AdPaymentPage = () => {
         const {data} = response?.data;
         if (data && data.authorization_url) {
           window.location.href = data.authorization_url;
-          resetPaymentDetails();
           setIsSubmitting(false);
           return;
         }
