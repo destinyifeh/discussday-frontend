@@ -4,6 +4,7 @@ import {AdPerformanceData, AdStatus} from '@/types/ad-types';
 import clsx from 'clsx';
 import {Activity, AlertCircle, CheckCircle, Clock} from 'lucide-react';
 import moment from 'moment';
+import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {AppProgressBar} from '../custom-progress';
 import {Badge} from '../ui/badge';
@@ -73,6 +74,14 @@ export const AdPerformanceCard = ({ad}: {ad: AdPerformanceData}) => {
             {getStatusIcon(ad.status)}{' '}
             {ad.status.charAt(0).toUpperCase() + ad.status.slice(1)}
           </Badge>
+          {ad.status === 'rejected' && (
+            <Link
+              href="/"
+              className=" hover:bg-app/90 text-app pl-2 text-sm"
+              onClick={() => navigate.push('/advertise')}>
+              Update
+            </Link>
+          )}
         </div>
       </CardHeader>
 

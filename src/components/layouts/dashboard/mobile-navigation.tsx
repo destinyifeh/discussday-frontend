@@ -114,7 +114,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({children, title}) => {
     <div
       // className={clsx('min-h-screen flex lg:hidden', {
       className="lg:hidden">
-      <div className="border-b flex justify-between items-center py-0 px-2 z-30 border-app-border">
+      <div className="border-b flex justify-between items-center h-16 px-3 z-30 border-app-border">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="p-0">
@@ -179,7 +179,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({children, title}) => {
           <h1 className="text-xl font-bold">{title}</h1>
         ) : (
           <Link href="/home">
-            <CustomLogo logo="/logo_blue.png" width={150} height={100} />
+            <CustomLogo logo="/logo_blue.png" height={100} width={120} />
           </Link>
         )}
         <Button

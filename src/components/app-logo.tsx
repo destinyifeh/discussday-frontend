@@ -42,6 +42,12 @@ export const AppLogo: FC<AppLogoProps> = ({
 
 export const CustomLogo: FC<CustomLogoProps> = ({logo, height, width}) => {
   return (
-    <Image src={logo} alt="Logo" width={width ?? 140} height={height ?? 140} />
+    <Image
+      src={logo}
+      alt="Discussday"
+      width={width ?? 140}
+      height={height ?? 140}
+      className="text-app"
+    />
   );
 };
