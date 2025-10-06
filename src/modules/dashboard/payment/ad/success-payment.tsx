@@ -1,13 +1,9 @@
 'use client';
 
-import ErrorFeedback from '@/components/feedbacks/error-feedback';
-import {LoadingFeedback} from '@/components/feedbacks/loading-feedback';
 import {Button} from '@/components/ui/button';
-import {useQuery} from '@tanstack/react-query';
 import {ArrowRight, CheckCircle} from 'lucide-react';
 import Link from 'next/link';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {adService} from '../../actions/ad.actions';
 
 export const AdPaymentSuccessPage = () => {
   const router = useRouter();
@@ -15,35 +11,36 @@ export const AdPaymentSuccessPage = () => {
   const reference = searchParams.get('reference');
   const shouldQuery = !!reference;
 
-  const {error, data, status, refetch} = useQuery({
-    queryKey: ['verify-ad-payment', reference],
-    queryFn: () => adService.verifyAdPayment(reference as string),
-    retry: 1,
-    enabled: shouldQuery,
-  });
-  console.log(data, 'verifyAd');
+  // const {error, data, status, refetch} = useQuery({
+  //   queryKey: ['verify-ad-payment', reference],
+  //   queryFn: () => adService.verifyAdPayment(reference as string),
+  //   retry: 1,
+  //   enabled: shouldQuery,
+  // });
+  // console.log(data, 'verifyAd');
 
-  if (!reference) {
-    return (
-      <ErrorFeedback showGoBack message="The request could not be processed." />
-    );
-  }
+  // if (!reference) {
+  //   return (
+  //     <ErrorFeedback showGoBack message="The request could not be processed." />
+  //   );
+  // }
 
-  if (status === 'pending') {
-    return (
-      <LoadingFeedback
-        variant="page"
-        submessage="Please wait"
-        showIcon={false}
-      />
-    );
-  }
+  // if (status === 'pending') {
+  //   return (
+  //     <LoadingFeedback
+  //       variant="page"
+  //       submessage="Please wait"
+  //       showIcon={false}
+  //     />
+  //   );
+  // }
 
-  if (status === 'error') {
-    return <ErrorFeedback showGoBack showRetry onRetry={refetch} />;
-  }
+  // if (status === 'error') {
+  //   return <ErrorFeedback showGoBack showRetry onRetry={refetch} />;
+  // }
 
-  const ad = data.ad.ad;
+  // const ad = data.ad.ad;
+
   return (
     <div className="">
       <div className="max-w-3xl mx-auto p-4">
@@ -56,13 +53,13 @@ export const AdPaymentSuccessPage = () => {
             Your ad campaign has been paid for and is now active. It will run
             for the selected duration.
           </p>
-          <div className="p-6 rounded-lg mb-6 text-left">
+          {/* <div className="p-6 rounded-lg mb-6 text-left">
             <h3 className="font-medium mb-4">Campaign Details</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              {/* <div>
+            <div className="grid grid-cols-2 gap-4 text-sm"> */}
+          {/* <div>
                 <span className="font-medium">Campaign:</span> {ad.title}
               </div> */}
-              <div className="capitalize">
+          {/* <div className="capitalize">
                 <span className="font-medium">Ad Type:</span> {ad.type}
               </div>
               <div className="capitalize">
@@ -79,7 +76,7 @@ export const AdPaymentSuccessPage = () => {
                 <span className="font-medium">Status:</span> Active
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild className="bg-app hover:bg-app/90 text-white">
               <Link href="/advertise/ad-performance">
