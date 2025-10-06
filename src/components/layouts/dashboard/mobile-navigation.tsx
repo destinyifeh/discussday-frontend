@@ -179,7 +179,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({children, title}) => {
           <h1 className="text-xl font-bold">{title}</h1>
         ) : (
           <Link href="/home">
-            <CustomLogo logo="/logo_blue.png" height={100} width={120} />
+            <CustomLogo logo="/logo_blue.png" height={100} width={125} />
           </Link>
         )}
         <Button
