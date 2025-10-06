@@ -251,7 +251,7 @@ export const CreatePostPage = () => {
               <ChevronLeft />
             </Button>
             <h1 className="text-xl font-bold">
-              {isEditing ? 'Edit' : 'Discuss'}
+              {isEditing ? 'Edit' : 'Start a Discussion'}
             </h1>
           </div>
           <Button
