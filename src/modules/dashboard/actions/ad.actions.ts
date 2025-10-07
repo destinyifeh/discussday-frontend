@@ -25,6 +25,14 @@ class AdService {
       formData.append('section', data.section);
     }
 
+    if (data.targetType) {
+      formData.append('targetType', data.targetType);
+    }
+
+    if (data.whatsappNumber) {
+      formData.append('whatsappNumber', data.whatsappNumber);
+    }
+
     return await api.post('/ad', formData, {
       headers: {'Content-Type': 'multipart/form-data'},
     });

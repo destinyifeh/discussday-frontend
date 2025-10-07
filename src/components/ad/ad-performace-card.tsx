@@ -76,9 +76,10 @@ export const AdPerformanceCard = ({ad}: {ad: AdPerformanceData}) => {
           </Badge>
           {ad.status === 'rejected' && (
             <Link
-              href="/"
-              className=" hover:bg-app/90 text-app pl-2 text-sm"
-              onClick={() => navigate.push('/advertise')}>
+              href={`/advertise/edit-ad/${ad._id}`}
+              className="text-app pl-2 text-sm"
+              //onClick={() => navigate.push(`/advertise/edit-ad/${ad._id}`)}
+            >
               Update
             </Link>
           )}

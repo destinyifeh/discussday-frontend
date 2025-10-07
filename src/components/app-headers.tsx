@@ -31,7 +31,7 @@ export const PageHeader = ({
               if (href) {
                 navigate.push(href);
               } else {
-                goBack();
+                navigate.back();
               }
             }}>
             <ChevronLeft />
@@ -65,7 +65,7 @@ export const SectionHeader = ({
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => goBack()}
+            onClick={() => navigate.back()}
             className="mt-1">
             <ChevronLeft />
           </Button>
@@ -122,7 +122,7 @@ export const CustomPageHeader = ({
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => (href ? navigate.push(href) : goBack())}>
+          onClick={() => (href ? navigate.push(href) : navigate.back())}>
           <ChevronLeft />
         </Button>
         <div>

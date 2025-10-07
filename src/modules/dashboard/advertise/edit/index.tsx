@@ -1,6 +1,8 @@
 'use client';
 
 import {PageHeader} from '@/components/app-headers';
+import ErrorFeedback from '@/components/feedbacks/error-feedback';
+import ScreenLoader from '@/components/feedbacks/screen-loader';
 import {Button} from '@/components/ui/button';
 import {
   Select,
@@ -10,11 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {toast} from '@/components/ui/toast';
-import {
-  MAX_FILE_SIZE,
-  MIN_AD_IMAGE_HEIGHT,
-  MIN_AD_IMAGE_WIDTH,
-} from '@/constants/api-resources';
+import {MAX_FILE_SIZE} from '@/constants/api-resources';
 import {Sections} from '@/constants/data';
 import {
   BASIC_PLAN_DESCRIPTION,
@@ -24,18 +22,27 @@ import {
   PROFESSIONAL_PLAN_DESCRIPTION,
 } from '@/fixtures/ad';
 import {useAdStore} from '@/hooks/stores/use-ad-store';
-import {urlFormatter} from '@/lib/formatter';
+import {capitalizeName, urlFormatter} from '@/lib/formatter';
 import {AdCTA, AdPlan, AdType, DurationValue} from '@/types/ad-types';
+import {useQuery} from '@tanstack/react-query';
 import {ArrowRight, Upload} from 'lucide-react';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {ChangeEvent, Fragment, useRef, useState} from 'react';
+import {ChangeEvent, Fragment, useEffect, useRef, useState} from 'react';
+import {adService} from '../../actions/ad.actions';
 import {CreateAdDto} from '../dto/create-ad.dto';
 import {AdPreviewPage} from '../preview';
 
-export const AdPlanPage = () => {
+type PageProps = {
+  params: {
+    adId: string;
+  };
+};
+
+export const AdEditPage = ({params}: PageProps) => {
   // const {plan} = useParams<{plan: AdPlan}>();
   const searchParam = useSearchParams();
-
+  const {adId} = params;
+  console.log(adId, 'addo');
   const plan = searchParam.get('plan') as AdPlan;
   const navigate = useRouter();
   const [isPreviewPage, setIsPreviewPage] = useState(false);
@@ -56,81 +63,42 @@ export const AdPlanPage = () => {
     whatsappNumber: '',
   });
 
+  const shouldQuery = !!adId;
+  const {
+    error,
+    data: adData,
+    isLoading,
+  } = useQuery({
+    queryKey: ['get-ad', adId],
+    queryFn: () => adService.getAd(adId),
+    retry: 1,
+    enabled: shouldQuery,
+  });
+
+  console.log(adData, 'the addd');
+  useEffect(() => {
+    if (!adData) return; // ✅ Prevent running when adData is undefined
+
+    setPreviewData({
+      title: adData.title ?? '',
+      content: adData.content ?? '',
+      targetUrl: adData.targetUrl ?? '',
+      type: 'sponsored' as AdType,
+      section: capitalizeName(adData.section) ?? '',
+      callToAction: adData.callToAction as AdCTA,
+      duration: adData.duration as DurationValue,
+      plan: adData.plan ?? '',
+      price: adData.price ?? 0,
+      imageUrl: adData.imageUrl ?? '',
+      image: null,
+      targetType: adData.targetType ?? '',
+      whatsappNumber: adData.whatsappNumber ?? '',
+    });
+  }, [adData]);
+
   console.log(plan, 'planno');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleImageUpload3 = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > MAX_FILE_SIZE) {
-        toast.error('Image size should be less than 5MB');
-        return;
-      }
-
-      // Check file type
-      if (!file.type.startsWith('image/')) {
-        toast.error('Please select a valid image file');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewData(prev => ({
-          ...prev,
-          image: file,
-          imageUrl: reader.result as string,
-          useTextOnly: false,
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleImageUpload2 = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // ✅ File size check
-    if (file.size > MAX_FILE_SIZE) {
-      toast.error('Image size should be less than 5MB');
-      return;
-    }
-
-    // ✅ File type check
-    if (!file.type.startsWith('image/')) {
-      toast.error('Please select a valid image file');
-      return;
-    }
-
-    // ✅ Validate minimum dimensions
-    const img = new Image();
-    img.onload = () => {
-      const {width, height} = img;
-
-      console.log(width, height, 'w-hh');
-
-      if (width < MIN_AD_IMAGE_WIDTH || height < MIN_AD_IMAGE_HEIGHT) {
-        toast.error(
-          `Image must be at least ${MIN_AD_IMAGE_WIDTH}x${MIN_AD_IMAGE_HEIGHT}px`,
-        );
-        return;
-      }
-
-      // ✅ Passed all checks → set preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewData(prev => ({
-          ...prev,
-          image: file,
-          imageUrl: reader.result as string,
-          useTextOnly: false,
-        }));
-      };
-      reader.readAsDataURL(file);
-    };
-
-    img.src = URL.createObjectURL(file);
-  };
 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -217,7 +185,7 @@ export const AdPlanPage = () => {
 
   let planDescription = '';
 
-  switch (plan) {
+  switch (adData.plan) {
     case 'basic':
       planDescription = BASIC_PLAN_DESCRIPTION;
       break;
@@ -233,6 +201,10 @@ export const AdPlanPage = () => {
   const handleBack = () => {
     navigate.back();
   };
+
+  if (isLoading) return <ScreenLoader />;
+
+  if (error) return <ErrorFeedback showGoBack />;
 
   return (
     <div>

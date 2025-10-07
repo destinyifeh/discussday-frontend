@@ -477,16 +477,11 @@ export const AdTab: FC<AdProps> = ({
 
                         {ad.status === 'rejected' && (
                           <Button
-                            disabled={submittingApproval || submittingRejection}
+                            disabled={true}
                             size="sm"
-                            className="bg-green-600 hover:bg-green-700"
-                            onClick={() =>
-                              handleOpenApproveAdDialog(ad._id, ad.owner._id)
-                            }>
-                            <CheckCircle size={16} className="mr-1" />
-                            {submittingApproval && selectedAd === ad._id
-                              ? 'Approving'
-                              : ' Approve'}
+                            className="bg-red-600 hover:bg-red-700">
+                            <XCircle size={16} className="mr-1" />
+                            Rejected
                           </Button>
                         )}
 
