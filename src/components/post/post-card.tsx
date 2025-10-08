@@ -12,7 +12,7 @@ import {
   LinkIcon,
   MessageSquare,
   MoreHorizontal,
-  Share,
+  Share2,
   UserCheck,
   UserPlus,
 } from 'lucide-react';
@@ -650,7 +650,7 @@ const PostCard = ({
                         e.stopPropagation();
                         setSharePopoverOpen(!sharePopoverOpen);
                       }}>
-                      <Share size={18} />
+                      <Share2 size={18} />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-48 p-2">
