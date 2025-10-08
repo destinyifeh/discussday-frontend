@@ -39,7 +39,6 @@ type PageProps = {
 };
 
 export const AdEditPage = ({params}: PageProps) => {
-  // const {plan} = useParams<{plan: AdPlan}>();
   const searchParam = useSearchParams();
   const {adId} = params;
   console.log(adId, 'addo');
@@ -61,6 +60,7 @@ export const AdEditPage = ({params}: PageProps) => {
     image: null,
     targetType: '',
     whatsappNumber: '',
+    removedImageId: '',
   });
 
   const shouldQuery = !!adId;
@@ -77,7 +77,7 @@ export const AdEditPage = ({params}: PageProps) => {
 
   console.log(adData, 'the addd');
   useEffect(() => {
-    if (!adData) return; // ✅ Prevent running when adData is undefined
+    if (!adData) return; // Prevent running when adData is undefined
 
     setPreviewData({
       title: adData.title ?? '',
@@ -93,10 +93,10 @@ export const AdEditPage = ({params}: PageProps) => {
       image: null,
       targetType: adData.targetType ?? '',
       whatsappNumber: adData.whatsappNumber ?? '',
+      adId: adData._id,
+      image_public_id: adData.image_public_id ?? '',
     });
   }, [adData]);
-
-  console.log(plan, 'planno');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -117,7 +117,6 @@ export const AdEditPage = ({params}: PageProps) => {
       reader.onloadend = () => {
         const img = new Image();
         img.onload = () => {
-          // ✅ You now have width & height
           const width = img.width;
           const height = img.height;
 
@@ -130,6 +129,7 @@ export const AdEditPage = ({params}: PageProps) => {
             imageWidth: width,
             imageHeight: height,
             useTextOnly: false,
+            removedImageId: '',
           }));
 
           console.log('Image dimensions:', width, height);
@@ -149,10 +149,9 @@ export const AdEditPage = ({params}: PageProps) => {
         ? urlFormatter(previewData.targetUrl)
         : '',
     };
+
     setPreviewAdData(data);
     setIsPreviewPage(true);
-    // toast.success('Your advertisement has been submitted for approval!');
-    //navigate.push(`/create-ad/ad-preview`);
   };
 
   const disablePreviewBtn = () => {
@@ -173,7 +172,7 @@ export const AdEditPage = ({params}: PageProps) => {
     const isCommonInvalid =
       title.length < 5 || !duration || (requiresSection && !section);
 
-    // ✅ Fix: Ensure content is not empty and has min length
+    // Fix: Ensure content is not empty and has min length
     const isContentInvalid = !content || content.trim().length < 50;
 
     if (isContentInvalid || isCommonInvalid) {
@@ -183,9 +182,13 @@ export const AdEditPage = ({params}: PageProps) => {
     return false; // enable button
   };
 
+  if (isLoading) return <ScreenLoader />;
+
+  if (error) return <ErrorFeedback showGoBack />;
+
   let planDescription = '';
 
-  switch (adData.plan) {
+  switch (adData?.plan) {
     case 'basic':
       planDescription = BASIC_PLAN_DESCRIPTION;
       break;
@@ -201,10 +204,6 @@ export const AdEditPage = ({params}: PageProps) => {
   const handleBack = () => {
     navigate.back();
   };
-
-  if (isLoading) return <ScreenLoader />;
-
-  if (error) return <ErrorFeedback showGoBack />;
 
   return (
     <div>
@@ -397,6 +396,7 @@ export const AdEditPage = ({params}: PageProps) => {
                           ...prev,
                           imageUrl: '',
                           image: null,
+                          removedImageId: prev.image_public_id,
                         }))
                       }>
                       Remove

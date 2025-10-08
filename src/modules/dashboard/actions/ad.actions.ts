@@ -38,6 +38,43 @@ class AdService {
     });
   }
 
+  async updateAdRequest(data: CreateAdDto): Promise<AxiosResponse> {
+    const formData = new FormData();
+    formData.append('price', data.price);
+    formData.append('duration', data.duration);
+    formData.append('plan', data.plan);
+    formData.append('targetUrl', data.targetUrl);
+    formData.append('callToAction', data.callToAction);
+    formData.append('type', data.type);
+    formData.append('title', data.title);
+
+    if (data.image) {
+      formData.append('image', data.image);
+    }
+
+    if (data.content) {
+      formData.append('content', data.content);
+    }
+    if (data.section) {
+      formData.append('section', data.section);
+    }
+
+    if (data.targetType) {
+      formData.append('targetType', data.targetType);
+    }
+
+    if (data.whatsappNumber) {
+      formData.append('whatsappNumber', data.whatsappNumber);
+    }
+    if (data.removedImageId) {
+      formData.append('removedImageId', data.removedImageId);
+    }
+
+    return await api.put(`/ad/${data.adId}`, formData, {
+      headers: {'Content-Type': 'multipart/form-data'},
+    });
+  }
+
   async getUserAdByStatus(
     page = 1,
     limit = 10,

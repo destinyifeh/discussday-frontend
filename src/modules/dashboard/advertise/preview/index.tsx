@@ -69,7 +69,7 @@ export const AdPreviewPage = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAdSubmitted, setIsAdSubmitted] = useState(false);
   const {currentUser} = useAuthStore(state => state);
-  const {createAd} = useAdActions();
+  const {createAd, updateAd} = useAdActions();
 
   const handleSubmitForApproval = () => {
     setIsSubmitting(true);
@@ -85,6 +85,23 @@ export const AdPreviewPage = ({
           : previewAdData.section.toLowerCase(),
     };
     console.log(payload, 'previewDataa');
+
+    if (payload.adId) {
+      updateAd.mutate(payload, {
+        onSuccess(data, variables, context) {
+          console.log(data, 'dataaaaAd');
+          toast.success('Your advertisement has been updated for approval!');
+          setIsAdSubmitted(true);
+        },
+        onError(error, variables, context) {
+          toast.error('Oops! Something went wrong, please try again.');
+        },
+        onSettled(data, error, variables, context) {
+          setIsSubmitting(false);
+        },
+      });
+      return;
+    }
     createAd.mutate(payload, {
       onSuccess(data, variables, context) {
         console.log(data, 'dataaaaAd');

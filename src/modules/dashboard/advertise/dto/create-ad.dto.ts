@@ -28,4 +28,10 @@ export interface CreateAdDto {
   targetType?: string;
 
   whatsappNumber?: string;
+
+  adId?: string;
+
+  removedImageId?: string;
+
+  image_public_id?: string;
 }
