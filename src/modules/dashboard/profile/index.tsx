@@ -4,6 +4,7 @@ import {PageHeader} from '@/components/app-headers';
 import {LoadingMore, LoadMoreError} from '@/components/feedbacks';
 import ErrorFeedback from '@/components/feedbacks/error-feedback';
 import {MobileBottomTab} from '@/components/layouts/dashboard/mobile-bottom-tab';
+import MobileNavigation from '@/components/layouts/dashboard/mobile-navigation';
 import UserCommentCard from '@/components/post/comments/user-comment-card';
 import PostCard from '@/components/post/post-card';
 import PostSkeleton from '@/components/skeleton/post-skeleton';
@@ -11,11 +12,14 @@ import ProfileSkeleton from '@/components/skeleton/profile-skeleton';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import {Button} from '@/components/ui/button';
 import {Tabs, TabsList, TabsTrigger} from '@/components/ui/tabs';
+import {toast} from '@/components/ui/toast';
 import {ALLOW_FIXED_MOBILE_BOTTOM_TAB} from '@/constants/settings';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {usePostStore} from '@/hooks/stores/use-post-store';
+import {queryClient} from '@/lib/client/query-client';
 import {normalizeDomain, urlFormatter} from '@/lib/formatter';
-import {useInfiniteQuery} from '@tanstack/react-query';
+import {postService} from '@/modules/posts/actions';
+import {useInfiniteQuery, useMutation} from '@tanstack/react-query';
 import {Calendar, Link as LinkIcon, Settings} from 'lucide-react';
 import moment from 'moment';
 import Link from 'next/link';
@@ -143,8 +147,271 @@ export const ProfilePage = () => {
 
   console.log('user posts dataa', userData);
 
+  const likePostMutation = useMutation({
+    mutationFn: (postId: string) => postService.likePostRequestAction(postId),
+
+    onMutate: async postId => {
+      await queryClient.cancelQueries({
+        queryKey: ['user-profile-posts', activeTab],
+      });
+
+      const previousPosts = queryClient.getQueryData([
+        'user-profile-posts',
+        activeTab,
+      ]);
+
+      queryClient.setQueryData(
+        ['user-profile-posts', activeTab],
+        (oldData: any) => {
+          if (!oldData) return previousPosts;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((post: any) => {
+                if (post._type === 'ad') return post;
+                if (post._id === postId) {
+                  const userId = currentUser?._id;
+                  const hasLiked = post.likedBy.includes(userId);
+                  const newLikedBy = hasLiked
+                    ? post.likedBy.filter((id: string) => id !== userId)
+                    : [...post.likedBy, userId];
+
+                  return {
+                    ...post,
+                    likedBy: newLikedBy,
+                  };
+                }
+                return post;
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousPosts};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['user-profile-posts', activeTab],
+        context.previousPosts,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['user-profile-posts', activeTab],
+      });
+    },
+  });
+
+  const bookmarkPostMutation = useMutation({
+    mutationFn: (postId: string) =>
+      postService.bookmarkPostRequestAction(postId),
+
+    onMutate: async postId => {
+      await queryClient.cancelQueries({
+        queryKey: ['user-profile-posts', activeTab],
+      });
+
+      const previousPosts = queryClient.getQueryData([
+        'user-profile-posts',
+        activeTab,
+      ]);
+
+      queryClient.setQueryData(
+        ['user-profile-posts', activeTab],
+        (oldData: any) => {
+          if (!oldData) return previousPosts;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((post: any) => {
+                if (post._type === 'ad') return post;
+                if (post._id === postId) {
+                  const userId = currentUser?._id;
+                  const hasBookmarked = post.bookmarkedBy.includes(userId);
+                  const newBookmarkedBy = hasBookmarked
+                    ? post.bookmarkedBy.filter((id: string) => id !== userId)
+                    : [...post.bookmarkedBy, userId];
+
+                  return {
+                    ...post,
+                    bookmarkedBy: newBookmarkedBy,
+                  };
+                }
+                return post;
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousPosts};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['user-profile-posts', activeTab],
+        context.previousPosts,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {},
+  });
+
   const isNotCurrentUser =
     user.toLowerCase() !== currentUser?.username.toLowerCase();
+
+  const likeCommentMutation = useMutation({
+    mutationFn: (commentId: string) =>
+      postService.likeCommentRequestAction(commentId),
+
+    onMutate: async (commentId: any) => {
+      await queryClient.cancelQueries({
+        queryKey: ['user-profile-posts', activeTab],
+      });
+
+      const previousData = queryClient.getQueryData([
+        'user-profile-posts',
+        activeTab,
+      ]);
+
+      queryClient.setQueryData(
+        ['user-profile-posts', activeTab],
+        (oldData: any) => {
+          if (!oldData) return previousData;
+
+          const userId = currentUser?._id;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((comment: any) => {
+                if (comment._id !== commentId) return comment;
+
+                // mutual exclusivity logic
+                const hasLiked = comment.likedBy.includes(userId);
+                const hasDisliked = comment.dislikedBy.includes(userId);
+
+                let newLikedBy = comment.likedBy;
+                let newDislikedBy = comment.dislikedBy;
+
+                if (hasLiked) {
+                  // remove like if already liked
+                  newLikedBy = newLikedBy.filter((id: string) => id !== userId);
+                } else {
+                  // add like
+                  newLikedBy = [...newLikedBy, userId];
+                  // remove dislike if user had disliked before
+                  newDislikedBy = newDislikedBy.filter(
+                    (id: string) => id !== userId,
+                  );
+                }
+
+                return {
+                  ...comment,
+                  likedBy: newLikedBy,
+                  dislikedBy: newDislikedBy,
+                };
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousData};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['user-profile-posts', activeTab],
+        context.previousComments,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {},
+  });
+
+  const dislikeCommentMutation = useMutation({
+    mutationFn: (commentId: string) =>
+      postService.dislikeCommentRequestAction(commentId),
+
+    onMutate: async (commentId: any) => {
+      await queryClient.cancelQueries({
+        queryKey: ['user-profile-posts', activeTab],
+      });
+
+      const previousData = queryClient.getQueryData([
+        'user-profile-posts',
+        activeTab,
+      ]);
+
+      queryClient.setQueryData(
+        ['user-profile-posts', activeTab],
+        (oldData: any) => {
+          if (!oldData) return previousData;
+
+          const userId = currentUser?._id;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((comment: any) => {
+                if (comment._id !== commentId) return comment;
+
+                // mutual exclusivity logic
+                const hasLiked = comment.likedBy.includes(userId);
+                const hasDisliked = comment.dislikedBy.includes(userId);
+
+                let newLikedBy = comment.likedBy;
+                let newDislikedBy = comment.dislikedBy;
+
+                if (hasDisliked) {
+                  // remove dislike if already disliked
+                  newDislikedBy = newDislikedBy.filter(
+                    (id: string) => id !== userId,
+                  );
+                } else {
+                  // add dislike
+                  newDislikedBy = [...newDislikedBy, userId];
+                  // remove like if user had liked before
+                  newLikedBy = newLikedBy.filter((id: string) => id !== userId);
+                }
+
+                return {
+                  ...comment,
+                  likedBy: newLikedBy,
+                  dislikedBy: newDislikedBy,
+                };
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousData};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['user-profile-posts', activeTab],
+        context.previousComments,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {},
+  });
 
   console.log(user, 'user posts dataa', currentUser?.username);
   if (!mounted) {
@@ -185,13 +452,12 @@ export const ProfilePage = () => {
 
   return (
     <div>
-      {/* <div
+      <div
         className={`lg:hidden fixed top-0 left-0 right-0 bg-background w-full z-50 transition-transform duration-300 ${
           showMobileNav ? 'translate-y-0' : '-translate-y-full'
         }`}>
-       
-        <MobileNavigation title="Profile" />
-      </div> */}
+        <MobileNavigation />
+      </div>
 
       <Virtuoso
         className="custom-scrollbar"
@@ -201,7 +467,7 @@ export const ProfilePage = () => {
         ref={virtuosoRef}
         components={{
           Header: () => (
-            <div className="">
+            <div className="mt-15 md:mt-0">
               <PageHeader
                 title={currentUser?.username}
                 description={`${totalCount} ${activeTab}`}
@@ -381,18 +647,37 @@ export const ProfilePage = () => {
 
           if (activeTab === 'replies' && post.commentBy?.username) {
             return (
-              <UserCommentCard key={key} comment={post} isFrom="replies" />
+              <UserCommentCard
+                key={key}
+                comment={post}
+                isFrom="replies"
+                onLike={() => likeCommentMutation.mutate(post._id)}
+                onDisLike={() => dislikeCommentMutation.mutate(post._id)}
+              />
             );
           }
 
           if (activeTab === 'mentions' && post?.quotedComment?.quotedUser) {
             return (
-              <UserCommentCard key={key} comment={post} isFrom="mentions" />
+              <UserCommentCard
+                key={key}
+                comment={post}
+                isFrom="mentions"
+                onLike={() => likeCommentMutation.mutate(post._id)}
+                onDisLike={() => dislikeCommentMutation.mutate(post._id)}
+              />
             );
           }
 
           if (post.user?._id) {
-            return <PostCard key={key} post={post} />;
+            return (
+              <PostCard
+                key={key}
+                post={post}
+                onLike={() => likePostMutation.mutate(post._id)}
+                onBookmark={() => bookmarkPostMutation.mutate(post._id)}
+              />
+            );
           }
 
           return <PostSkeleton />;

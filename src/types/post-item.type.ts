@@ -63,6 +63,7 @@ export interface PostFeedProps {
   commentsClosed?: boolean;
   viewCount: number;
   status: PostStatus;
+  commentCount?: number;
 }
 
 export interface CommentProps {

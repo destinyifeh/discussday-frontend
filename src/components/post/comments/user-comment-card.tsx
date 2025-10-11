@@ -10,7 +10,7 @@ import {
 import {useGlobalStore} from '@/hooks/stores/use-global-store';
 import {cn} from '@/lib/utils';
 import {CommentFeedProps, PostFeedProps} from '@/types/post-item.type';
-import React, {useState} from 'react';
+import React from 'react';
 
 import {formatTimeAgo} from '@/lib/formatter';
 import {
@@ -28,69 +28,29 @@ import {useRouter} from 'next/navigation';
 import {toast} from '@/components/ui/toast';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {usePostStore} from '@/hooks/stores/use-post-store';
-import {queryClient} from '@/lib/client/query-client';
-import {usePostActions} from '@/modules/posts/post-hooks';
 import {UserProps} from '@/types/user.types';
 import {PostContent} from '../post-content';
 
 interface CommentCardProps {
   comment: CommentFeedProps;
   isFrom: 'replies' | 'mentions' | 'public';
+  onLike?: () => void;
+  onDisLike?: () => void;
 }
 
-const UserCommentCard = ({comment, isFrom}: CommentCardProps) => {
+const UserCommentCard = ({
+  comment,
+  isFrom,
+  onLike,
+  onDisLike,
+}: CommentCardProps) => {
   const {theme} = useGlobalStore(state => state);
-  const [liked, setLiked] = useState(false);
+
   const navigate = useRouter();
-  const {likeCommentRequest, dislikeCommentRequest} = usePostActions();
+
   const {currentUser} = useAuthStore(state => state);
   const {setPostComment, setQuotedComment, setPost, resetCommentSection} =
     usePostStore(state => state);
-  const handleLike = () => {
-    likeCommentRequest.mutate(comment._id, {
-      onSuccess(data, variables, context) {
-        console.log(data, 'comment like');
-
-        queryClient.invalidateQueries({
-          queryKey: ['user-profile-posts', 'replies'],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ['user-profile-posts', 'mentions'],
-        });
-
-        queryClient.invalidateQueries({
-          queryKey: ['public-user-posts', 'replies'],
-        });
-      },
-      onError(error, variables, context) {
-        console.log(error, 'err');
-        toast.error('Oops! Something went wrong, try again');
-      },
-    });
-  };
-
-  const handleDisLike = () => {
-    dislikeCommentRequest.mutate(comment._id, {
-      onSuccess(data, variables, context) {
-        console.log(data, 'comment like');
-
-        queryClient.invalidateQueries({
-          queryKey: ['user-profile-posts', 'replies'],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ['user-profile-posts', 'mentions'],
-        });
-
-        queryClient.invalidateQueries({
-          queryKey: ['public-user-posts', 'replies'],
-        });
-      },
-      onError(error, variables, context) {
-        console.log(error, 'err');
-        toast.error('Oops! Something went wrong, try again');
-      },
-    });
-  };
 
   const handleReport = () => {
     toast.success('Comment Reported', {
@@ -261,15 +221,20 @@ const UserCommentCard = ({comment, isFrom}: CommentCardProps) => {
 
   const checkUser = isRelevantComment(comment, currentUser, isFrom);
 
-  const isLiked = comment.likedBy.includes(currentUser?._id as string);
-
   const navigateToUserProfile = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     navigate.push(`/user/${comment.commentBy.username}`);
   };
 
-  console.log(checkUser, 'theUserr');
+  const isLiked = comment.likedBy.includes(currentUser?._id as string);
+  const isCommentedUser = comment.commentBy?._id === currentUser?._id;
+
+  const commentLiked = comment.likedBy.includes(currentUser?._id ?? '');
+  const likesCount = comment.likedBy.length;
+
+  const commentDisliked = comment.dislikedBy.includes(currentUser?._id ?? '');
+  const dislikesCount = comment.dislikedBy.length;
   return (
     <div className="border-b py-4 px-2 transition-colors hover:bg-app-hover border-app-border dark:hover:bg-background">
       <div className="flex gap-3">
@@ -325,11 +290,11 @@ const UserCommentCard = ({comment, isFrom}: CommentCardProps) => {
           <div className="flex flex-row gap-2">
             <p>Replied</p>
             <Link
-              href={`/discuss/${comment.post.section.toLowerCase()}/${
-                comment.post.slugId
-              }/${comment.post.slug}`}
+              href={`/discuss/${comment?.post?.section.toLowerCase()}/${
+                comment.post?.slugId
+              }/${comment.post?.slug}`}
               className="text-blue-500 active:scale-90 transition-transform duration-150">
-              {comment.post.title}
+              {comment.post?.title}
             </Link>
           </div>
 
@@ -378,7 +343,13 @@ const UserCommentCard = ({comment, isFrom}: CommentCardProps) => {
                 'text-app-gray hover:text-red-500 p-0 h-auto active:scale-90 transition-transform duration-150',
                 isLiked && 'text-red-500',
               )}
-              onClick={handleLike}>
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (onLike) {
+                  onLike();
+                }
+              }}>
               <Heart
                 size={16}
                 className="mr-1"
@@ -398,7 +369,13 @@ const UserCommentCard = ({comment, isFrom}: CommentCardProps) => {
               variant="ghost"
               size="sm"
               className="text-app-gray hover:text-app p-0 h-auto active:scale-90 transition-transform duration-150"
-              onClick={handleDisLike}>
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (onDisLike) {
+                  onDisLike();
+                }
+              }}>
               <ThumbsDown
                 size={16}
                 fill={

@@ -25,6 +25,7 @@ import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {queryClient} from '@/lib/client/query-client';
 import {normalizeDomain} from '@/lib/formatter';
 import {cn} from '@/lib/utils';
+import {postService} from '@/modules/posts/actions';
 import {UserProps} from '@/types/user.types';
 import {useInfiniteQuery, useMutation, useQuery} from '@tanstack/react-query';
 import {
@@ -172,6 +173,272 @@ export const PeoplePage = () => {
   const totalCount = data?.pages?.[0]?.pagination.totalItems ?? 0;
 
   console.log('user posts dataa', userData);
+
+  const likePostMutation = useMutation({
+    mutationFn: (postId: string) => postService.likePostRequestAction(postId),
+
+    onMutate: async postId => {
+      await queryClient.cancelQueries({
+        queryKey: ['public-user-posts', activeTab],
+      });
+
+      const previousPosts = queryClient.getQueryData([
+        'public-user-posts',
+        activeTab,
+      ]);
+
+      queryClient.setQueryData(
+        ['public-user-posts', activeTab],
+        (oldData: any) => {
+          if (!oldData) return previousPosts;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((post: any) => {
+                if (post._type === 'ad') return post;
+                if (post._id === postId) {
+                  const userId = currentUser?._id;
+                  const hasLiked = post.likedBy.includes(userId);
+                  const newLikedBy = hasLiked
+                    ? post.likedBy.filter((id: string) => id !== userId)
+                    : [...post.likedBy, userId];
+
+                  return {
+                    ...post,
+                    likedBy: newLikedBy,
+                  };
+                }
+                return post;
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousPosts};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['public-user-posts', activeTab],
+        context.previousPosts,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['public-user-posts', activeTab],
+      });
+    },
+  });
+
+  const bookmarkPostMutation = useMutation({
+    mutationFn: (postId: string) =>
+      postService.bookmarkPostRequestAction(postId),
+
+    onMutate: async postId => {
+      await queryClient.cancelQueries({
+        queryKey: ['public-user-posts', activeTab],
+      });
+
+      const previousPosts = queryClient.getQueryData([
+        'public-user-posts',
+        activeTab,
+      ]);
+
+      queryClient.setQueryData(
+        ['public-user-posts', activeTab],
+        (oldData: any) => {
+          if (!oldData) return previousPosts;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((post: any) => {
+                if (post._type === 'ad') return post;
+                if (post._id === postId) {
+                  const userId = currentUser?._id;
+                  const hasBookmarked = post.bookmarkedBy.includes(userId);
+                  const newBookmarkedBy = hasBookmarked
+                    ? post.bookmarkedBy.filter((id: string) => id !== userId)
+                    : [...post.bookmarkedBy, userId];
+
+                  return {
+                    ...post,
+                    bookmarkedBy: newBookmarkedBy,
+                  };
+                }
+                return post;
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousPosts};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['public-user-posts', activeTab],
+        context.previousPosts,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {},
+  });
+
+  //comment like/dislike
+
+  const likeCommentMutation = useMutation({
+    mutationFn: (commentId: string) =>
+      postService.likeCommentRequestAction(commentId),
+
+    onMutate: async (commentId: any) => {
+      await queryClient.cancelQueries({
+        queryKey: ['public-user-posts', activeTab],
+      });
+
+      const previousData = queryClient.getQueryData([
+        'public-user-posts',
+        activeTab,
+      ]);
+
+      queryClient.setQueryData(
+        ['public-user-posts', activeTab],
+        (oldData: any) => {
+          if (!oldData) return previousData;
+
+          const userId = currentUser?._id;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((comment: any) => {
+                if (comment._id !== commentId) return comment;
+
+                // mutual exclusivity logic
+                const hasLiked = comment.likedBy.includes(userId);
+                const hasDisliked = comment.dislikedBy.includes(userId);
+
+                let newLikedBy = comment.likedBy;
+                let newDislikedBy = comment.dislikedBy;
+
+                if (hasLiked) {
+                  // remove like if already liked
+                  newLikedBy = newLikedBy.filter((id: string) => id !== userId);
+                } else {
+                  // add like
+                  newLikedBy = [...newLikedBy, userId];
+                  // remove dislike if user had disliked before
+                  newDislikedBy = newDislikedBy.filter(
+                    (id: string) => id !== userId,
+                  );
+                }
+
+                return {
+                  ...comment,
+                  likedBy: newLikedBy,
+                  dislikedBy: newDislikedBy,
+                };
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousData};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['public-user-posts', activeTab],
+        context.previousComments,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {},
+  });
+
+  const dislikeCommentMutation = useMutation({
+    mutationFn: (commentId: string) =>
+      postService.dislikeCommentRequestAction(commentId),
+
+    onMutate: async (commentId: any) => {
+      await queryClient.cancelQueries({
+        queryKey: ['public-user-posts', activeTab],
+      });
+
+      const previousData = queryClient.getQueryData([
+        'public-user-posts',
+        activeTab,
+      ]);
+
+      queryClient.setQueryData(
+        ['public-user-posts', activeTab],
+        (oldData: any) => {
+          if (!oldData) return previousData;
+
+          const userId = currentUser?._id;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((comment: any) => {
+                if (comment._id !== commentId) return comment;
+
+                // mutual exclusivity logic
+                const hasLiked = comment.likedBy.includes(userId);
+                const hasDisliked = comment.dislikedBy.includes(userId);
+
+                let newLikedBy = comment.likedBy;
+                let newDislikedBy = comment.dislikedBy;
+
+                if (hasDisliked) {
+                  // remove dislike if already disliked
+                  newDislikedBy = newDislikedBy.filter(
+                    (id: string) => id !== userId,
+                  );
+                } else {
+                  // add dislike
+                  newDislikedBy = [...newDislikedBy, userId];
+                  // remove like if user had liked before
+                  newLikedBy = newLikedBy.filter((id: string) => id !== userId);
+                }
+
+                return {
+                  ...comment,
+                  likedBy: newLikedBy,
+                  dislikedBy: newDislikedBy,
+                };
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousData};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['public-user-posts', activeTab],
+        context.previousComments,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {},
+  });
+
   if (isLoading) {
     return <ProfileSkeleton />;
   }
@@ -334,17 +601,17 @@ export const PeoplePage = () => {
   return (
     <div className="">
       <div
-        className={`lg:hidden fixed top-0 left-0 right-0 bg-background w-full z-50 transition-transform duration-300 ${
+        className={`md:hidden fixed top-0 left-0 right-0 bg-background w-full z-50 transition-transform duration-300 ${
           showMobileNav ? 'translate-y-0' : '-translate-y-full'
         }`}>
         <CustomPageHeader
-          title={currentUser?.username}
+          title={username}
           description={`${totalCount} ${activeTab}`}
         />
       </div>
-      <div className="hidden lg:block">
+      <div className="hidden md:block">
         <PageHeader
-          title={currentUser?.username}
+          title={username}
           description={`${totalCount} ${activeTab}`}
         />
       </div>
@@ -495,7 +762,12 @@ export const PeoplePage = () => {
               return <PostSkeleton />;
             }
 
-            return <PostPlaceholder tab={activeTab} />;
+            return (
+              <PostPlaceholder
+                tab={activeTab}
+                isOwnProfile={currentUser?.username === username}
+              />
+            );
           },
           Footer: () =>
             status === 'error' ? (
@@ -524,11 +796,27 @@ export const PeoplePage = () => {
           const key = post._id || `${activeTab}-${index}`;
 
           if (activeTab === 'replies' && post.commentBy?.username) {
-            return <UserCommentCard key={key} comment={post} isFrom="public" />;
+            return (
+              <UserCommentCard
+                key={key}
+                comment={post}
+                isFrom="public"
+                onLike={() => likeCommentMutation.mutate(post._id)}
+                onDisLike={() => dislikeCommentMutation.mutate(post._id)}
+              />
+            );
           }
 
           if (post.user?._id) {
-            return <PostCard key={key} post={post} hideMenu={true} />;
+            return (
+              <PostCard
+                key={key}
+                post={post}
+                hideMenu={true}
+                onLike={() => likePostMutation.mutate(post._id)}
+                onBookmark={() => bookmarkPostMutation.mutate(post._id)}
+              />
+            );
           }
 
           return <PostSkeleton />;

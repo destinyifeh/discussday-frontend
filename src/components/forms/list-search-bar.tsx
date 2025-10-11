@@ -1,7 +1,7 @@
 'use client';
 
 import {Search} from 'lucide-react';
-import {forwardRef} from 'react';
+import React, {forwardRef} from 'react';
 import {Input} from '../ui/input';
 
 type Props = {
@@ -13,15 +13,15 @@ type Props = {
 const SearchBarList = forwardRef<HTMLInputElement, Props>(
   ({searchTerm, setSearchTerm}, ref) => {
     return (
-      <div className="pt-4 px-4 bg-backgrounnd sticky top-0 z-10">
-        <div className="relative border-1 border-app-border rounded-full">
+      <div className="p-4">
+        <div className="relative">
           <Search
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-app-gray"
             size={20}
           />
           <Input
-            placeholder="Search..."
-            className="border-0 rounded-full pl-10 form-input"
+            placeholder="Search"
+            className="bg-gray-100 border-0 rounded-full pl-10 form-input"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             ref={ref}
@@ -32,6 +32,4 @@ const SearchBarList = forwardRef<HTMLInputElement, Props>(
   },
 );
 
-SearchBarList.displayName = 'SearchBarList';
-
-export default SearchBarList;
+export default React.memo(SearchBarList);

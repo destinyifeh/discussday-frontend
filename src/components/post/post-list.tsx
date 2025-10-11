@@ -3,15 +3,17 @@ import {SectionOptions, Sections} from '@/constants/data';
 import {ALLOW_FIXED_MOBILE_BOTTOM_TAB} from '@/constants/settings';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {useGlobalStore} from '@/hooks/stores/use-global-store';
+import {queryClient} from '@/lib/client/query-client';
 import {feedService} from '@/modules/dashboard/actions/feed.actions';
-import {useInfiniteQuery} from '@tanstack/react-query';
+import {postService} from '@/modules/posts/actions';
+import {useInfiniteQuery, useMutation} from '@tanstack/react-query';
 import {BookmarkIcon, PenSquare} from 'lucide-react';
 import {useRouter} from 'next/navigation';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {Fragment, useEffect, useMemo, useRef, useState} from 'react';
 import {Virtuoso, VirtuosoHandle} from 'react-virtuoso';
 import {useDebounce} from 'use-debounce';
 import AdCard from '../ad/ad-card';
-import {SectionHeader} from '../app-headers';
+import {PageHeader, SectionHeader} from '../app-headers';
 import {LoadingMore, LoadMoreError} from '../feedbacks';
 import ErrorFeedback from '../feedbacks/error-feedback';
 import SearchBarList from '../forms/list-search-bar';
@@ -22,6 +24,7 @@ import PostSkeleton from '../skeleton/post-skeleton';
 import {Badge} from '../ui/badge';
 import {Button} from '../ui/button';
 import {Tabs, TabsList, TabsTrigger} from '../ui/tabs';
+import {toast} from '../ui/toast';
 import PostCard from './post-card';
 
 export const SectionPostList = ({
@@ -36,6 +39,7 @@ export const SectionPostList = ({
   description: string;
 }) => {
   const lastScrollTop = useRef(0);
+  const {currentUser} = useAuthStore(state => state);
   const [showMobileNav, setShowMobileNav] = useState(true);
   const {setShowBottomTab} = useGlobalStore(state => state);
   const virtuosoRef = useRef<VirtuosoHandle>(null);
@@ -77,6 +81,129 @@ export const SectionPostList = ({
   const totalCount = data?.pages?.[0]?.pagination.totalItems ?? 0;
 
   console.log(data, 'section dataa');
+
+  const likePostMutation = useMutation({
+    mutationFn: (postId: string) => postService.likePostRequestAction(postId),
+
+    onMutate: async postId => {
+      await queryClient.cancelQueries({
+        queryKey: ['section-feed-posts', section],
+      });
+
+      const previousPosts = queryClient.getQueryData([
+        'section-feed-posts',
+        section,
+      ]);
+
+      queryClient.setQueryData(
+        ['section-feed-posts', section],
+        (oldData: any) => {
+          if (!oldData) return previousPosts;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((post: any) => {
+                if (post._type === 'ad') return post;
+                if (post.data._id === postId) {
+                  const userId = currentUser?._id;
+                  const hasLiked = post.data.likedBy.includes(userId);
+                  const newLikedBy = hasLiked
+                    ? post.data.likedBy.filter((id: string) => id !== userId)
+                    : [...post.data.likedBy, userId];
+
+                  return {
+                    ...post,
+                    data: {
+                      ...post.data,
+                      likedBy: newLikedBy,
+                    },
+                  };
+                }
+                return post;
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousPosts};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['section-feed-posts', section],
+        context.previousPosts,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {},
+  });
+
+  const bookmarkPostMutation = useMutation({
+    mutationFn: (postId: string) =>
+      postService.bookmarkPostRequestAction(postId),
+
+    onMutate: async postId => {
+      await queryClient.cancelQueries({
+        queryKey: ['section-feed-posts', section],
+      });
+
+      const previousPosts = queryClient.getQueryData([
+        'section-feed-posts',
+        section,
+      ]);
+
+      queryClient.setQueryData(
+        ['section-feed-posts', section],
+        (oldData: any) => {
+          if (!oldData) return previousPosts;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((post: any) => {
+                if (post._type === 'ad') return post;
+                if (post.data._id === postId) {
+                  const userId = currentUser?._id;
+                  const hasBookmarked = post.data.bookmarkedBy.includes(userId);
+                  const newBookmarkedBy = hasBookmarked
+                    ? post.data.bookmarkedBy.filter(
+                        (id: string) => id !== userId,
+                      )
+                    : [...post.data.bookmarkedBy, userId];
+
+                  return {
+                    ...post,
+                    data: {
+                      ...post.data,
+                      bookmarkedBy: newBookmarkedBy,
+                    },
+                  };
+                }
+                return post;
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousPosts};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['section-feed-posts', section],
+        context.previousPosts,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {},
+  });
 
   // Scroll handler
   const handleScroll: React.UIEventHandler<HTMLDivElement> = event => {
@@ -155,9 +282,6 @@ export const SectionPostList = ({
             handleFetchNext();
           }
         }}
-        computeItemKey={(index, post) =>
-          post._type === 'ad' ? `ad-${post.data._id}` : `post-${post.data._id}`
-        }
         itemContent={(index, post) => {
           if (status === 'pending') {
             return <PostSkeleton />;
@@ -166,9 +290,16 @@ export const SectionPostList = ({
               return null;
             }
             if (post._type === 'ad') {
-              return <AdCard ad={post.data} />;
+              return <AdCard ad={post.data} key={post.data._id} />;
             }
-            return <PostCard post={post.data} />;
+            return (
+              <PostCard
+                post={post.data}
+                key={post.data._id}
+                onLike={() => likePostMutation.mutate(post.data._id)}
+                onBookmark={() => bookmarkPostMutation.mutate(post.data._id)}
+              />
+            );
           }
         }}
       />
@@ -234,6 +365,208 @@ export const HomePostList = () => {
   const postsData = useMemo(() => {
     return data?.pages?.flatMap(page => page.posts) || [];
   }, [data]);
+
+  console.log(postsData, 'postdaaa');
+
+  const likePostMutation2 = useMutation({
+    mutationFn: (postId: string) => postService.likePostRequestAction(postId), // Your API call
+
+    // Optimistic update logic
+    onMutate: async postId => {
+      // Cancel any outgoing refetches for the query to avoid race conditions
+
+      console.log(postId, 'getting it');
+      await queryClient.cancelQueries({
+        queryKey: ['home-feed-posts', activeTab],
+      });
+
+      // Snapshot the old value of the infinite query cache
+      const previousPosts = queryClient.getQueryData([
+        'home-feed-posts',
+        activeTab,
+      ]);
+
+      // Optimistically update the infinite query cache
+      queryClient.setQueryData(
+        ['home-feed-posts', activeTab],
+        (oldData: any) => {
+          if (!oldData) return previousPosts;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((post: any) => {
+                if (post._type !== 'ad' && post._id === postId) {
+                  const isLiked = !post.likedBy.includes(currentUser?._id);
+                  const newLikedBy = isLiked
+                    ? [...post.likedBy, currentUser?._id]
+                    : post.likedBy.filter((id: any) => id !== currentUser?._id);
+
+                  return {
+                    ...post,
+                    likedBy: newLikedBy,
+                  };
+                }
+                return post;
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousPosts};
+    },
+
+    // Roll back on error
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['home-feed-posts', activeTab],
+        context.previousPosts,
+      );
+      // You can also display an error toast here
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    // Invalidate after success or failure to ensure eventual consistency
+    onSettled: () => {
+      queryClient.invalidateQueries({queryKey: ['home-feed-posts', activeTab]});
+      // Invalidate other relevant caches as well
+      queryClient.invalidateQueries({queryKey: ['bookmarked-feed-posts']});
+      // etc.
+    },
+  });
+
+  const likePostMutation = useMutation({
+    mutationFn: (postId: string) => postService.likePostRequestAction(postId),
+
+    onMutate: async postId => {
+      await queryClient.cancelQueries({
+        queryKey: ['home-feed-posts', activeTab],
+      });
+
+      const previousPosts = queryClient.getQueryData([
+        'home-feed-posts',
+        activeTab,
+      ]);
+
+      queryClient.setQueryData(
+        ['home-feed-posts', activeTab],
+        (oldData: any) => {
+          if (!oldData) return previousPosts;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((post: any) => {
+                if (post._type === 'ad') return post;
+                if (post.data._id === postId) {
+                  const userId = currentUser?._id;
+                  const hasLiked = post.data.likedBy.includes(userId);
+                  const newLikedBy = hasLiked
+                    ? post.data.likedBy.filter((id: string) => id !== userId)
+                    : [...post.data.likedBy, userId];
+
+                  return {
+                    ...post,
+                    data: {
+                      ...post.data,
+                      likedBy: newLikedBy,
+                    },
+                  };
+                }
+                return post;
+              }),
+            })),
+          };
+        },
+      );
+
+      // ✅ This makes UI update immediately
+      return {previousPosts};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['home-feed-posts', activeTab],
+        context.previousPosts,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {
+      // ⚠️ This re-fetch causes the delay — it’s optional
+      // queryClient.invalidateQueries({ queryKey: ['home-feed-posts', activeTab] });
+    },
+  });
+
+  const bookmarkPostMutation = useMutation({
+    mutationFn: (postId: string) =>
+      postService.bookmarkPostRequestAction(postId),
+
+    onMutate: async postId => {
+      await queryClient.cancelQueries({
+        queryKey: ['home-feed-posts', activeTab],
+      });
+
+      const previousPosts = queryClient.getQueryData([
+        'home-feed-posts',
+        activeTab,
+      ]);
+
+      queryClient.setQueryData(
+        ['home-feed-posts', activeTab],
+        (oldData: any) => {
+          if (!oldData) return previousPosts;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((post: any) => {
+                if (post._type === 'ad') return post;
+                if (post.data._id === postId) {
+                  const userId = currentUser?._id;
+                  const hasBookmarked = post.data.bookmarkedBy.includes(userId);
+                  const newBookmarkedBy = hasBookmarked
+                    ? post.data.bookmarkedBy.filter(
+                        (id: string) => id !== userId,
+                      )
+                    : [...post.data.bookmarkedBy, userId];
+
+                  return {
+                    ...post,
+                    data: {
+                      ...post.data,
+                      bookmarkedBy: newBookmarkedBy,
+                    },
+                  };
+                }
+                return post;
+              }),
+            })),
+          };
+        },
+      );
+
+      // This makes UI update immediately
+      return {previousPosts};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['home-feed-posts', activeTab],
+        context.previousPosts,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {
+      // ⚠️ This re-fetch causes the delay — it’s optional
+      // queryClient.invalidateQueries({ queryKey: ['home-feed-posts', activeTab] });
+    },
+  });
 
   if (!mounted) return <HomeDashboardSkeleton />;
 
@@ -407,7 +740,14 @@ export const HomePostList = () => {
             if (post._type === 'ad') {
               return <AdCard ad={post.data} key={post.data._id} />;
             }
-            return <PostCard post={post.data} key={post.data._id} />;
+            return (
+              <PostCard
+                post={post.data}
+                key={post.data._id}
+                onLike={() => likePostMutation.mutate(post.data._id)}
+                onBookmark={() => bookmarkPostMutation.mutate(post.data._id)}
+              />
+            );
           }
         }}
       />
@@ -429,7 +769,7 @@ export const HomePostList = () => {
 
 export const ExplorePostList = () => {
   const lastScrollTop = useRef(0);
-
+  const {currentUser} = useAuthStore(state => state);
   const [showBottomTab, setShowBottomTab] = useState(true);
   const [showMobileNav, setShowMobileNav] = useState(true);
   const [activeTab, setActiveTab] = useState('for-you');
@@ -483,9 +823,133 @@ export const ExplorePostList = () => {
 
   console.log(postsData, 'should query dataa', totalCount);
 
+  const likePostMutation = useMutation({
+    mutationFn: (postId: string) => postService.likePostRequestAction(postId),
+
+    onMutate: async postId => {
+      await queryClient.cancelQueries({
+        queryKey: ['explore-feed-posts', debouncedSearch],
+      });
+
+      const previousPosts = queryClient.getQueryData([
+        'explore-feed-posts',
+        debouncedSearch,
+      ]);
+
+      queryClient.setQueryData(
+        ['explore-feed-posts', debouncedSearch],
+        (oldData: any) => {
+          if (!oldData) return previousPosts;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((post: any) => {
+                if (post._type === 'ad') return post;
+                if (post.data._id === postId) {
+                  const userId = currentUser?._id;
+                  const hasLiked = post.data.likedBy.includes(userId);
+                  const newLikedBy = hasLiked
+                    ? post.data.likedBy.filter((id: string) => id !== userId)
+                    : [...post.data.likedBy, userId];
+
+                  return {
+                    ...post,
+                    data: {
+                      ...post.data,
+                      likedBy: newLikedBy,
+                    },
+                  };
+                }
+                return post;
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousPosts};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['explore-feed-posts', debouncedSearch],
+        context.previousPosts,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {},
+  });
+
+  const bookmarkPostMutation = useMutation({
+    mutationFn: (postId: string) =>
+      postService.bookmarkPostRequestAction(postId),
+
+    onMutate: async postId => {
+      await queryClient.cancelQueries({
+        queryKey: ['explore-feed-posts', debouncedSearch],
+      });
+
+      const previousPosts = queryClient.getQueryData([
+        'explore-feed-posts',
+        debouncedSearch,
+      ]);
+
+      queryClient.setQueryData(
+        ['explore-feed-posts', debouncedSearch],
+        (oldData: any) => {
+          if (!oldData) return previousPosts;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((post: any) => {
+                if (post._type === 'ad') return post;
+                if (post.data._id === postId) {
+                  const userId = currentUser?._id;
+                  const hasBookmarked = post.data.bookmarkedBy.includes(userId);
+                  const newBookmarkedBy = hasBookmarked
+                    ? post.data.bookmarkedBy.filter(
+                        (id: string) => id !== userId,
+                      )
+                    : [...post.data.bookmarkedBy, userId];
+
+                  return {
+                    ...post,
+                    data: {
+                      ...post.data,
+                      bookmarkedBy: newBookmarkedBy,
+                    },
+                  };
+                }
+                return post;
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousPosts};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['explore-feed-posts', debouncedSearch],
+        context.previousPosts,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {},
+  });
+
   if (!mounted) return <HomeDashboardSkeleton />;
 
   // Scroll handler
+
   const handleScroll: React.UIEventHandler<HTMLDivElement> = event => {
     const scrollTop = event.currentTarget.scrollTop;
 
@@ -525,15 +989,20 @@ export const ExplorePostList = () => {
         className={`md:hidden fixed top-0 left-0 right-0 bg-background w-full z-50 transition-transform duration-300 ${
           showMobileNav ? 'translate-y-0' : '-translate-y-full'
         }`}>
-        <MobileNavigation title="Search" />
+        {/* <MobileNavigation />
         <SearchBarList
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          ref={searchRef}
+        /> */}
+        <ExploreMobileHeader
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           ref={searchRef}
         />
       </div>
 
-      <div className="hidden lg:block">
+      <div className="hidden md:block">
         <SearchBarList
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -550,7 +1019,7 @@ export const ExplorePostList = () => {
         components={{
           Header: () => (
             <div className="mt-30 md:mt-0">
-              <div className="px-4 py-a3 border-b lg:hidden md:mt-7 border-app-border">
+              {/* <div className="px-4 py-a3 border-b lg:hidden md:mt-7 border-app-border">
                 <h2 className="font-semibold my-2">Discuss</h2>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {Sections.map(section => (
@@ -563,7 +1032,32 @@ export const ExplorePostList = () => {
                     </Badge>
                   ))}
                 </div>
-              </div>
+              </div> */}
+
+              <Tabs defaultValue="trending" className="w-full mb-5">
+                <TabsList className="w-full grid grid-cols-4 bg-transparent">
+                  <TabsTrigger
+                    value="trending"
+                    className="data-[state=active]:border-b-2 data-[state=active]:border-b-app data-[state=active]:rounded-none data-[state=active]:shadow-none py-3">
+                    Trending
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="news"
+                    className="data-[state=active]:border-b-2 data-[state=active]:border-b-app data-[state=active]:rounded-none data-[state=active]:shadow-none py-3">
+                    Latest
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="sports"
+                    className="data-[state=active]:border-b-2 data-[state=active]:border-b-app data-[state=active]:rounded-none data-[state=active]:shadow-none py-3">
+                    People
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="entertainment"
+                    className="data-[state=active]:border-b-2 data-[state=active]:border-b-app data-[state=active]:rounded-none data-[state=active]:shadow-none py-3">
+                    Following
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
             </div>
           ),
           EmptyPlaceholder: () => {
@@ -599,9 +1093,6 @@ export const ExplorePostList = () => {
             handleFetchNext();
           }
         }}
-        computeItemKey={(index, post) =>
-          post._type === 'ad' ? `ad-${post.data._id}` : `post-${post.data._id}`
-        }
         itemContent={(index, post) => {
           if (status === 'pending') {
             return <PostSkeleton />;
@@ -610,9 +1101,16 @@ export const ExplorePostList = () => {
               return null;
             }
             if (post._type === 'ad') {
-              return <AdCard ad={post.data} />;
+              return <AdCard ad={post.data} key={post.data._id} />;
             }
-            return <PostCard post={post.data} />;
+            return (
+              <PostCard
+                post={post.data}
+                key={post.data._id}
+                onLike={() => likePostMutation.mutate(post.data._id)}
+                onBookmark={() => bookmarkPostMutation.mutate(post.data._id)}
+              />
+            );
           }
         }}
       />
@@ -633,6 +1131,7 @@ export const ExplorePostList = () => {
 };
 
 export const BookmarkPostList = () => {
+  const {currentUser} = useAuthStore(state => state);
   const lastScrollTop = useRef(0);
   const [showBottomTab, setShowBottomTab] = useState(true);
   const [showMobileNav, setShowMobileNav] = useState(true);
@@ -673,6 +1172,117 @@ export const BookmarkPostList = () => {
 
   console.log(data, 'bookmarked dataa');
 
+  const likePostMutation = useMutation({
+    mutationFn: (postId: string) => postService.likePostRequestAction(postId),
+
+    onMutate: async postId => {
+      await queryClient.cancelQueries({
+        queryKey: ['bookmarked-feed-posts'],
+      });
+
+      const previousPosts = queryClient.getQueryData(['bookmarked-feed-posts']);
+
+      queryClient.setQueryData(['bookmarked-feed-posts'], (oldData: any) => {
+        if (!oldData) return previousPosts;
+
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page: any) => ({
+            ...page,
+            posts: page.posts.map((post: any) => {
+              if (post._type === 'ad') return post;
+              if (post.data._id === postId) {
+                const userId = currentUser?._id;
+                const hasLiked = post.data.likedBy.includes(userId);
+                const newLikedBy = hasLiked
+                  ? post.data.likedBy.filter((id: string) => id !== userId)
+                  : [...post.data.likedBy, userId];
+
+                return {
+                  ...post,
+                  data: {
+                    ...post.data,
+                    likedBy: newLikedBy,
+                  },
+                };
+              }
+              return post;
+            }),
+          })),
+        };
+      });
+
+      return {previousPosts};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['bookmarked-feed-posts'],
+        context.previousPosts,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {},
+  });
+
+  const bookmarkPostMutation = useMutation({
+    mutationFn: (postId: string) =>
+      postService.bookmarkPostRequestAction(postId),
+
+    onMutate: async postId => {
+      await queryClient.cancelQueries({
+        queryKey: ['bookmarked-feed-posts'],
+      });
+
+      const previousPosts = queryClient.getQueryData(['bookmarked-feed-posts']);
+
+      queryClient.setQueryData(['bookmarked-feed-posts'], (oldData: any) => {
+        if (!oldData) return previousPosts;
+
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page: any) => ({
+            ...page,
+            posts: page.posts.map((post: any) => {
+              if (post._type === 'ad') return post;
+              if (post.data._id === postId) {
+                const userId = currentUser?._id;
+                const hasBookmarked = post.data.bookmarkedBy.includes(userId);
+                const newBookmarkedBy = hasBookmarked
+                  ? post.data.bookmarkedBy.filter((id: string) => id !== userId)
+                  : [...post.data.bookmarkedBy, userId];
+
+                return {
+                  ...post,
+                  data: {
+                    ...post.data,
+                    bookmarkedBy: newBookmarkedBy,
+                  },
+                };
+              }
+              return post;
+            }),
+          })),
+        };
+      });
+
+      return {previousPosts};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['bookmarked-feed-posts'],
+        context.previousPosts,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({queryKey: ['bookmarked-feed-posts']});
+    },
+  });
+
   // Scroll handler
   const handleScroll: React.UIEventHandler<HTMLDivElement> = event => {
     const scrollTop = event.currentTarget.scrollTop;
@@ -705,7 +1315,7 @@ export const BookmarkPostList = () => {
         className={`md:hidden fixed top-0 left-0 right-0 bg-background w-full z-50 transition-transform duration-300 ${
           showMobileNav ? 'translate-y-0' : '-translate-y-full'
         }`}>
-        <MobileNavigation title="Bookmarks" />
+        <MobileNavigation />
       </div>
 
       <Virtuoso
@@ -717,7 +1327,7 @@ export const BookmarkPostList = () => {
         components={{
           Header: () => (
             <div className="mt-15 md:mt-0">
-              {/* <PageHeader title="Bookmarks" showBackIcon={false} /> */}
+              <PageHeader title="Bookmarks" showBackIcon={false} />
             </div>
           ),
 
@@ -754,9 +1364,6 @@ export const BookmarkPostList = () => {
             handleFetchNext();
           }
         }}
-        computeItemKey={(index, post) =>
-          post._type === 'ad' ? `ad-${post.data._id}` : `post-${post.data._id}`
-        }
         itemContent={(index, post) => {
           if (status === 'pending') {
             return <PostSkeleton />;
@@ -765,9 +1372,16 @@ export const BookmarkPostList = () => {
               return null;
             }
             if (post._type === 'ad') {
-              return <AdCard ad={post.data} />;
+              return <AdCard ad={post.data} key={post.data._id} />;
             }
-            return <PostCard post={post.data} />;
+            return (
+              <PostCard
+                post={post.data}
+                key={post.data._id}
+                onLike={() => likePostMutation.mutate(post.data._id)}
+                onBookmark={() => bookmarkPostMutation.mutate(post.data._id)}
+              />
+            );
           }
         }}
       />
@@ -869,5 +1483,26 @@ export const CommentPlaceholder = () => {
       <h2 className="text-xl font-bold mb-2">No replies yet</h2>
       <p className="text-app-gray">Be the first to reply!</p>
     </div>
+  );
+};
+
+export const ExploreMobileHeader = ({
+  searchTerm,
+  setSearchTerm,
+  ref,
+}: {
+  searchTerm: string;
+  setSearchTerm: (val: string) => void;
+  ref: any;
+}) => {
+  return (
+    <Fragment>
+      <MobileNavigation />
+      <SearchBarList
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        ref={ref}
+      />
+    </Fragment>
   );
 };

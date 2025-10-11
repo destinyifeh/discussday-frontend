@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {queryClient} from '@/lib/client/query-client';
@@ -29,10 +29,8 @@ import {
 } from '@/lib/formatter';
 import {useReportActions} from '@/modules/dashboard/actions/action-hooks/report.action-hooks';
 import {userService} from '@/modules/dashboard/actions/user.actions';
-import {postService} from '@/modules/posts/actions';
-import {usePostActions} from '@/modules/posts/post-hooks';
 import {UserProps} from '@/types/user.types';
-import {useMutation, useQuery} from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 import ErrorFeedback from '../feedbacks/error-feedback';
 import {Avatar, AvatarFallback, AvatarImage} from '../ui/avatar';
 import {Button} from '../ui/button';
@@ -52,6 +50,8 @@ interface PostCardProps {
   showActions?: boolean;
   isInDetailView?: boolean;
   hideMenu?: boolean;
+  onLike?: () => void;
+  onBookmark?: () => void;
 }
 
 const PostCard = ({
@@ -59,6 +59,8 @@ const PostCard = ({
   showActions = true,
   isInDetailView = false,
   hideMenu = false,
+  onLike,
+  onBookmark,
 }: PostCardProps) => {
   const {theme} = useGlobalStore(state => state);
   const {currentUser, setUser} = useAuthStore(state => state);
@@ -67,21 +69,8 @@ const PostCard = ({
   const [bookmarking, setBookmarking] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [likesCount, setLikesCount] = useState<number>(
-    post?.likedBy.length || 0,
-  );
-  const [bookmarked, setBookmarked] = useState(
-    post.bookmarkedBy.includes(currentUser?._id ?? ''),
-  );
 
-  const [bookmarksCount, setBookmarksCount] = useState<number>(
-    post?.bookmarkedBy.length || 0,
-  );
   const [sharePopoverOpen, setSharePopoverOpen] = useState(false);
-  const [liked, setLiked] = useState(
-    post.likedBy.includes(currentUser?._id ?? ''),
-  );
-  const {likePostRequest, bookmarkPostRequest} = usePostActions();
 
   const {mutate} = useMutation({
     mutationFn: userService.followUserRequestAction,
@@ -89,151 +78,7 @@ const PostCard = ({
 
   const {reportPost} = useReportActions();
 
-  const shouldQuery = !!post?._id;
-  const {error, data: commentData} = useQuery({
-    queryKey: ['post-comments-count', post?._id],
-    queryFn: () => postService.getPostCommentsCountRequestAction(post?._id),
-    retry: 1,
-    enabled: shouldQuery,
-  });
-
   const navigate = useRouter();
-
-  useEffect(() => {
-    setLikesCount(post?.likedBy.length || 0);
-    setLiked(post.likedBy.includes(currentUser?._id ?? ''));
-
-    setBookmarksCount(post?.bookmarkedBy.length || 0);
-    setBookmarked(post.bookmarkedBy.includes(currentUser?._id ?? ''));
-  }, [post, currentUser]);
-
-  const handleLike = () => {
-    if (liking) return;
-    setLiking(true);
-
-    if (liked) {
-      setLiked(false);
-      setLikesCount(count => Math.max(0, count - 1));
-    } else {
-      setLiked(true);
-      setLikesCount(count => count + 1);
-    }
-
-    likePostRequest.mutate(post._id, {
-      onSuccess(data) {
-        console.log(data, 'post like');
-
-        setLiked(data.liked);
-        setLikesCount(data.likesCount);
-
-        // refresh other cached lists
-        queryClient.invalidateQueries({queryKey: ['home-feed-posts']});
-        queryClient.invalidateQueries({queryKey: ['bookmarked-feed-posts']});
-        queryClient.invalidateQueries({queryKey: ['section-feed-posts']});
-        queryClient.invalidateQueries({queryKey: ['explore-feed-posts']});
-        queryClient.invalidateQueries({queryKey: ['post-details']});
-        queryClient.invalidateQueries({
-          queryKey: ['user-profile-posts', 'posts'],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ['user-profile-posts', 'likes'],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ['public-user-posts', 'replies'],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ['public-user-posts', 'posts'],
-        });
-      },
-      onError(error: any) {
-        console.log(error, 'error');
-
-        // rollback safely
-        setLiked(prevLiked => {
-          const rollbackLiked = !prevLiked;
-          setLikesCount(prevCount =>
-            rollbackLiked ? prevCount + 1 : Math.max(0, prevCount - 1),
-          );
-          return rollbackLiked;
-        });
-        toast.error(
-          error?.response?.data?.message ??
-            'Oops! Something went wrong, try again',
-        );
-      },
-      onSettled: () => setLiking(false),
-    });
-  };
-
-  const handleBookmark = () => {
-    if (bookmarking) return;
-    setBookmarking(true);
-    if (bookmarked) {
-      setBookmarked(false);
-      setBookmarksCount(count => Math.max(0, count - 1));
-    } else {
-      setBookmarked(true);
-      setBookmarksCount(count => count + 1);
-    }
-    bookmarkPostRequest.mutate(post._id, {
-      onSuccess(data, variables, context) {
-        console.log(data, 'post bookmark');
-        setBookmarked(data.bookmarked);
-        setBookmarksCount(data.bookmarks);
-        queryClient.invalidateQueries({queryKey: ['home-feed-posts']});
-
-        queryClient.invalidateQueries({
-          queryKey: ['bookmarked-feed-posts'],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ['section-feed-posts'],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ['explore-feed-posts'],
-        });
-
-        queryClient.invalidateQueries({
-          queryKey: ['post-details'],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ['user-profile-posts', 'posts'],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ['user-profile-posts', 'likes'],
-        });
-
-        queryClient.invalidateQueries({
-          queryKey: ['public-user-posts', 'likes'],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ['public-user-posts', 'posts'],
-        });
-
-        if (data.bookmarked === true) {
-          toast.success('Post bookmarked');
-        }
-        if (data.bookmarked === false) {
-          toast.success('Bookmark removed');
-        }
-      },
-      onSettled: () => setBookmarking(false),
-      onError(error: any, variables, context) {
-        console.log(error, 'err');
-        // rollback safely
-        setBookmarked(prev => {
-          const newState = !prev;
-          setBookmarksCount(count =>
-            newState ? count + 1 : Math.max(0, count - 1),
-          );
-          return newState;
-        });
-        toast.error(
-          error?.response?.data?.message ??
-            'Oops! Something went wrong, try again',
-        );
-      },
-    });
-  };
 
   const handleReport = (postId: string) => {
     const payload = {
@@ -354,6 +199,12 @@ const PostCard = ({
   const isFollowing = currentUser?.following?.includes(
     post.user._id?.toString(),
   );
+
+  const liked = post.likedBy.includes(currentUser?._id ?? '');
+  const likesCount = post.likedBy.length;
+
+  const bookmarked = post.bookmarkedBy.includes(currentUser?._id ?? '');
+  const bookmarksCount = post.bookmarkedBy.length;
 
   return (
     <div className="border-b py-4 px-2 transition-colors hover:bg-app-hover border-app-border dark:hover:bg-background ">
@@ -561,9 +412,7 @@ const PostCard = ({
                   onClick={handleCommentClick}>
                   <div className="flex items-center gap-1">
                     <MessageSquare size={18} />
-                    <span className="text-xs">
-                      {commentData?.commentCount || 0}
-                    </span>
+                    <span className="text-xs">{post?.commentCount}</span>
                   </div>
                 </Button>
 
@@ -594,7 +443,9 @@ const PostCard = ({
                   onClick={e => {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleLike();
+                    if (onLike) {
+                      onLike();
+                    }
                   }}>
                   <div className="flex items-center gap-1">
                     <Heart size={18} fill={liked ? 'currentColor' : 'none'} />
@@ -625,7 +476,9 @@ const PostCard = ({
                   onClick={e => {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleBookmark();
+                    if (onBookmark) {
+                      onBookmark();
+                    }
                   }}>
                   <div className="flex items-center gap-1">
                     <Bookmark

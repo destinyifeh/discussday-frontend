@@ -10,7 +10,7 @@ import {
 import {useGlobalStore} from '@/hooks/stores/use-global-store';
 import {cn} from '@/lib/utils';
 import {CommentFeedProps} from '@/types/post-item.type';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
 import {formatTimeAgo} from '@/lib/formatter';
 import {
@@ -34,6 +34,8 @@ interface CommentCardProps {
   onQuote?: () => void;
   onEdit?: () => void;
   handleQuoteClick: (quote: string) => void;
+  onLike?: () => void;
+  onDisLike?: () => void;
 }
 
 const CommentCard = ({
@@ -41,6 +43,8 @@ const CommentCard = ({
   onQuote,
   onEdit,
   handleQuoteClick,
+  onLike,
+  onDisLike,
 }: CommentCardProps) => {
   const {theme} = useGlobalStore(state => state);
   const [liking, setLiking] = useState(false);
@@ -48,109 +52,8 @@ const CommentCard = ({
   const {likeCommentRequest, dislikeCommentRequest} = usePostActions();
   const {currentUser} = useAuthStore(state => state);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [commentLiked, setCommentLiked] = useState(
-    comment.likedBy.includes(currentUser?._id ?? ''),
-  );
-  const [commentDisliked, setCommentDisliked] = useState(
-    comment.dislikedBy.includes(currentUser?._id ?? ''),
-  );
-  const [likesCount, setLikesCount] = useState(comment.likedBy.length);
-  const [dislikesCount, setDislikesCount] = useState(comment.dislikedBy.length);
 
   const {reportComment} = useReportActions();
-
-  useEffect(() => {
-    setLikesCount(comment?.likedBy.length || 0);
-    setCommentLiked(comment.likedBy.includes(currentUser?._id ?? ''));
-    setDislikesCount(comment?.dislikedBy.length || 0);
-    setCommentDisliked(comment.dislikedBy.includes(currentUser?._id ?? ''));
-  }, [comment, currentUser]);
-
-  const prevState = {
-    liked: commentLiked,
-    disliked: commentDisliked,
-    likes: likesCount,
-    dislikes: dislikesCount,
-  };
-
-  const handleLike = async () => {
-    try {
-      if (liking) return;
-      setLiking(true);
-
-      if (commentDisliked) {
-        setCommentDisliked(false);
-        setDislikesCount(count => Math.max(0, count - 1));
-      }
-
-      setCommentLiked(prev => !prev);
-      setLikesCount(count =>
-        commentLiked ? Math.max(0, count - 1) : count + 1,
-      );
-
-      likeCommentRequest.mutate(comment._id, {
-        onSuccess(data) {
-          setCommentLiked(data.liked);
-          setCommentDisliked(false); // liking removes dislike
-          setLikesCount(data.likesCount);
-          setDislikesCount(data.dislikesCount);
-        },
-        onSettled: () => setLiking(false),
-        onError(error: any) {
-          setCommentLiked(prevState.liked);
-          setCommentDisliked(prevState.disliked);
-          setLikesCount(prevState.likes);
-          setDislikesCount(prevState.dislikes);
-          toast.error(
-            error?.response?.data?.message ??
-              'Oops! Something went wrong, try again',
-          );
-        },
-      });
-    } catch (err) {
-      setCommentLiked(prevState.liked);
-      setCommentDisliked(prevState.disliked);
-      setLikesCount(prevState.likes);
-      setDislikesCount(prevState.dislikes);
-      setLiking(false);
-      toast.error('Oops! Something went wrong, try again');
-    }
-  };
-
-  const handleDislike = () => {
-    if (liking) return;
-    setLiking(true);
-
-    if (commentLiked) {
-      setCommentLiked(false);
-      setLikesCount(count => Math.max(0, count - 1));
-    }
-
-    setCommentDisliked(prev => !prev);
-    setDislikesCount(count =>
-      commentDisliked ? Math.max(0, count - 1) : count + 1,
-    );
-
-    dislikeCommentRequest.mutate(comment._id, {
-      onSuccess(data) {
-        setCommentDisliked(data.disliked);
-        setCommentLiked(false);
-        setLikesCount(data.likesCount);
-        setDislikesCount(data.dislikesCount);
-      },
-      onSettled: () => setLiking(false),
-      onError(error: any) {
-        setCommentLiked(prevState.liked);
-        setCommentDisliked(prevState.disliked);
-        setLikesCount(prevState.likes);
-        setDislikesCount(prevState.dislikes);
-        toast.error(
-          error?.response?.data?.message ??
-            'Oops! Something went wrong, try again',
-        );
-      },
-    });
-  };
 
   const handleReport = (commentId: string) => {
     const payload = {
@@ -302,6 +205,13 @@ const CommentCard = ({
 
   const isLiked = comment.likedBy.includes(currentUser?._id as string);
   const isCommentedUser = comment.commentBy?._id === currentUser?._id;
+
+  const commentLiked = comment.likedBy.includes(currentUser?._id ?? '');
+  const likesCount = comment.likedBy.length;
+
+  const commentDisliked = comment.dislikedBy.includes(currentUser?._id ?? '');
+  const dislikesCount = comment.dislikedBy.length;
+
   return (
     <div className="border-b py-4 px-2 transition-colors hover:bg-app-hover border-app-border dark:hover:bg-background">
       <div className="flex gap-3">
@@ -410,7 +320,13 @@ const CommentCard = ({
                 commentLiked && 'text-red-500',
               )}
               disabled={liking}
-              onClick={handleLike}>
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (onLike) {
+                  onLike();
+                }
+              }}>
               <Heart
                 size={16}
                 className="mr-1"
@@ -432,7 +348,14 @@ const CommentCard = ({
               size="sm"
               disabled={liking}
               className="cursor-pointer text-app-gray hover:text-app p-0 h-auto active:scale-90 transition-transform duration-150"
-              onClick={handleDislike}>
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (onDisLike) {
+                  onDisLike();
+                }
+                // handleDislike
+              }}>
               <ThumbsDown
                 size={16}
                 fill={commentDisliked ? 'currentColor' : 'none'}

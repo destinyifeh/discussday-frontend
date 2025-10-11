@@ -27,7 +27,7 @@ import {
   CommentProps,
   ImageProps,
 } from '@/types/post-item.type';
-import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
+import {useInfiniteQuery, useMutation, useQuery} from '@tanstack/react-query';
 import clsx from 'clsx';
 import {ImagePlus, LockIcon, MessageSquare, Reply, Send, X} from 'lucide-react';
 import Link from 'next/link';
@@ -133,6 +133,158 @@ export const PostDetailPage = ({params}: PostDetailPageProps) => {
   console.log('get comment error', commentErr);
 
   console.log(commentsData, 'comments dataa', totalCount);
+
+  const likeCommentMutation = useMutation({
+    mutationFn: (commentId: string) =>
+      postService.likeCommentRequestAction(commentId),
+
+    onMutate: async (commentId: any) => {
+      await queryClient.cancelQueries({
+        queryKey: ['comment-feed-posts', post?._id],
+      });
+
+      const previousData = queryClient.getQueryData([
+        'comment-feed-posts',
+        post?._id,
+      ]);
+
+      queryClient.setQueryData(
+        ['comment-feed-posts', post?._id],
+        (oldData: any) => {
+          if (!oldData) return previousData;
+
+          const userId = currentUser?._id;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              comments: page.comments.map((comment: any) => {
+                if (comment._type !== 'post') return comment;
+                if (comment.data._id !== commentId) return comment;
+
+                // ✅ mutual exclusivity logic
+                const hasLiked = comment.data.likedBy.includes(userId);
+                const hasDisliked = comment.data.dislikedBy.includes(userId);
+
+                let newLikedBy = comment.data.likedBy;
+                let newDislikedBy = comment.data.dislikedBy;
+
+                if (hasLiked) {
+                  // remove like if already liked
+                  newLikedBy = newLikedBy.filter((id: string) => id !== userId);
+                } else {
+                  // add like
+                  newLikedBy = [...newLikedBy, userId];
+                  // remove dislike if user had disliked before
+                  newDislikedBy = newDislikedBy.filter(
+                    (id: string) => id !== userId,
+                  );
+                }
+
+                return {
+                  ...comment,
+                  data: {
+                    ...comment.data,
+                    likedBy: newLikedBy,
+                    dislikedBy: newDislikedBy,
+                  },
+                };
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousData};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['comment-feed-posts', post?._id],
+        context.previousComments,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {},
+  });
+
+  const dislikeCommentMutation = useMutation({
+    mutationFn: (commentId: string) =>
+      postService.dislikeCommentRequestAction(commentId),
+
+    onMutate: async (commentId: any) => {
+      await queryClient.cancelQueries({
+        queryKey: ['comment-feed-posts', post?._id],
+      });
+
+      const previousData = queryClient.getQueryData([
+        'comment-feed-posts',
+        post?._id,
+      ]);
+
+      queryClient.setQueryData(
+        ['comment-feed-posts', post?._id],
+        (oldData: any) => {
+          if (!oldData) return previousData;
+
+          const userId = currentUser?._id;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              comments: page.comments.map((comment: any) => {
+                if (comment._type !== 'post') return comment;
+                if (comment.data._id !== commentId) return comment;
+
+                // ✅ mutual exclusivity logic
+                const hasLiked = comment.data.likedBy.includes(userId);
+                const hasDisliked = comment.data.dislikedBy.includes(userId);
+
+                let newLikedBy = comment.data.likedBy;
+                let newDislikedBy = comment.data.dislikedBy;
+
+                if (hasDisliked) {
+                  // remove dislike if already disliked
+                  newDislikedBy = newDislikedBy.filter(
+                    (id: string) => id !== userId,
+                  );
+                } else {
+                  // add dislike
+                  newDislikedBy = [...newDislikedBy, userId];
+                  // remove like if user had liked before
+                  newLikedBy = newLikedBy.filter((id: string) => id !== userId);
+                }
+
+                return {
+                  ...comment,
+                  data: {
+                    ...comment.data,
+                    likedBy: newLikedBy,
+                    dislikedBy: newDislikedBy,
+                  },
+                };
+              }),
+            })),
+          };
+        },
+      );
+
+      return {previousData};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(
+        ['comment-feed-posts', post?._id],
+        context.previousComments,
+      );
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: () => {},
+  });
 
   const addComment = (data: CommentDto) => {
     console.log(data, 'dataa');
@@ -495,6 +647,10 @@ export const PostDetailPage = ({params}: PostDetailPageProps) => {
                 onQuote={() => handleQuoteComment(comment.data)}
                 handleQuoteClick={handleQuoteClick}
                 onEdit={() => handleEditComment(comment.data)}
+                onLike={() => likeCommentMutation.mutate(comment.data._id)}
+                onDisLike={() =>
+                  dislikeCommentMutation.mutate(comment.data._id)
+                }
               />
             );
           }
