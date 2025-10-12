@@ -5,7 +5,9 @@ import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {useGlobalStore} from '@/hooks/stores/use-global-store';
 import {queryClient} from '@/lib/client/query-client';
 import {feedService} from '@/modules/dashboard/actions/feed.actions';
+import {userService} from '@/modules/dashboard/actions/user.actions';
 import {postService} from '@/modules/posts/actions';
+import {UserProps} from '@/types/user.types';
 import {useInfiniteQuery, useMutation} from '@tanstack/react-query';
 import {BookmarkIcon, PenSquare} from 'lucide-react';
 import {useRouter} from 'next/navigation';
@@ -25,6 +27,7 @@ import {Badge} from '../ui/badge';
 import {Button} from '../ui/button';
 import {Tabs, TabsList, TabsTrigger} from '../ui/tabs';
 import {toast} from '../ui/toast';
+import {UserCard} from '../user/user-card';
 import PostCard from './post-card';
 
 export const SectionPostList = ({
@@ -769,19 +772,25 @@ export const HomePostList = () => {
 
 export const ExplorePostList = () => {
   const lastScrollTop = useRef(0);
-  const {currentUser} = useAuthStore(state => state);
+  const {currentUser, setUser} = useAuthStore(state => state);
   const [showBottomTab, setShowBottomTab] = useState(true);
   const [showMobileNav, setShowMobileNav] = useState(true);
+  const [showTopElement, setShowTopElement] = useState(true);
   const [activeTab, setActiveTab] = useState('for-you');
   const virtuosoRef = useRef<VirtuosoHandle>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showGoUp, setShowGoUp] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const navigate = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [mounted, setMounted] = useState(false);
   const [debouncedSearch] = useDebounce(searchTerm, 500);
   const [fetchNextError, setFetchNextError] = useState<string | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+
+  const {mutate} = useMutation({
+    mutationFn: userService.followUserRequestAction,
+  });
   const {
     data, // This 'data' contains { pages: [], pageParams: [] }
     fetchNextPage,
@@ -792,9 +801,14 @@ export const ExplorePostList = () => {
     error,
     refetch,
   } = useInfiniteQuery({
-    queryKey: ['explore-feed-posts', debouncedSearch],
+    queryKey: ['explore-feed-posts', activeTab, debouncedSearch],
     queryFn: ({pageParam = 1}) =>
-      feedService.getHomePostFeeds(pageParam, 10, undefined, debouncedSearch),
+      feedService.getExplorePostFeeds(
+        pageParam,
+        10,
+        activeTab,
+        debouncedSearch,
+      ),
     initialPageParam: 1,
     getNextPageParam: lastPage => {
       const {page, pages} = lastPage.pagination;
@@ -950,7 +964,7 @@ export const ExplorePostList = () => {
 
   // Scroll handler
 
-  const handleScroll: React.UIEventHandler<HTMLDivElement> = event => {
+  const handleScroll2: React.UIEventHandler<HTMLDivElement> = event => {
     const scrollTop = event.currentTarget.scrollTop;
 
     if (scrollTop > lastScrollTop.current) {
@@ -963,6 +977,37 @@ export const ExplorePostList = () => {
       setShowMobileNav(true);
     }
 
+    lastScrollTop.current = scrollTop <= 0 ? 0 : scrollTop;
+  };
+
+  const handleScroll: React.UIEventHandler<HTMLDivElement> = event => {
+    const scrollTop = event.currentTarget.scrollTop;
+
+    // 🧭 Hide the special element after 50px
+    if (scrollTop > 50) {
+      setShowTopElement(false);
+    } else {
+      setShowTopElement(true);
+    }
+
+    // Hide mobile nav only when past 100px
+    if (scrollTop > 100) {
+      setShowMobileNav(false);
+    } else {
+      setShowMobileNav(true);
+    }
+
+    // Detect scroll direction
+    if (scrollTop > lastScrollTop.current) {
+      // Scrolling down → hide bottom tab
+      setShowBottomTab(false);
+    } else if (scrollTop < lastScrollTop.current) {
+      // Scrolling up (even slightly) → show immediately
+      setShowBottomTab(true);
+      setShowMobileNav(true);
+    }
+
+    // Always update lastScrollTop
     lastScrollTop.current = scrollTop <= 0 ? 0 : scrollTop;
   };
 
@@ -983,23 +1028,52 @@ export const ExplorePostList = () => {
     }
   };
 
+  const handleFollowUser = (id: string) => {
+    setIsPending(true);
+    mutate(id, {
+      onSuccess(response, variables, context) {
+        console.log(response, 'datameee');
+
+        const {message, currentUserFollowings} = response.data;
+
+        setUser({
+          ...(currentUser as UserProps),
+          following: currentUserFollowings,
+        });
+        toast.success(message);
+      },
+
+      onError(error: any, variables, context) {
+        console.log(error, 'err');
+        const {message} = error?.response?.data ?? {};
+        toast.error(message);
+      },
+      onSettled(data, error, variables, context) {
+        setIsPending(false);
+      },
+    });
+  };
+
   return (
     <div>
       <div
         className={`md:hidden fixed top-0 left-0 right-0 bg-background w-full z-50 transition-transform duration-300 ${
           showMobileNav ? 'translate-y-0' : '-translate-y-full'
         }`}>
-        {/* <MobileNavigation />
-        <SearchBarList
+        <MobileNavigation />
+        {showTopElement && (
+          <SearchBarList
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            ref={searchRef}
+          />
+        )}
+
+        {/* <ExploreMobileHeader
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           ref={searchRef}
         /> */}
-        <ExploreMobileHeader
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          ref={searchRef}
-        />
       </div>
 
       <div className="hidden md:block">
@@ -1011,48 +1085,37 @@ export const ExplorePostList = () => {
       </div>
 
       <Virtuoso
-        className="custom-scrollbar"
+        className="custom-scrollbar mb-10"
         style={{height: '100vh'}}
         data={postsData}
         onScroll={handleScroll}
         ref={virtuosoRef}
         components={{
           Header: () => (
-            <div className="mt-30 md:mt-0">
-              {/* <div className="px-4 py-a3 border-b lg:hidden md:mt-7 border-app-border">
-                <h2 className="font-semibold my-2">Discuss</h2>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {Sections.map(section => (
-                    <Badge
-                      key={section.id}
-                      variant="outline"
-                      className="py-1 px-3 cursor-pointer hover:bg-app-hover text-app active:scale-90 transition-transform duration-150"
-                      onClick={() => onSectionNavigate(section.name)}>
-                      {section.name}
-                    </Badge>
-                  ))}
-                </div>
-              </div> */}
-
-              <Tabs defaultValue="trending" className="w-full mb-5">
+            <div className="mt-33 md:mt-0">
+              <Tabs
+                defaultValue="for-you"
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="w-full mb-5">
                 <TabsList className="w-full grid grid-cols-4 bg-transparent">
                   <TabsTrigger
-                    value="trending"
+                    value="for-you"
                     className="data-[state=active]:border-b-2 data-[state=active]:border-b-app data-[state=active]:rounded-none data-[state=active]:shadow-none py-3">
                     Trending
                   </TabsTrigger>
                   <TabsTrigger
-                    value="news"
+                    value="latest"
                     className="data-[state=active]:border-b-2 data-[state=active]:border-b-app data-[state=active]:rounded-none data-[state=active]:shadow-none py-3">
                     Latest
                   </TabsTrigger>
                   <TabsTrigger
-                    value="sports"
+                    value="people"
                     className="data-[state=active]:border-b-2 data-[state=active]:border-b-app data-[state=active]:rounded-none data-[state=active]:shadow-none py-3">
                     People
                   </TabsTrigger>
                   <TabsTrigger
-                    value="entertainment"
+                    value="following"
                     className="data-[state=active]:border-b-2 data-[state=active]:border-b-app data-[state=active]:rounded-none data-[state=active]:shadow-none py-3">
                     Following
                   </TabsTrigger>
@@ -1068,7 +1131,13 @@ export const ExplorePostList = () => {
               return <PostSkeleton />;
             }
 
-            return <Placeholder holder={'explore'} />;
+            return (
+              <ExplorePlaceholder
+                activeTab={activeTab}
+                query={searchTerm}
+                data={postsData}
+              />
+            );
           },
 
           Footer: () =>
@@ -1095,18 +1164,41 @@ export const ExplorePostList = () => {
         }}
         itemContent={(index, post) => {
           if (status === 'pending') {
-            return <PostSkeleton />;
-          } else {
-            if (!post || !post.data) {
-              return null;
-            }
-            if (post._type === 'ad') {
-              return <AdCard ad={post.data} key={post.data._id} />;
-            }
+            return <PostSkeleton key={`skeleton-${index}`} />;
+          }
+
+          if (!post || !post.data) {
+            return null;
+          }
+
+          if (post?._type === 'ad') {
+            return <AdCard ad={post.data} key={post.data._id} />;
+          }
+
+          if (post.data && post.data?.username) {
+            const user = post.data;
+
+            const isCurrentUser = currentUser?.username === user.username;
+            const isFollowing = currentUser?.following?.includes(
+              user._id?.toString(),
+            );
+
+            return (
+              <UserCard
+                key={user._id}
+                user={user}
+                isCurrentUser={isCurrentUser}
+                isFollowing={isFollowing}
+                handleFollowUser={() => handleFollowUser(user._id)}
+              />
+            );
+          }
+
+          if (post.data && !post.data?.username) {
             return (
               <PostCard
-                post={post.data}
                 key={post.data._id}
+                post={post.data}
                 onLike={() => likePostMutation.mutate(post.data._id)}
                 onBookmark={() => bookmarkPostMutation.mutate(post.data._id)}
               />
@@ -1482,6 +1574,66 @@ export const CommentPlaceholder = () => {
     <div className="p-8 text-center">
       <h2 className="text-xl font-bold mb-2">No replies yet</h2>
       <p className="text-app-gray">Be the first to reply!</p>
+    </div>
+  );
+};
+
+export const ExplorePlaceholder = ({
+  activeTab,
+  query,
+  data,
+}: {
+  activeTab: string;
+  query?: string;
+  data: any;
+}) => {
+  const navigate = useRouter();
+  return (
+    <div className="p-8 text-center">
+      {/* Search results empty */}
+      {query && !data.length && (
+        <>
+          <h2 className="text-xl font-bold mb-2">
+            No results found for "{query}"
+          </h2>
+          <p className="text-app-gray">Try another search!</p>
+        </>
+      )}
+
+      {/* People tab empty */}
+      {activeTab === 'people' && !data.length && !query && (
+        <>
+          <h2 className="text-xl font-bold mb-2">No users found</h2>
+          <p className="text-app-gray">
+            Check back later for more users to follow.
+          </p>
+        </>
+      )}
+
+      {/* For-you / Latest empty */}
+      {(activeTab === 'for-you' || activeTab === 'latest') &&
+        !data.length &&
+        !query && (
+          <>
+            <h2 className="text-xl font-bold mb-2">No posts yet</h2>
+            <p className="text-app-gray">Be the first to post!</p>
+          </>
+        )}
+
+      {/* Following empty */}
+      {activeTab === 'following' && !data.length && !query && (
+        <>
+          <h2 className="text-xl font-bold mb-2">No posts from your follows</h2>
+          <p className="text-app-gray mb-4">
+            Follow more people to see their posts here!
+          </p>
+          <button
+            className="bg-app hover:bg-app/90 text-white px-5 py-2 rounded-full text-sm font-medium"
+            onClick={() => navigate.push('/users')}>
+            Find people to follow
+          </button>
+        </>
+      )}
     </div>
   );
 };

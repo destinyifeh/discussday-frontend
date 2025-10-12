@@ -8,6 +8,8 @@ import {FileText, LayoutDashboard, Shield, Users} from 'lucide-react';
 
 import {PageHeader} from '@/components/app-headers';
 import AdminDashboardSkeleton from '@/components/skeleton/admin-dashboard-skeleton';
+import {useAdminGuard} from '@/hooks/guards/useAdminGuard';
+import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {useRouter} from 'next/navigation';
 import {AdminFilter} from './components/filter';
 import {AdminSearch} from './components/searchbar';
@@ -35,11 +37,12 @@ export const AdminDashboardPage = () => {
   const [filterSection, setFilterSection] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterDateRange, setFilterDateRange] = useState('all');
-
+  const {currentUser} = useAuthStore(state => state);
   const [isLoading, setIsLoading] = useState(true);
-
+  useAdminGuard(currentUser);
   useEffect(() => {
     // Simulate loading
+
     setTimeout(() => setIsLoading(false), 800);
   }, []);
 

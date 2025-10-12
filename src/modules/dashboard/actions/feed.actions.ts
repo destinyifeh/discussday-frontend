@@ -55,6 +55,24 @@ class FeedService {
     const response = await api.get(`/feeds`, {params});
     return response.data?.data;
   }
+
+  async getExplorePostFeeds(
+    page = 1,
+    limit = 10,
+    activeTab?: string,
+    search?: string,
+    pattern: string = '4, 9, 15',
+    mode: string = 'pattern',
+    placement: AdPlacementProps = 'homepage_feed',
+  ) {
+    const params: any = {page, limit, mode, placement};
+    if (search) params.search = search;
+    if (pattern) params.pattern = pattern;
+    if (activeTab) params.activeTab = activeTab;
+
+    const response = await api.get(`/feeds/explore`, {params});
+    return response.data?.data;
+  }
 }
 
 export const feedService = new FeedService();
