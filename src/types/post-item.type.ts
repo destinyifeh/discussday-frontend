@@ -64,6 +64,7 @@ export interface PostFeedProps {
   viewCount: number;
   status: PostStatus;
   commentCount?: number;
+  comments?: string[];
 }
 
 export interface CommentProps {

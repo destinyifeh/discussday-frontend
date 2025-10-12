@@ -1,5 +1,6 @@
 'use client';
 
+import AdCard from '@/components/ad/ad-card';
 import {PageHeader} from '@/components/app-headers';
 import {LoadingMore, LoadMoreError} from '@/components/feedbacks';
 import ErrorFeedback from '@/components/feedbacks/error-feedback';
@@ -23,7 +24,7 @@ import {useInfiniteQuery, useMutation} from '@tanstack/react-query';
 import {Calendar, Link as LinkIcon, Settings} from 'lucide-react';
 import moment from 'moment';
 import Link from 'next/link';
-import {useParams, useRouter, useSearchParams} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {Virtuoso, VirtuosoHandle} from 'react-virtuoso';
 import {userService} from '../actions/user.actions';
@@ -87,9 +88,14 @@ export const PostPlaceholder = ({
   );
 };
 
-export const ProfilePage = () => {
-  const {user} = useParams<{user: string}>();
-
+type PageProps = {
+  params: {
+    user: string;
+  };
+};
+export const ProfilePage = ({params}: PageProps) => {
+  //const {user} = useParams<{user: string}>();
+  const {user} = params;
   const {currentUser} = useAuthStore(state => state);
   const [activeTab, setActiveTab] = useState('posts');
   const [showGoUp, setShowGoUp] = useState(false);
@@ -171,16 +177,19 @@ export const ProfilePage = () => {
               ...page,
               posts: page.posts.map((post: any) => {
                 if (post._type === 'ad') return post;
-                if (post._id === postId) {
+                if (post.data._id === postId) {
                   const userId = currentUser?._id;
-                  const hasLiked = post.likedBy.includes(userId);
+                  const hasLiked = post.data.likedBy.includes(userId);
                   const newLikedBy = hasLiked
-                    ? post.likedBy.filter((id: string) => id !== userId)
-                    : [...post.likedBy, userId];
+                    ? post.data.likedBy.filter((id: string) => id !== userId)
+                    : [...post.data.likedBy, userId];
 
                   return {
                     ...post,
-                    likedBy: newLikedBy,
+                    data: {
+                      ...post.data,
+                      likedBy: newLikedBy,
+                    },
                   };
                 }
                 return post;
@@ -233,16 +242,21 @@ export const ProfilePage = () => {
               ...page,
               posts: page.posts.map((post: any) => {
                 if (post._type === 'ad') return post;
-                if (post._id === postId) {
+                if (post.data._id === postId) {
                   const userId = currentUser?._id;
-                  const hasBookmarked = post.bookmarkedBy.includes(userId);
+                  const hasBookmarked = post.data.bookmarkedBy.includes(userId);
                   const newBookmarkedBy = hasBookmarked
-                    ? post.bookmarkedBy.filter((id: string) => id !== userId)
-                    : [...post.bookmarkedBy, userId];
+                    ? post.data.bookmarkedBy.filter(
+                        (id: string) => id !== userId,
+                      )
+                    : [...post.data.bookmarkedBy, userId];
 
                   return {
                     ...post,
-                    bookmarkedBy: newBookmarkedBy,
+                    data: {
+                      ...post.data,
+                      bookmarkedBy: newBookmarkedBy,
+                    },
                   };
                 }
                 return post;
@@ -295,14 +309,14 @@ export const ProfilePage = () => {
             pages: oldData.pages.map((page: any) => ({
               ...page,
               posts: page.posts.map((comment: any) => {
-                if (comment._id !== commentId) return comment;
+                if (comment.data._id !== commentId) return comment;
 
                 // mutual exclusivity logic
-                const hasLiked = comment.likedBy.includes(userId);
-                const hasDisliked = comment.dislikedBy.includes(userId);
+                const hasLiked = comment.data.likedBy.includes(userId);
+                const hasDisliked = comment.data.dislikedBy.includes(userId);
 
-                let newLikedBy = comment.likedBy;
-                let newDislikedBy = comment.dislikedBy;
+                let newLikedBy = comment.data.likedBy;
+                let newDislikedBy = comment.data.dislikedBy;
 
                 if (hasLiked) {
                   // remove like if already liked
@@ -318,8 +332,11 @@ export const ProfilePage = () => {
 
                 return {
                   ...comment,
-                  likedBy: newLikedBy,
-                  dislikedBy: newDislikedBy,
+                  data: {
+                    ...comment.data,
+                    likedBy: newLikedBy,
+                    dislikedBy: newDislikedBy,
+                  },
                 };
               }),
             })),
@@ -367,14 +384,14 @@ export const ProfilePage = () => {
             pages: oldData.pages.map((page: any) => ({
               ...page,
               posts: page.posts.map((comment: any) => {
-                if (comment._id !== commentId) return comment;
+                if (comment.data._id !== commentId) return comment;
 
                 // mutual exclusivity logic
-                const hasLiked = comment.likedBy.includes(userId);
-                const hasDisliked = comment.dislikedBy.includes(userId);
+                const hasLiked = comment.data.likedBy.includes(userId);
+                const hasDisliked = comment.data.dislikedBy.includes(userId);
 
-                let newLikedBy = comment.likedBy;
-                let newDislikedBy = comment.dislikedBy;
+                let newLikedBy = comment.data.likedBy;
+                let newDislikedBy = comment.data.dislikedBy;
 
                 if (hasDisliked) {
                   // remove dislike if already disliked
@@ -390,8 +407,11 @@ export const ProfilePage = () => {
 
                 return {
                   ...comment,
-                  likedBy: newLikedBy,
-                  dislikedBy: newDislikedBy,
+                  data: {
+                    ...comment.data,
+                    likedBy: newLikedBy,
+                    dislikedBy: newDislikedBy,
+                  },
                 };
               }),
             })),
@@ -641,41 +661,53 @@ export const ProfilePage = () => {
             return <PostSkeleton />;
           }
 
-          if (!post) return null;
+          if (!post || !post.data) return null;
 
-          const key = post._id || `${activeTab}-${index}`;
+          if (post._type === 'ad') {
+            return <AdCard ad={post.data} key={post.data._id} />;
+          }
 
-          if (activeTab === 'replies' && post.commentBy?.username) {
+          const key = post.data._id || `${activeTab}-${index}`;
+
+          if (
+            post._type === 'post' &&
+            activeTab === 'replies' &&
+            post.data.commentBy?.username
+          ) {
             return (
               <UserCommentCard
                 key={key}
-                comment={post}
+                comment={post.data}
                 isFrom="replies"
-                onLike={() => likeCommentMutation.mutate(post._id)}
-                onDisLike={() => dislikeCommentMutation.mutate(post._id)}
+                onLike={() => likeCommentMutation.mutate(post.data._id)}
+                onDisLike={() => dislikeCommentMutation.mutate(post.data._id)}
               />
             );
           }
 
-          if (activeTab === 'mentions' && post?.quotedComment?.quotedUser) {
+          if (
+            post._type === 'post' &&
+            activeTab === 'mentions' &&
+            post.data?.quotedComment?.quotedUser
+          ) {
             return (
               <UserCommentCard
                 key={key}
-                comment={post}
+                comment={post.data}
                 isFrom="mentions"
-                onLike={() => likeCommentMutation.mutate(post._id)}
-                onDisLike={() => dislikeCommentMutation.mutate(post._id)}
+                onLike={() => likeCommentMutation.mutate(post.data._id)}
+                onDisLike={() => dislikeCommentMutation.mutate(post.data._id)}
               />
             );
           }
 
-          if (post.user?._id) {
+          if (post._type === 'post' && post.data.user?._id) {
             return (
               <PostCard
                 key={key}
-                post={post}
-                onLike={() => likePostMutation.mutate(post._id)}
-                onBookmark={() => bookmarkPostMutation.mutate(post._id)}
+                post={post.data}
+                onLike={() => likePostMutation.mutate(post.data._id)}
+                onBookmark={() => bookmarkPostMutation.mutate(post.data._id)}
               />
             );
           }

@@ -1,5 +1,6 @@
 import api from '@/lib/auth/api';
 import {UserUpdateRequestProps} from '@/modules/auth/types';
+import {AdPlacementProps} from '@/types/ad-types';
 import {MailUserDto} from '@/types/user.types';
 import {AxiosResponse} from 'axios';
 import {UsersResponse} from './type.actions';
@@ -86,11 +87,15 @@ class UserService {
     limit = 10,
     type: string = 'posts',
     search?: string,
+    pattern: string = '4, 9, 15',
+    mode: string = 'pattern',
+    placement: AdPlacementProps = 'homepage_feed',
   ) {
-    const params: any = {page, limit, type, search};
+    const params: any = {page, limit, type, search, mode, placement};
 
     if (search) params.search = search;
-    const response = await api.get(`/posts/user-posts`, {params});
+    if (pattern) params.pattern = pattern;
+    const response = await api.get(`/feeds/my-feeds`, {params});
     return response.data?.data;
   }
 
@@ -104,7 +109,7 @@ class UserService {
     const params: any = {page, limit, type, search};
 
     if (search) params.search = search;
-    const response = await api.get(`/posts/user-posts/${userId}`, {params});
+    const response = await api.get(`/feeds/user-feeds/${userId}`, {params});
     return response.data?.data;
   }
 

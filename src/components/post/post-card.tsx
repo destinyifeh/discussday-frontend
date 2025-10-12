@@ -412,7 +412,7 @@ const PostCard = ({
                   onClick={handleCommentClick}>
                   <div className="flex items-center gap-1">
                     <MessageSquare size={18} />
-                    <span className="text-xs">{post?.commentCount}</span>
+                    <span className="text-xs">{post?.comments?.length}</span>
                   </div>
                 </Button>
 

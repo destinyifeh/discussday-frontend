@@ -134,6 +134,76 @@ export const PostDetailPage = ({params}: PostDetailPageProps) => {
 
   console.log(commentsData, 'comments dataa', totalCount);
 
+  const likePostMutation = useMutation({
+    mutationFn: (postId: string) => postService.likePostRequestAction(postId),
+
+    onMutate: async postId => {
+      await queryClient.cancelQueries({queryKey: ['post-details', slugId]});
+
+      const previousPost = queryClient.getQueryData(['post-details', slugId]);
+
+      queryClient.setQueryData(['post-details', slugId], (oldData: any) => {
+        if (!oldData) return previousPost;
+        const userId = currentUser?._id;
+        const hasLiked = oldData.likedBy.includes(userId);
+        const newLikedBy = hasLiked
+          ? oldData.likedBy.filter((id: string) => id !== userId)
+          : [...oldData.likedBy, userId];
+
+        return {...oldData, likedBy: newLikedBy};
+      });
+
+      return {previousPost};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(['post-details', slugId], context.previousPost);
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: (data, err, postId) => {
+      queryClient.invalidateQueries({
+        queryKey: ['post-details', slugId],
+      });
+    },
+  });
+
+  const bookmarkPostMutation = useMutation({
+    mutationFn: (postId: string) =>
+      postService.bookmarkPostRequestAction(postId),
+
+    onMutate: async postId => {
+      await queryClient.cancelQueries({queryKey: ['post-details', slugId]});
+
+      const previousPost = queryClient.getQueryData(['post-details', slugId]);
+
+      queryClient.setQueryData(['post-details', slugId], (oldData: any) => {
+        if (!oldData) return previousPost;
+        const userId = currentUser?._id;
+        const hasBookedmarked = oldData.bookmarkedBy.includes(userId);
+        const newBookedmarkedBy = hasBookedmarked
+          ? oldData.bookmarkedBy.filter((id: string) => id !== userId)
+          : [...oldData.bookmarkedBy, userId];
+
+        return {...oldData, bookmarkedBy: newBookedmarkedBy};
+      });
+
+      return {previousPost};
+    },
+
+    onError: (err, postId, context: any) => {
+      queryClient.setQueryData(['post-details', slugId], context.previousPost);
+      toast.error('Oops! Something went wrong, try again');
+    },
+
+    onSettled: (data, err, postId) => {
+      queryClient.invalidateQueries({
+        queryKey: ['post-details', slugId],
+      });
+    },
+  });
+
+  //comment liking
   const likeCommentMutation = useMutation({
     mutationFn: (commentId: string) =>
       postService.likeCommentRequestAction(commentId),
@@ -681,7 +751,7 @@ export const PostDetailPage = ({params}: PostDetailPageProps) => {
               );
             }
 
-            // ✅ Show RelatedPosts only when there are no more pages
+            // Show RelatedPosts only when there are no more pages
             if (!hasNextPage) {
               return (
                 <div className="p-4 border-t border-app-border mt-6">
@@ -702,6 +772,8 @@ export const PostDetailPage = ({params}: PostDetailPageProps) => {
                   post={post}
                   showActions={true}
                   isInDetailView={true}
+                  onLike={() => likePostMutation.mutate(post._id)}
+                  onBookmark={() => bookmarkPostMutation.mutate(post._id)}
                 />
               </div>
 

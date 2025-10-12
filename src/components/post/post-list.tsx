@@ -842,16 +842,17 @@ export const ExplorePostList = () => {
 
     onMutate: async postId => {
       await queryClient.cancelQueries({
-        queryKey: ['explore-feed-posts', debouncedSearch],
+        queryKey: ['explore-feed-posts', activeTab, debouncedSearch],
       });
 
       const previousPosts = queryClient.getQueryData([
         'explore-feed-posts',
+        activeTab,
         debouncedSearch,
       ]);
 
       queryClient.setQueryData(
-        ['explore-feed-posts', debouncedSearch],
+        ['explore-feed-posts', activeTab, debouncedSearch],
         (oldData: any) => {
           if (!oldData) return previousPosts;
 
@@ -888,7 +889,7 @@ export const ExplorePostList = () => {
 
     onError: (err, postId, context: any) => {
       queryClient.setQueryData(
-        ['explore-feed-posts', debouncedSearch],
+        ['explore-feed-posts', activeTab, debouncedSearch],
         context.previousPosts,
       );
       toast.error('Oops! Something went wrong, try again');
@@ -903,16 +904,17 @@ export const ExplorePostList = () => {
 
     onMutate: async postId => {
       await queryClient.cancelQueries({
-        queryKey: ['explore-feed-posts', debouncedSearch],
+        queryKey: ['explore-feed-posts', activeTab, debouncedSearch],
       });
 
       const previousPosts = queryClient.getQueryData([
         'explore-feed-posts',
+        activeTab,
         debouncedSearch,
       ]);
 
       queryClient.setQueryData(
-        ['explore-feed-posts', debouncedSearch],
+        ['explore-feed-posts', activeTab, debouncedSearch],
         (oldData: any) => {
           if (!oldData) return previousPosts;
 
@@ -951,7 +953,7 @@ export const ExplorePostList = () => {
 
     onError: (err, postId, context: any) => {
       queryClient.setQueryData(
-        ['explore-feed-posts', debouncedSearch],
+        ['explore-feed-posts', activeTab, debouncedSearch],
         context.previousPosts,
       );
       toast.error('Oops! Something went wrong, try again');
