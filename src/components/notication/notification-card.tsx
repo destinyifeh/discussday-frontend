@@ -35,7 +35,7 @@ export const NotificationCard = ({
                 {notification.senderName}
               </span>
             </Link>
-            <span className="text-app-gray">{notification.content}.</span>
+            <span className="">{notification.content}.</span>
             {(notification.type === 'mentioned' ||
               notification.type === 'liked') && (
               <div>
