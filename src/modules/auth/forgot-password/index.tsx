@@ -207,7 +207,7 @@ export const ForgotPasswordPage = () => {
             </CardContent>
             <CardFooter className="flex justify-center">
               <div className="text-center">
-                <p className="text-sm text-app-gray">
+                <p className="text-sm dark:text-muted-foreground">
                   Remember your password?{' '}
                   <Link href="/login" className="text-app hover:underline">
                     Back to Sign in

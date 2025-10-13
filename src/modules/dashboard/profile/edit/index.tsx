@@ -131,7 +131,7 @@ export const EditProfilePage = () => {
 
         setUser(updatedUserData as UserProps);
         toast.success('Profile updated successfully');
-        router.push(`/profile/${username}`);
+        router.push(`/profile`);
       },
       onError(error: any, variables, context) {
         console.log(error, 'error');

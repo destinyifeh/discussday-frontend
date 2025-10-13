@@ -325,7 +325,7 @@ export const LoginPage = () => {
             </CardContent>
             <CardFooter className="flex justify-center">
               <div className="text-center">
-                <p className="text-sm text-app-gray">
+                <p className="text-sm dark:text-muted-foreground">
                   Don't have an account?{' '}
                   <Link href="/register" className="text-app hover:underline">
                     Sign up

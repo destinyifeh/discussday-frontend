@@ -24,12 +24,12 @@ const CommunityGuidelines = () => {
           </Button>
         </div>
 
-        <p className="text-xs text-app-gray mt-1">
+        <p className="text-xs mt-1">
           Be respectful and kind to others. Keep discussions constructive.
         </p>
 
         {expanded && (
-          <div className="mt-3 space-y-2 text-xs text-app-gray">
+          <div className="mt-3 space-y-2 text-xs">
             <div>
               <p className="font-medium">Be respectful and inclusive</p>
               <p>

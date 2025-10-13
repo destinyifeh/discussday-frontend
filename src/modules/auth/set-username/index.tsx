@@ -204,7 +204,7 @@ export const SetUsernamePage = ({params}: PageParams) => {
             </CardContent>
             <CardFooter className="flex justify-center">
               <div className="text-center">
-                <p className="text-sm text-app-gray">
+                <p className="text-sm dark:text-muted-foreground">
                   Not ready now?{' '}
                   <Link href="/login" className="text-app hover:underline">
                     Return to Sign in

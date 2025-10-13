@@ -16,7 +16,7 @@ export const CommunityGuidelines = () => {
           <div className="text-center mb-12">
             <Users className="mx-auto mb-6 h-16 w-16 text-app" />
             <h1 className="text-3xl font-bold mb-6">Community Guidelines</h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl max-w-2xl mx-auto">
               Be respectful and kind to others. Keep discussions constructive.
             </p>
           </div>
@@ -33,9 +33,7 @@ export const CommunityGuidelines = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-700 leading-relaxed">
-                      {guideline.description}
-                    </p>
+                    <p className="leading-relaxed">{guideline.description}</p>
                   </CardContent>
                 </Card>
               );

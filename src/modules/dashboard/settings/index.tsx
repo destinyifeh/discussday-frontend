@@ -122,7 +122,7 @@ export const SettingsPage = () => {
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
     setTheme(theme === 'dark' ? 'light' : 'dark');
-    toast.success(`${theme === 'dark' ? 'Light' : 'Dark'} mode activated`);
+    // toast.success(`${theme === 'dark' ? 'Light' : 'Dark'} mode activated`);
   };
 
   const toggleNotifications = () => {

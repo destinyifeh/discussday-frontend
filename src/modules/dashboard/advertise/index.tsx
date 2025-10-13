@@ -2,7 +2,7 @@
 
 import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
-import {CheckCircle} from 'lucide-react';
+import {CheckCircle, X} from 'lucide-react';
 import {useState} from 'react';
 
 import {PageHeader} from '@/components/app-headers';
@@ -64,9 +64,9 @@ export const AdvertisePage = () => {
                   <CardTitle>{tier.name}</CardTitle>
                   <div className="mt-2">
                     <span className="text-2xl font-bold">{tier.price}</span>
-                    <span className="text-sm text-app-gray"> {tier.unit}</span>
+                    <span className="text-sm"> {tier.unit}</span>
                   </div>
-                  <p className="text-sm text-app-gray">{tier.description}</p>
+                  <p className="text-sm">{tier.description}</p>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2">
@@ -78,10 +78,9 @@ export const AdvertisePage = () => {
                     ))}
                     {tier.limitations?.map(limitation => (
                       <li key={limitation} className="flex items-center gap-2">
-                        <span className="w-4 h-4 rounded-full bg-gray-200 flex-shrink-0"></span>
-                        <span className="text-sm text-app-gray">
-                          {limitation}
-                        </span>
+                        {/* <span className="w-4 h-4 rounded-full bg-gray-200 flex-shrink-0"></span> */}
+                        <X size={16} className="text-red-500" />
+                        <span className="text-sm">{limitation}</span>
                       </li>
                     ))}
                   </ul>
@@ -108,26 +107,26 @@ export const AdvertisePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 rounded-lg bg-app-hover border border-app-border dark:bg-background">
               <h3 className="font-bold mb-1">Engaged Audience</h3>
-              <p className="text-sm text-app-gray">
+              <p className="text-sm">
                 Our community is active and engaged, with high interaction
                 rates.
               </p>
             </div>
             <div className="p-4 rounded-lg bg-app-hover border border-app-border dark:bg-background">
               <h3 className="font-bold mb-1">Targeted Reach</h3>
-              <p className="text-sm text-app-gray">
+              <p className="text-sm">
                 Reach users based on interests, categories, and engagement.
               </p>
             </div>
             {/* <div className="p-4 rounded-lg bg-app-hover border border-app-border dark:bg-background">
               <h3 className="font-bold mb-1">Multiple Formats</h3>
-              <p className="text-sm text-app-gray">
+              <p className="text-sm">
                 Choose from banners and sponsored posts.
               </p>
             </div> */}
             <div className="p-4 rounded-lg bg-app-hover border border-app-border dark:bg-background">
               <h3 className="font-bold mb-1">Sponsored Posts</h3>
-              <p className="text-sm text-app-gray">
+              <p className="text-sm">
                 Promote your content directly in the forum feed with native
                 sponsored posts.
               </p>

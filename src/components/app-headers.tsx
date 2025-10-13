@@ -39,9 +39,7 @@ export const PageHeader = ({
         )}
         <div>
           <h1 className="text-xl font-bold capitalize">{title}</h1>
-          {description && (
-            <p className="text-sm text-app-gray">{description}</p>
-          )}
+          {description && <p className="text-sm">{description}</p>}
         </div>
       </div>
     </div>
@@ -71,9 +69,7 @@ export const SectionHeader = ({
           </Button>
           <div className="flex flex-col">
             <h1 className="text-xl font-bold">{title}</h1>
-            {description && (
-              <p className="text-app-gray text-sm">{description}</p>
-            )}
+            {description && <p className="text-sm">{description}</p>}
           </div>
         </div>
       </div>

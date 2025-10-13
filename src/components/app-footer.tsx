@@ -9,12 +9,12 @@ export const AppFooter = () => {
   const location = usePathname();
   const isActive = (path: string) => location === path;
   return (
-    <footer className="py-8 px-4 text-center text-app-gray border-t border-app-border">
+    <footer className="py-8 px-4 text-center border-t border-app-border">
       <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto mb-4">
         <Link
           href="/about"
           className={cn(
-            'hover:underline text-sm text-foreground',
+            'hover:underline text-sm',
             isActive('/about') ? 'font-bold' : 'font-normal',
           )}>
           About
@@ -22,7 +22,7 @@ export const AppFooter = () => {
         <Link
           href="/help-center"
           className={cn(
-            'hover:underline text-sm text-foreground',
+            'hover:underline text-sm',
             isActive('/help-center') ? 'font-bold' : 'font-normal',
           )}>
           Help Center
@@ -30,7 +30,7 @@ export const AppFooter = () => {
         <Link
           href="/terms-of-service"
           className={cn(
-            'hover:underline text-sm text-foreground',
+            'hover:underline text-sm',
             isActive('/terms-of-service') ? 'font-bold' : 'font-normal',
           )}>
           Terms of Service
@@ -38,7 +38,7 @@ export const AppFooter = () => {
         <Link
           href="/privacy-policy"
           className={cn(
-            'hover:underline text-sm text-foreground',
+            'hover:underline text-sm',
             isActive('/privacy-policy') ? 'font-bold' : 'font-normal',
           )}>
           Privacy Policy
@@ -47,13 +47,13 @@ export const AppFooter = () => {
         <Link
           href="/ads-info"
           className={cn(
-            'hover:underline text-sm text-foreground',
+            'hover:underline text-sm',
             isActive('/ads-info') ? 'font-bold' : 'font-normal',
           )}>
           Advertise
         </Link>
       </div>
-      <p className="text-sm text-foreground">
+      <p className="text-sm">
         © {moment().format('YYYY')} Discussday. All rights reserved.
       </p>
     </footer>

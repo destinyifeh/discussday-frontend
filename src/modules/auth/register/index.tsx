@@ -426,7 +426,7 @@ export const RegisterPage = () => {
             </CardContent>
             <CardFooter className="flex justify-center">
               <div className="text-center">
-                <p className="text-sm text-app-gray">
+                <p className="text-sm dark:text-muted-foreground">
                   Already have an account?{' '}
                   <Link href="/login" className="text-app hover:underline">
                     Sign in

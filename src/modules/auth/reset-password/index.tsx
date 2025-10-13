@@ -270,7 +270,7 @@ export const ResetPasswordPage = () => {
             </CardContent>
             <CardFooter className="flex justify-center">
               <div className="text-center">
-                <p className="text-sm text-app-gray">
+                <p className="text-sm dark:text-muted-foreground">
                   Changed your mind?{' '}
                   <a href="/login" className="text-app hover:underline">
                     Back to Login

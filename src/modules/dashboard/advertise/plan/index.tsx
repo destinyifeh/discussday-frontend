@@ -242,7 +242,7 @@ export const AdPlanPage = () => {
       />
 
       <div className="p-4">
-        <p className="text-sm text-app-gray mt-2">{planDescription}</p>
+        <p className="text-sm mt-2">{planDescription}</p>
       </div>
 
       {isPreviewPage && <AdPreviewPage setIsPreviewPage={setIsPreviewPage} />}

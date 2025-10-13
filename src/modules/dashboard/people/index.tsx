@@ -697,12 +697,12 @@ export const PeoplePage = () => {
                   <div className="mt-16">
                     <h2 className="font-bold text-xl capitalize">{username}</h2>
 
-                    <div className="mt-3 text-app-gray">
+                    <div className="mt-3">
                       <div className="space-y-1">
                         {bio && (
                           <div className="flex items-center gap-2">
                             {/* <MapPin size={16} /> */}
-                            <p className="text-base text-foreground">{bio}</p>
+                            <p className="text-base">{bio}</p>
                           </div>
                         )}
                         {website && (

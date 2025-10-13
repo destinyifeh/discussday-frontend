@@ -532,14 +532,12 @@ export const ProfilePage = () => {
                     </h2>
                     {/* <p className="text-app-gray">@{profileUser.username}</p> */}
 
-                    <div className="mt-3 text-app-gray">
+                    <div className="mt-3">
                       <div className="space-y-1">
                         {currentUser?.bio && (
                           <div className="flex items-center gap-2">
                             {/* <MapPin size={16} /> */}
-                            <p className="text-base text-foreground">
-                              {currentUser.bio}
-                            </p>
+                            <p className="text-base">{currentUser.bio}</p>
                           </div>
                         )}
                         {currentUser?.website && (
