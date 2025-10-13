@@ -17,9 +17,7 @@ export const PostContent3 = ({content}: {content: string}) => {
 };
 export const PostContent = React.memo(({content}: {content: string}) => {
   return (
-    <div
-      className="text-base leading-normal dark:text-muted-foreground"
-      style={{whiteSpace: 'pre-wrap'}}>
+    <div className="text-base leading-normal" style={{whiteSpace: 'pre-wrap'}}>
       <div dangerouslySetInnerHTML={{__html: extractLinks2(content)}} />
     </div>
   );

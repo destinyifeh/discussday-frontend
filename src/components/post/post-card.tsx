@@ -225,7 +225,7 @@ const PostCard = ({
                 <div className="font-bold hover:underline truncate cursor-pointer active:scale-90 transition-transform duration-150">
                   <Link
                     href={`/user/${post.user.username}`}
-                    className="capitalize active:scale-90 transition-transform duration-150 dark:text-muted-foreground">
+                    className="capitalize active:scale-90 transition-transform duration-150">
                     {truncateText(post.user.username, 20)}
                   </Link>
                 </div>

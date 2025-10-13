@@ -161,16 +161,14 @@ const AdCard = ({
                 <div className="font-bold hover:underline truncate cursor-pointer">
                   <Link
                     href={`/user/${ad?.owner?.username}`}
-                    className="capitalize dark:text-muted-foreground">
+                    className="capitalize">
                     {ad?.owner?.username}
                   </Link>
                 </div>
 
                 <span className="text-app-gray">·</span>
 
-                <span className="truncate capitalize dark:text-muted-foreground">
-                  {ad?.type}
-                </span>
+                <span className="truncate capitalize">{ad?.type}</span>
 
                 {/* <span className="text-app-gray">·</span>
                 <span className="text-app-gray truncate">
@@ -211,9 +209,7 @@ const AdCard = ({
 
           <div className="block">
             <div className="mt-1">
-              <p className="text-base leading-normal dark:text-muted-foreground">
-                {displayContent}
-              </p>
+              <p className="text-base leading-normal">{displayContent}</p>
 
               {shouldTruncate && !isInDetailView && !expanded && (
                 <Button
