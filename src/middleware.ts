@@ -1,5 +1,4 @@
 // middleware.ts
-import {decodeJwt} from 'jose';
 import type {NextRequest} from 'next/server';
 import {NextResponse} from 'next/server';
 import {ACCESS_TOKEN} from './constants/api-resources';
@@ -19,23 +18,8 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // decode JWT if token exists
-  let isTokenExpired = true;
-
-  if (token) {
-    try {
-      const decoded = decodeJwt(token);
-      console.log(decoded, 'decoded token');
-      const now = Math.floor(Date.now() / 1000);
-      console.log(now, 'decoded time');
-      isTokenExpired = decoded.exp ? decoded.exp < now : true;
-      console.log(isTokenExpired, 'decoded tokenExpired?');
-    } catch (err) {
-      isTokenExpired = true;
-    }
-  }
   // ──────────────── LOGGED‑IN user ────────────────
-  if (token && !isTokenExpired && guestRoute) {
+  if (token && guestRoute) {
     // Already authenticated ➜ redirect away from guest pages
     return NextResponse.redirect(new URL('/home', req.url));
   }
@@ -45,13 +29,6 @@ export async function middleware(req: NextRequest) {
     // no token at all → normal login redirect
     const url = new URL('/login', req.url);
     url.searchParams.set('next', pathname);
-    return NextResponse.redirect(url);
-  }
-
-  // ──────────────── EXPIRED token ────────────────
-  if (isTokenExpired && !guestRoute) {
-    const url = new URL('/login', req.url);
-    url.searchParams.set('reason', 'sessionExpired');
     return NextResponse.redirect(url);
   }
 
