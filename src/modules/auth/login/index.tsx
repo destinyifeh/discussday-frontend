@@ -101,9 +101,11 @@ export const LoginPage = () => {
         }
 
         setUser(user);
-        reset();
-        toast.success('Login successful!');
-        router.replace(next);
+        setTimeout(() => {
+          reset();
+          toast.success('Login successful!');
+          router.replace(next);
+        }, 100);
       },
       onError(error: any, variables, context) {
         console.log(error, 'error');
@@ -115,7 +117,9 @@ export const LoginPage = () => {
         toast.error('Oops! Something went wrong, please try again');
       },
       onSettled(data, error, variables, context) {
-        setIsSubmitting(false);
+        setTimeout(() => {
+          setIsSubmitting(false);
+        }, 100);
       },
     });
   };

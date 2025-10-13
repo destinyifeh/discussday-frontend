@@ -468,7 +468,7 @@ export const ProfilePage = () => {
       </div>
 
       <Virtuoso
-        className="custom-scrollbar"
+        className="custom-scrollbar mb-12 md:mb-0"
         style={{height: '100vh'}}
         data={userData}
         onScroll={handleScroll}

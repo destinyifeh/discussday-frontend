@@ -245,7 +245,7 @@ export const SectionPostList = ({
       </div>
 
       <Virtuoso
-        className="custom-scrollbar"
+        className="custom-scrollbar mb-10 md:mb-0"
         style={{height: '100vh'}}
         onScroll={handleScroll}
         ref={virtuosoRef}
@@ -623,7 +623,7 @@ export const HomePostList = () => {
       </div>
 
       <Virtuoso
-        className="custom-scrollbar min-h-screen mb-0 lg:mb-0"
+        className="custom-scrollbar min-h-screen mb-12 md:mb-0"
         data={postsData}
         onScroll={handleScroll}
         ref={virtuosoRef}
@@ -1013,14 +1013,6 @@ export const ExplorePostList = () => {
     lastScrollTop.current = scrollTop <= 0 ? 0 : scrollTop;
   };
 
-  const onSectionNavigate = (section: string) => {
-    if (section === 'Create Ad') {
-      navigate.push('/advertise');
-      return;
-    }
-    navigate.push(`/discuss/${section.toLowerCase()}`);
-  };
-
   const handleFetchNext = async () => {
     try {
       setFetchNextError(null);
@@ -1087,7 +1079,7 @@ export const ExplorePostList = () => {
       </div>
 
       <Virtuoso
-        className="custom-scrollbar mb-10"
+        className="custom-scrollbar mb-12 md:mb-0"
         style={{height: '100vh'}}
         data={postsData}
         onScroll={handleScroll}
@@ -1413,7 +1405,7 @@ export const BookmarkPostList = () => {
       </div>
 
       <Virtuoso
-        className="custom-scrollbar"
+        className="custom-scrollbar mb-12 md:mb-0"
         style={{height: '100vh'}}
         onScroll={handleScroll}
         ref={virtuosoRef}

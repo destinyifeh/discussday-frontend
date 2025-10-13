@@ -368,6 +368,10 @@ export const PostDetailPage = ({params}: PostDetailPageProps) => {
         queryClient.invalidateQueries({
           queryKey: ['unreadCount'],
         });
+
+        queryClient.invalidateQueries({
+          queryKey: ['post-details', slugId],
+        });
         // Clear input and close comment section if open on mobile
         setComment('');
         setQuoteContent('');

@@ -107,7 +107,7 @@ export const SidebarLayoutLeft = () => {
     //   path: `/profile/${'des'}`,
     // },
     {
-      label: 'Ad View',
+      label: 'My Ads',
       icon: <BarChart2 size={24} className="mr-4" />,
       path: '/advertise/ad-performance',
     },
@@ -310,9 +310,7 @@ export const SidebarLayoutLeft = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem asChild>
-                <Link
-                  href={`/profile/${currentUser?.username?.toLowerCase()}`}
-                  className="flex items-center">
+                <Link href={`/profile`} className="flex items-center">
                   <User className="mr-2 h-4 w-4" />
                   <span className="">Profile</span>
                 </Link>

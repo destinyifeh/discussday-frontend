@@ -93,7 +93,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({children, title}) => {
       path: '/settings',
     },
     {
-      label: 'Ad View',
+      label: 'My Ads',
       icon: <BarChart2 size={24} />,
       path: '/advertise/ad-performance',
     },

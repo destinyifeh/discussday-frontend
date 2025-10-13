@@ -50,7 +50,7 @@ export const AppFooter = () => {
             'hover:underline text-sm text-foreground',
             isActive('/ads-info') ? 'font-bold' : 'font-normal',
           )}>
-          Ads info
+          Advertise
         </Link>
       </div>
       <p className="text-sm text-foreground">

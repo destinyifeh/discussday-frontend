@@ -3,23 +3,22 @@
 import {PageHeader} from '@/components/app-headers';
 import {LoadingMore, LoadMoreError} from '@/components/feedbacks';
 import ErrorFeedback from '@/components/feedbacks/error-feedback';
+import SearchBarList from '@/components/forms/list-search-bar';
 import {UsersSkeleton} from '@/components/skeleton/users.skeleton';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
 import {toast} from '@/components/ui/toast';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {truncateText} from '@/lib/formatter';
 import {cn} from '@/lib/utils';
 import {UserProps} from '@/types/user.types';
 import {useInfiniteQuery, useMutation} from '@tanstack/react-query';
-import {ArrowUp, Search} from 'lucide-react';
+import {ArrowUp} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {useMemo, useRef, useState} from 'react';
 import {Virtuoso, VirtuosoHandle} from 'react-virtuoso';
 import {useDebounce} from 'use-debounce';
 import {userService} from '../../actions/user.actions';
-
 export const Users = () => {
   const lastScrollTop = useRef(0);
   const {currentUser, setUser} = useAuthStore(state => state);
@@ -132,33 +131,17 @@ export const Users = () => {
   };
   return (
     <div>
-      <div className="hidden lg:block">
+      <div className="hidden md:block">
         <PageHeader title="Connect" description="Discover people to follow" />
-        <div className="relative flex-1 px-4">
-          <Search className="absolute left-5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search..."
-            className="pl-8 form-input"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-          />
-        </div>
+        <SearchBarList searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       </div>
 
       <div
-        className={`lg:hidden fixed top-0 left-0 right-0 bg-background w-full z-50 transition-transform duration-300 ${
+        className={`md:hidden fixed top-0 left-0 right-0 bg-background w-full z-50 transition-transform duration-300 ${
           showMobileNav ? 'translate-y-0' : '-translate-y-full'
         }`}>
         <PageHeader title="Connect" description="Discover people to follow" />
-        <div className="relative flex-1 px-4">
-          <Search className="absolute left-5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search..."
-            className="pl-8 form-input"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-          />
-        </div>
+        <SearchBarList searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       </div>
 
       <Virtuoso
@@ -177,7 +160,7 @@ export const Users = () => {
                 </p>
               </div>
             ),
-          Header: () => <div className="mt-27 lg:mt-0"></div>,
+          Header: () => <div className="mt-27 md:mt-0"></div>,
 
           Footer: () =>
             status === 'error' ? (
