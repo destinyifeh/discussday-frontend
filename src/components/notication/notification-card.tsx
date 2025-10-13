@@ -76,7 +76,7 @@ export const NotificationPlaceholder = ({tab}: {tab: string}) => {
             <BellIcon size={32} className="text-app" />
           </div>
           <h2 className="text-xl font-bold mb-2">No notifications yet</h2>
-          <p className="text-app-gray mb-4">
+          <p className="mb-4">
             When someone interacts with your posts or follows you, notifications
             will appear here.
           </p>
@@ -88,7 +88,7 @@ export const NotificationPlaceholder = ({tab}: {tab: string}) => {
             <BellIcon size={32} className="text-app" />
           </div>
           <h2 className="text-xl font-bold mb-2">No mentions yet</h2>
-          <p className="text-app-gray mb-4">
+          <p className="mb-4">
             When someone mentions you in a post or comment, it will appear here.
           </p>
         </div>
