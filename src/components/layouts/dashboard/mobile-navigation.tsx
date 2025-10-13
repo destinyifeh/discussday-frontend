@@ -84,7 +84,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({children, title}) => {
     {
       icon: <User size={24} />,
       label: 'Profile',
-      path: `/profile/${currentUser?.username?.toLowerCase()}`,
+      path: `/profile`,
     },
 
     {

@@ -88,14 +88,7 @@ export const PostPlaceholder = ({
   );
 };
 
-type PageProps = {
-  params: {
-    user: string;
-  };
-};
-export const ProfilePage = ({params}: PageProps) => {
-  //const {user} = useParams<{user: string}>();
-  const {user} = params;
+export const ProfilePage = () => {
   const {currentUser} = useAuthStore(state => state);
   const [activeTab, setActiveTab] = useState('posts');
   const [showGoUp, setShowGoUp] = useState(false);
@@ -280,8 +273,8 @@ export const ProfilePage = ({params}: PageProps) => {
     onSettled: () => {},
   });
 
-  const isNotCurrentUser =
-    user.toLowerCase() !== currentUser?.username.toLowerCase();
+  // const isNotCurrentUser =
+  //   user.toLowerCase() !== currentUser?.username.toLowerCase();
 
   const likeCommentMutation = useMutation({
     mutationFn: (commentId: string) =>
@@ -433,13 +426,8 @@ export const ProfilePage = ({params}: PageProps) => {
     onSettled: () => {},
   });
 
-  console.log(user, 'user posts dataa', currentUser?.username);
   if (!mounted) {
     return <ProfileSkeleton />;
-  }
-
-  if (mounted && isNotCurrentUser) {
-    return <ErrorFeedback showGoBack message="Unauthorized access." />;
   }
 
   // Scroll handler
@@ -521,7 +509,11 @@ export const ProfilePage = ({params}: PageProps) => {
                       <Button
                         variant="outline"
                         className="rounded-full border-app-border active:scale-90 transition-transform duration-150"
-                        onClick={() => navigate.push(`/profile/${user}/edit`)}>
+                        onClick={() =>
+                          navigate.push(
+                            `/profile/${currentUser?.username}/edit`,
+                          )
+                        }>
                         Edit profile
                       </Button>
                       <Button
