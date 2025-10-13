@@ -532,7 +532,7 @@ export const ProfilePage = () => {
                     </h2>
                     {/* <p className="text-app-gray">@{profileUser.username}</p> */}
 
-                    <div className="mt-3">
+                    <div className="mt-3 text-app-gray">
                       <div className="space-y-1">
                         {currentUser?.bio && (
                           <div className="flex items-center gap-2">

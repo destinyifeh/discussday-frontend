@@ -697,7 +697,7 @@ export const PeoplePage = () => {
                   <div className="mt-16">
                     <h2 className="font-bold text-xl capitalize">{username}</h2>
 
-                    <div className="mt-3">
+                    <div className="mt-3 text-app-gray">
                       <div className="space-y-1">
                         {bio && (
                           <div className="flex items-center gap-2">
