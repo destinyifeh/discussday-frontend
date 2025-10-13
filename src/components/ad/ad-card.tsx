@@ -209,7 +209,9 @@ const AdCard = ({
 
           <div className="block">
             <div className="mt-1">
-              <p className="text-base leading-normal">{displayContent}</p>
+              <p className="text-base leading-normal dark:text-muted-foreground">
+                {displayContent}
+              </p>
 
               {shouldTruncate && !isInDetailView && !expanded && (
                 <Button
