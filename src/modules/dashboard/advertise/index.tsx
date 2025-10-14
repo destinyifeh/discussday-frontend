@@ -6,6 +6,7 @@ import {CheckCircle, X} from 'lucide-react';
 import {useState} from 'react';
 
 import {PageHeader} from '@/components/app-headers';
+import {toast} from '@/components/ui/toast';
 import {pricingTiers} from '@/fixtures/ad';
 import clsx from 'clsx';
 import {useRouter} from 'next/navigation';
@@ -19,6 +20,11 @@ export const AdvertisePage = () => {
 
   const onPlanSelected = (plan: string) => {
     console.log(plan, 'planooo');
+    if (plan === 'Custom') {
+      toast.info('Please contact support to set up a custom ad.');
+      navigate.push(`/contact-support`);
+      return;
+    }
     setSelectedPlan(plan);
     //navigate.push(`/create-ad/${plan.toLowerCase()}`);
 

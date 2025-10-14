@@ -17,11 +17,17 @@ export const pricingTiers = [
     price: BASIC_AD_PRICE_FOR_7_DAYS,
     unit: 'per week',
     description: 'For small businesses just getting started with advertising',
-    features: ['Section targeting', 'Analytics', 'Standard support'],
+    features: [
+      'Section targeting',
+      'Access to performance analytics',
+      'Standard support',
+    ],
     limitations: [
-      'Homepage placement',
-      'Post detail page visibility',
-      'Multi-section targeting',
+      'No homepage placement',
+      'No explore page placement',
+      'No profile page placement',
+      'No post detail page visibility',
+      'No bookmark page placement',
     ],
   },
   {
@@ -33,10 +39,15 @@ export const pricingTiers = [
     features: [
       'Section targeting',
       'Post detail page visibility',
-      'Analytics',
+      'Access to performance analytics',
       'Standard support',
     ],
-    limitations: ['Homepage placement', 'Multi-section targeting'],
+    limitations: [
+      'No homepage placement',
+      'No explore page placement',
+      'No bookmark page placement',
+      'No profile page placement',
+    ],
   },
   {
     name: 'Enterprise',
@@ -44,12 +55,28 @@ export const pricingTiers = [
     unit: 'per week',
     description: 'For established businesses wanting maximum exposure',
     features: [
-      'Multi-section targeting',
       'Homepage placement',
+      'Explore page placement',
+      'Bookmark page placement',
+      'Profile page placement',
       'Post detail page visibility',
-      'Analytics',
-      'Dedicated support',
+      'Full analytics dashboard',
+      'Standard support',
     ],
+  },
+  {
+    name: 'Custom',
+    price: null,
+    unit: null,
+    description:
+      'Have specific advertising needs? Let’s create a tailored plan that fits your goals.',
+    features: [
+      'Flexible targeting options',
+      'Custom placement and duration',
+      'Personalized analytics & reporting',
+      'Dedicated support team',
+    ],
+    contactRequired: true, // optional key if you want a "Contact Us" button
   },
 ];
 
@@ -130,10 +157,16 @@ export const durations: DurationOption[] = [
   {value: '30', label: '30 Days', price: '$149.99', discount: 'Save 20%'},
 ];
 
+// export const enterpriseDurations: DurationOption[] = [
+//   {value: '7', label: '7 Days', price: '₦34,020', discount: ''},
+//   {value: '14', label: '14 Days', price: '₦61,236', discount: 'Save 10%'},
+//   {value: '30', label: '30 Days', price: '₦108,864', discount: 'Save 20%'},
+// ];
+
 export const enterpriseDurations: DurationOption[] = [
-  {value: '7', label: '7 Days', price: '₦34,020', discount: ''},
-  {value: '14', label: '14 Days', price: '₦61,236', discount: 'Save 10%'},
-  {value: '30', label: '30 Days', price: '₦108,864', discount: 'Save 20%'},
+  {value: '7', label: '7 Days', price: '₦75,600', discount: ''},
+  {value: '14', label: '14 Days', price: '₦136,080', discount: 'Save 10%'},
+  {value: '30', label: '30 Days', price: '₦241,920', discount: 'Save 20%'},
 ];
 
 export const professionalDurations: DurationOption[] = [
@@ -170,11 +203,20 @@ export const adPriceFormatter = (duration: string, plan: string) => {
   return PRICE_MAP[plan as AdPlan]?.[duration as DurationValue] ?? 0;
 };
 
+// export const BASIC_PLAN_DESCRIPTION =
+//   'Reach your ideal audience with the Basic plan—promote your ad in a single section, perfect for focused exposure as a banner or sponsored post.';
+
+// export const PROFESSIONAL_PLAN_DESCRIPTION =
+//   'Boost your brand with the Professional plan—your ad appears on the homepage and in a highly relevant section, driving more visibility and engagement.';
+
+// export const ENTERPRISE_PLAN_DESCRIPTION =
+//   'Maximize your impact with the Enterprise plan—your ad is featured across the homepage, article pages, and multiple sections for premium, all-around exposure.';
+
 export const BASIC_PLAN_DESCRIPTION =
-  'Reach your ideal audience with the Basic plan—promote your ad in a single section, perfect for focused exposure as a banner or sponsored post.';
+  'Get started with the Basic plan — promote a single sponsored post within one section to reach a targeted audience and build visibility.';
 
 export const PROFESSIONAL_PLAN_DESCRIPTION =
-  'Boost your brand with the Professional plan—your ad appears on the homepage and in a highly relevant section, driving more visibility and engagement.';
+  'Expand your reach with the Professional plan — your sponsored post appears in key sections and on post detail pages, helping you gain more impressions and engagement.';
 
 export const ENTERPRISE_PLAN_DESCRIPTION =
-  'Maximize your impact with the Enterprise plan—your ad is featured across the homepage, article pages, and multiple sections for premium, all-around exposure.';
+  'Dominate visibility with the Enterprise plan — your sponsored post is featured across the homepage, explore page, bookmark page and user profiles for maximum reach and exposure.';
