@@ -31,6 +31,16 @@ export async function registerRequestAction(
   });
 }
 
+export async function emailVerificationRequestAction(
+  token: string | null,
+): Promise<AxiosResponse> {
+  return await api.post(`/auth/verify-email?token=${token}`);
+}
+
+export async function resendEmailVerificationLinkRequestAction(data: object) {
+  return await api.post('/auth/resend-verification', data);
+}
+
 export async function loginRequestAction(data: LoginRequestProps) {
   return await api.post('/auth/login', data);
 }
