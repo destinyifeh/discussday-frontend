@@ -33,6 +33,7 @@ import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {
   changePasswordRequestAction,
   deleteUserRequest,
+  logoutRequestAction,
 } from '@/modules/auth/actions';
 import {InputMessage} from '@/modules/components/form-info';
 import {zodResolver} from '@hookform/resolvers/zod';
@@ -85,7 +86,7 @@ export const SettingsPage = () => {
   const {mutate: chagePass} = useMutation({
     mutationFn: changePasswordRequestAction,
   });
-  const {mutate: deleteAccounnt} = useMutation({
+  const {mutate: deleteAccount} = useMutation({
     mutationFn: deleteUserRequest,
   });
 
@@ -190,13 +191,14 @@ export const SettingsPage = () => {
   const handleAccountDeletion = () => {
     setIsDeleting(true);
 
-    deleteAccounnt(currentUser?._id as string, {
+    deleteAccount(currentUser?._id as string, {
       onSuccess(response) {
         console.log(response, 'respoo');
-
+        logoutRequestAction();
         toast.success('Account deleted.');
         setShowDeleteDialog(false);
         logout();
+        router.push('/login');
       },
       onError(error: any, variables, context) {
         const {data} = error?.response ?? {};
