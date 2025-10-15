@@ -45,7 +45,8 @@ export const VerifyEmailPage = () => {
   const searchParams = useSearchParams();
   const navigate = useRouter();
   const token = searchParams.get('token');
-
+  const reason = searchParams.get('reason');
+  const emailFromQuery = searchParams.get('email');
   const {isLoading, isError, isSuccess, data, error, refetch} = useQuery({
     queryKey: ['verifyEmail', token],
     queryFn: () => emailVerificationRequestAction(token),
@@ -62,6 +63,7 @@ export const VerifyEmailPage = () => {
     clearErrors,
     reset,
     setError,
+    setValue,
     formState: {errors, isValid},
   } = useForm<verifyFormData>({
     resolver: zodResolver(formSchema),
@@ -84,6 +86,16 @@ export const VerifyEmailPage = () => {
       navigate.replace('/login');
     }
   }, [isSuccess, data, navigate]);
+
+  useEffect(() => {
+    if (reason === 'unverified') {
+      setEmailSent(true);
+      setValue('email', emailFromQuery as string);
+      toast.warning(
+        'Your email is not verified. Please check your inbox to verify your account.',
+      );
+    }
+  }, [reason, emailFromQuery]);
 
   if (token && isLoading) {
     return (
@@ -290,18 +302,19 @@ export const VerifyEmailPage = () => {
                       ? `Try again in ${cooldown}s`
                       : 'Send Another Link'}
                   </Button>
-
-                  <div className="text-center">
-                    <p className="text-sm dark:text-muted-foreground mt-4">
-                      Entered the wrong email?{' '}
-                      <button
-                        disabled={cooldown > 0 || isSubmitting}
-                        onClick={() => setEmailSent(false)}
-                        className="underline text-app hover:underline cursor-pointer">
-                        Change it
-                      </button>
-                    </p>
-                  </div>
+                  {!reason && (
+                    <div className="text-center">
+                      <p className="text-sm dark:text-muted-foreground mt-4">
+                        Entered the wrong email?{' '}
+                        <button
+                          disabled={cooldown > 0 || isSubmitting}
+                          onClick={() => setEmailSent(false)}
+                          className="underline text-app hover:underline cursor-pointer">
+                          Change it
+                        </button>
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
               {isError && verificationErr && !emailSent && (

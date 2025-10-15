@@ -23,7 +23,7 @@ import {queryClient} from '@/lib/client/query-client';
 import {capitalizeName} from '@/lib/formatter';
 import {SectionName} from '@/types/section';
 import {useQuery} from '@tanstack/react-query';
-import {FileImage, Trash2, X} from 'lucide-react';
+import {ChevronLeft, FileImage, Trash2, X} from 'lucide-react';
 import {useParams, useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useRef, useState} from 'react';
 import {postService} from '../actions';
@@ -249,9 +249,9 @@ export const CreatePostPage = () => {
       <div className="sticky top-0 backdrop-blur-sm border-b z-10 bg-white/80 border-app-border dark:bg-background">
         <div className="px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {/* <Button variant="ghost" size="icon" onClick={() => goBack()}>
+            <Button variant="ghost" size="icon" onClick={() => navigate.back()}>
               <ChevronLeft />
-            </Button> */}
+            </Button>
             <h1 className="text-xl font-bold">
               {isEditing ? 'Edit' : 'Create Post'}
             </h1>
