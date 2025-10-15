@@ -1,6 +1,8 @@
 'use client';
 
 import {CustomLogo} from '@/components/app-logo';
+import ErrorFeedback from '@/components/feedbacks/error-feedback';
+import {LoadingFeedback} from '@/components/feedbacks/loading-feedback';
 import {Button} from '@/components/ui/button';
 import {
   Card,
@@ -12,6 +14,7 @@ import {
 } from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {toast} from '@/components/ui/toast';
+import {EMAIL_VERIFICATION_ERROR} from '@/constants/api-resources';
 import {InputLabel, InputMessage} from '@/modules/components/form-info';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation, useQuery} from '@tanstack/react-query';
@@ -22,23 +25,19 @@ import {useForm} from 'react-hook-form';
 import {z} from 'zod';
 import {
   emailVerificationRequestAction,
-  forgotPasswordRequestAction,
   resendEmailVerificationLinkRequestAction,
 } from '../actions';
 
 const formSchema = z.object({
   email: z.string().trim().email({message: 'Invalid email address'}),
 });
-type forgotFormData = z.infer<typeof formSchema>;
+type verifyFormData = z.infer<typeof formSchema>;
 
 export const VerifyEmailPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [cooldown, setCooldown] = useState(0);
 
-  const {mutate: forgotPass} = useMutation({
-    mutationFn: forgotPasswordRequestAction,
-  });
   const {mutate: resendVerificationLink} = useMutation({
     mutationFn: resendEmailVerificationLinkRequestAction,
   });
@@ -46,18 +45,15 @@ export const VerifyEmailPage = () => {
   const searchParams = useSearchParams();
   const navigate = useRouter();
   const token = searchParams.get('token');
-  console.log(token, 'tokennman');
 
-  const {isLoading, isError, isSuccess} = useQuery({
+  const {isLoading, isError, isSuccess, data, error, refetch} = useQuery({
     queryKey: ['verifyEmail', token],
     queryFn: () => emailVerificationRequestAction(token),
     enabled: !!token,
     retry: false,
-    // onSuccess: () => {
-    //   // optional delay to show final success step
-    //   setTimeout(() => navigate('/verify/success'), 1000);
-    // },
   });
+
+  console.log(data, 'my dataa', error);
 
   const {
     register,
@@ -67,7 +63,7 @@ export const VerifyEmailPage = () => {
     reset,
     setError,
     formState: {errors, isValid},
-  } = useForm<forgotFormData>({
+  } = useForm<verifyFormData>({
     resolver: zodResolver(formSchema),
     mode: 'onChange',
     defaultValues: {
@@ -82,70 +78,47 @@ export const VerifyEmailPage = () => {
     }
   }, [cooldown]);
 
+  useEffect(() => {
+    if (isSuccess && data?.code === '200') {
+      toast.success('Email verified! You can now sign in.');
+      navigate.replace('/login');
+    }
+  }, [isSuccess, data, navigate]);
+
+  if (token && isLoading) {
+    return (
+      <LoadingFeedback
+        variant="page"
+        message="Please wait..."
+        submessage="Verifying your email"
+        showIcon={false}
+      />
+    );
+  }
+  const verificationErr = error?.message === EMAIL_VERIFICATION_ERROR;
+  if (isError && !verificationErr) {
+    return (
+      <ErrorFeedback
+        showRetry
+        onRetry={refetch}
+        message="We encountered an unexpected error. Please try again"
+        variant="detailed"
+      />
+    );
+  }
+
   const [email = ''] = watch(['email']);
 
   const resetFormError = () => {
     clearErrors(['email']);
   };
 
-  const onSubmit = async (data: forgotFormData) => {
-    console.log(data, 'dataaa');
+  const onSubmit = async (data: verifyFormData) => {
     setIsSubmitting(true);
     resetFormError();
-    forgotPass(data, {
-      onSuccess(response) {
-        console.log(response, 'respoo');
-        setEmailSent(true);
-        reset();
-        toast.success('Password reset link sent to your email');
-      },
-      onError(error: any, variables, context) {
-        const {data} = error?.response ?? {};
-        console.log(data, 'error data');
-        if (data?.message) {
-          errorHandler(data.message);
-          return;
-        }
-        toast.error('Failed to send reset link. Please try again.');
-      },
-      onSettled(data, error, variables, context) {
-        setIsSubmitting(false);
-      },
-    });
-  };
-
-  const errorHandler = (message: string) => {
-    if (message === 'User not found') {
-      setError('email', {
-        type: 'server',
-        message: message,
-      });
-      return;
-    }
-    toast.error(message || 'Oops! Something went wrong, please try again');
-  };
-
-  if (token && isLoading) {
-    return <VerifyingEmailScreenLoader />;
-  }
-  if (isSuccess) {
-    setTimeout(() => navigate.replace('/login'), 1000);
-    toast.success('Email verification successful');
-    return;
-  }
-
-  const handleResend = () => {
-    setIsSubmitting(true);
-    setEmailSent(false);
-    const data = {
-      email,
-    };
-
     resendVerificationLink(data, {
       onSuccess(response) {
-        console.log(response, 'respoo');
         setEmailSent(true);
-        reset();
         toast.success('Email verification link sent to your email');
       },
       onError(error: any, variables, context) {
@@ -163,7 +136,42 @@ export const VerifyEmailPage = () => {
         setIsSubmitting(false);
       },
     });
-    setCooldown(30);
+  };
+
+  const handleResend = () => {
+    setIsSubmitting(true);
+    setEmailSent(false);
+    const data = {
+      email,
+    };
+    resendVerificationLink(data, {
+      onSuccess(response) {
+        setEmailSent(true);
+        setCooldown(30);
+        toast.success('Email verification link sent to your email');
+      },
+      onError(error: any, variables, context) {
+        const {data} = error?.response ?? {};
+        console.log(data, 'error data');
+        if (data?.message) {
+          errorHandler(data.message);
+          return;
+        }
+        toast.error(
+          'Failed to send email verification link. Please try again.',
+        );
+      },
+      onSettled(data, error, variables, context) {
+        setIsSubmitting(false);
+      },
+    });
+  };
+
+  const errorHandler = (message: string) => {
+    setError('email', {
+      type: 'server',
+      message: message,
+    });
   };
 
   return (
@@ -230,16 +238,11 @@ export const VerifyEmailPage = () => {
               <CardTitle className="text-2xl text-center">
                 Verify your email
               </CardTitle>
+
               <CardDescription className="text-center">
-                {isError ? (
-                  ''
-                ) : (
-                  <>
-                    {emailSent
-                      ? 'Check your inbox for the verification link'
-                      : 'Enter your email to receive a email verification link'}
-                  </>
-                )}
+                {emailSent
+                  ? 'Check your inbox for the verification link'
+                  : 'Enter your email to receive a email verification link'}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -279,18 +282,20 @@ export const VerifyEmailPage = () => {
                     another link.
                   </p>
                   <Button
-                    // disabled={cooldown > 0 || resend.isPending}
+                    disabled={cooldown > 0 || isSubmitting}
                     onClick={handleResend}
                     variant="outline"
                     className="mt-4">
-                    Send Another Link
-                    {/* {cooldown > 0 ? `Try again in ${cooldown}s` : 'Resend Verification Link'} */}
+                    {cooldown > 0
+                      ? `Try again in ${cooldown}s`
+                      : 'Send Another Link'}
                   </Button>
 
                   <div className="text-center">
                     <p className="text-sm dark:text-muted-foreground mt-4">
                       Entered the wrong email?{' '}
                       <button
+                        disabled={cooldown > 0 || isSubmitting}
                         onClick={() => setEmailSent(false)}
                         className="underline text-app hover:underline cursor-pointer">
                         Change it
@@ -299,15 +304,42 @@ export const VerifyEmailPage = () => {
                   </div>
                 </div>
               )}
-              {isError && !emailSent && (
-                <FailedEmailVerification handleResend={handleResend} />
+              {isError && verificationErr && !emailSent && (
+                <>
+                  {!errors.email && <FailedEmailVerification />}
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                    <div className="space-y-2">
+                      <InputLabel label="Email address" htmlFor="email" />
+                      <Input
+                        id="email"
+                        type="email"
+                        disabled={isSubmitting}
+                        value={email}
+                        placeholder="name@example.com"
+                        className="form-input"
+                        required
+                        {...register('email')}
+                      />
+                      <InputMessage field={email} errorField={errors.email} />
+                    </div>
+
+                    <Button
+                      type="submit"
+                      className="w-full bg-app hover:bg-app/90 text-white"
+                      disabled={isSubmitting || !isValid}>
+                      {isSubmitting ? 'Sending...' : 'Send Verification Link'}
+                    </Button>
+                  </form>
+                </>
               )}
             </CardContent>
             <CardFooter className="flex justify-center">
               <div className="text-center">
                 <p className="text-sm dark:text-muted-foreground">
                   Need help?{' '}
-                  <Link href="/login" className="text-app hover:underline">
+                  <Link
+                    href="/help-center"
+                    className="text-app hover:underline">
                     Contact support
                   </Link>
                 </p>
@@ -320,63 +352,7 @@ export const VerifyEmailPage = () => {
   );
 };
 
-export const VerifyingEmailScreenLoader = () => {
-  const steps = [
-    'Securely checking your token',
-    'Ensuring your account is valid',
-    'Preparing your account access',
-  ];
-
-  const [currentStep, setCurrentStep] = useState(0);
-
-  useEffect(() => {
-    const timeouts: NodeJS.Timeout[] = [];
-
-    steps.forEach((_, index) => {
-      const id = setTimeout(() => setCurrentStep(index + 1), index * 5000);
-      timeouts.push(id);
-    });
-
-    return () => timeouts.forEach(clearTimeout);
-  }, []);
-
-  return (
-    <div className="text-center max-w-md mx-auto mt-20">
-      <div className="flex items-center justify-center mb-6">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-app"></div>
-      </div>
-
-      <h1 className="text-3xl font-bold mb-4">Verifying your email...</h1>
-
-      <p className="text-lg mb-6 text-gray-300">
-        Please wait while we confirm your verification link. This should only
-        take a moment.
-      </p>
-
-      <div className="space-y-2 text-left">
-        {steps.slice(0, currentStep).map((step, index) => (
-          <div key={index} className="flex items-center gap-2 animate-fade-in">
-            <span className="bg-white/20 p-1 rounded-full">✓</span>
-            <span>{step}</span>
-          </div>
-        ))}
-      </div>
-
-      {currentStep === 3 && (
-        <p className="text-sm text-gray-400 mt-8">
-          Do not close this page — you’ll be redirected once verification is
-          complete.
-        </p>
-      )}
-    </div>
-  );
-};
-
-const FailedEmailVerification = ({
-  handleResend,
-}: {
-  handleResend: () => void;
-}) => {
+const FailedEmailVerification = () => {
   return (
     <div className="text-center p-4">
       <div className="bg-red-100 text-red-800 p-4 rounded-md mb-4">
@@ -386,9 +362,6 @@ const FailedEmailVerification = ({
         The verification link may have expired or is invalid. Please request a
         new link to verify your email.
       </p>
-      <Button onClick={handleResend} variant="outline" className="mt-4">
-        Send Another Link
-      </Button>
     </div>
   );
 };

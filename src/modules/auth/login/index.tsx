@@ -12,7 +12,11 @@ import {
 } from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {toast} from '@/components/ui/toast';
-import {GOOGLE_SIGNIN_URL, SESSION_EXPIRED} from '@/constants/api-resources';
+import {
+  GOOGLE_SIGNIN_URL,
+  SESSION_EXPIRED,
+  UNVERIFIED_EMAIL_ERROR,
+} from '@/constants/api-resources';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {useGlobalStore} from '@/hooks/stores/use-global-store';
 import {InputLabel, InputMessage} from '@/modules/components/form-info';
@@ -137,6 +141,11 @@ export const LoginPage = () => {
         type: 'server',
         message: message,
       });
+      return;
+    }
+    if (message === UNVERIFIED_EMAIL_ERROR) {
+      toast.error(message);
+      router.push('/verify-email');
       return;
     }
     toast.error(message);

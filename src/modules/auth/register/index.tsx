@@ -58,7 +58,7 @@ const formSchema = z
 type signupFormData = z.infer<typeof formSchema>;
 export const RegisterPage = () => {
   const [avatar, setAvatar] = useState<File | null>(null);
-
+  const [emailSent, setEmailSent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -110,8 +110,11 @@ export const RegisterPage = () => {
       onSuccess(data, variables, context) {
         console.log(data, 'success data');
         reset();
-        toast.success('Account created');
-        navigate.push('/login');
+        setEmailSent(true);
+        toast.info(
+          'Verification link sent! Check your email to activate your account.',
+        );
+        //navigate.push('/login');
       },
       onError(error: any, variables, context) {
         const {data} = error?.response ?? null;
@@ -248,181 +251,197 @@ export const RegisterPage = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="mb-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full flex items-center justify-center gap-2 border-gray-300"
-                  onClick={handleGoogleRegister}
-                  disabled={isGoogleLoading}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="20"
-                    height="20">
-                    <path
-                      fill="#4285F4"
-                      d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96h-3.98v3.09c1.97 3.92 6.02 6.62 10.71 6.62z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M5.525 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29v-3.09h-3.98c-.8 1.61-1.26 3.41-1.26 5.38s.46 3.77 1.26 5.38l3.98-3.09z"
-                    />
-                    <path
-                      fill="#EA4335"
-                      d="M12.255 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42c-2.08-1.95-4.81-3.13-8.02-3.13-4.69 0-8.74 2.7-10.71 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"
-                    />
-                  </svg>
-                  {isGoogleLoading
-                    ? 'Signing up with Google...'
-                    : 'Sign up with Google'}
-                </Button>
-              </div>
-
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-app-border" />
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">
-                    Or sign up with email
-                  </span>
-                </div>
-              </div>
-
-              <form
-                onSubmit={handleSubmit(handleRegister)}
-                className="space-y-4">
-                {/* Profile Photo Upload */}
-                <div className="flex flex-col items-center mb-4">
-                  <div className="relative">
-                    <Avatar className="h-20 w-20">
-                      {profileImage ? (
-                        <AvatarImage src={profileImage} alt="Profile preview" />
-                      ) : (
-                        <AvatarFallback className="bg-app/20 text-app text-2xl">
-                          {getInitials()}
-                        </AvatarFallback>
-                      )}
-                    </Avatar>
-                    <label
-                      htmlFor="profilePhoto"
-                      className="absolute bottom-0 right-0 cursor-pointer">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className="rounded-full h-8 w-8 bg-white border border-forum-border pointer-events-none"
-                        asChild>
-                        <div>
-                          <Camera size={16} />
-                          <span className="sr-only">Upload profile photo</span>
-                        </div>
-                      </Button>
-                    </label>
-                    <input
-                      id="profilePhoto"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                    />
+              {!emailSent && (
+                <>
+                  <div className="mb-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full flex items-center justify-center gap-2 border-gray-300"
+                      onClick={handleGoogleRegister}
+                      disabled={isGoogleLoading}>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="20"
+                        height="20">
+                        <path
+                          fill="#4285F4"
+                          d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"
+                        />
+                        <path
+                          fill="#34A853"
+                          d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96h-3.98v3.09c1.97 3.92 6.02 6.62 10.71 6.62z"
+                        />
+                        <path
+                          fill="#FBBC05"
+                          d="M5.525 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29v-3.09h-3.98c-.8 1.61-1.26 3.41-1.26 5.38s.46 3.77 1.26 5.38l3.98-3.09z"
+                        />
+                        <path
+                          fill="#EA4335"
+                          d="M12.255 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42c-2.08-1.95-4.81-3.13-8.02-3.13-4.69 0-8.74 2.7-10.71 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"
+                        />
+                      </svg>
+                      {isGoogleLoading
+                        ? 'Signing up with Google...'
+                        : 'Sign up with Google'}
+                    </Button>
                   </div>
-                  <div className="mt-2 text-center">
-                    <label
-                      htmlFor="profilePhoto"
-                      className="text-sm text-app cursor-pointer hover:underline">
-                      {profileImage
-                        ? 'Change profile photo'
-                        : 'Upload a profile photo'}
-                    </label>
+
+                  <div className="relative my-6">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t border-app-border" />
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="px-2 bg-white text-gray-500">
+                        Or sign up with email
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <InputLabel label="Email" htmlFor="email" />
-                  <Input
-                    disabled={isSubmitting}
-                    id="email"
-                    type="email"
-                    value={email}
-                    placeholder="Johndoe@mail.com"
-                    className="form-input"
-                    required
-                    {...register('email')}
-                  />
-                  <InputMessage field={email} errorField={errors.email} />
-                </div>
+                  <form
+                    onSubmit={handleSubmit(handleRegister)}
+                    className="space-y-4">
+                    {/* Profile Photo Upload */}
+                    <div className="flex flex-col items-center mb-4">
+                      <div className="relative">
+                        <Avatar className="h-20 w-20">
+                          {profileImage ? (
+                            <AvatarImage
+                              src={profileImage}
+                              alt="Profile preview"
+                            />
+                          ) : (
+                            <AvatarFallback className="bg-app/20 text-app text-2xl">
+                              {getInitials()}
+                            </AvatarFallback>
+                          )}
+                        </Avatar>
+                        <label
+                          htmlFor="profilePhoto"
+                          className="absolute bottom-0 right-0 cursor-pointer">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="rounded-full h-8 w-8 bg-white border border-forum-border pointer-events-none"
+                            asChild>
+                            <div>
+                              <Camera size={16} />
+                              <span className="sr-only">
+                                Upload profile photo
+                              </span>
+                            </div>
+                          </Button>
+                        </label>
+                        <input
+                          id="profilePhoto"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          className="hidden"
+                        />
+                      </div>
+                      <div className="mt-2 text-center">
+                        <label
+                          htmlFor="profilePhoto"
+                          className="text-sm text-app cursor-pointer hover:underline">
+                          {profileImage
+                            ? 'Change profile photo'
+                            : 'Upload a profile photo'}
+                        </label>
+                      </div>
+                    </div>
 
-                <div className="space-y-2">
-                  <InputLabel label="Username" htmlFor="username" />
+                    <div className="space-y-2">
+                      <InputLabel label="Email" htmlFor="email" />
+                      <Input
+                        disabled={isSubmitting}
+                        id="email"
+                        type="email"
+                        value={email}
+                        placeholder="Johndoe@mail.com"
+                        className="form-input"
+                        required
+                        {...register('email')}
+                      />
+                      <InputMessage field={email} errorField={errors.email} />
+                    </div>
 
-                  <Input
-                    disabled={isSubmitting}
-                    id="username"
-                    type="text"
-                    value={username}
-                    placeholder="johndoe"
-                    autoComplete="username"
-                    className="form-input"
-                    required
-                    {...register('username')}
-                  />
+                    <div className="space-y-2">
+                      <InputLabel label="Username" htmlFor="username" />
 
-                  <InputMessage field={username} errorField={errors.username} />
-                </div>
+                      <Input
+                        disabled={isSubmitting}
+                        id="username"
+                        type="text"
+                        value={username}
+                        placeholder="johndoe"
+                        autoComplete="username"
+                        className="form-input"
+                        required
+                        {...register('username')}
+                      />
 
-                <div className="space-y-2">
-                  <InputLabel label="Password" htmlFor="password" />
+                      <InputMessage
+                        field={username}
+                        errorField={errors.username}
+                      />
+                    </div>
 
-                  <Input
-                    disabled={isSubmitting}
-                    id="password"
-                    type="password"
-                    value={password}
-                    placeholder="••••••••"
-                    autoComplete="new-password"
-                    className="form-input"
-                    required
-                    {...register('password')}
-                  />
-                  <InputMessage field={password} errorField={errors.password} />
-                </div>
+                    <div className="space-y-2">
+                      <InputLabel label="Password" htmlFor="password" />
 
-                <div className="space-y-2">
-                  <InputLabel
-                    label="Confirm Password"
-                    htmlFor="confirmPassword"
-                  />
+                      <Input
+                        disabled={isSubmitting}
+                        id="password"
+                        type="password"
+                        value={password}
+                        placeholder="••••••••"
+                        autoComplete="new-password"
+                        className="form-input"
+                        required
+                        {...register('password')}
+                      />
+                      <InputMessage
+                        field={password}
+                        errorField={errors.password}
+                      />
+                    </div>
 
-                  <Input
-                    disabled={isSubmitting}
-                    id="confirmPassword"
-                    type="password"
-                    value={confirmPassword}
-                    placeholder="••••••••"
-                    autoComplete="new-password"
-                    className="form-input"
-                    required
-                    {...register('confirmPassword')}
-                  />
-                  <InputMessage
-                    field={confirmPassword}
-                    errorField={errors.confirmPassword}
-                  />
-                </div>
+                    <div className="space-y-2">
+                      <InputLabel
+                        label="Confirm Password"
+                        htmlFor="confirmPassword"
+                      />
 
-                <Button
-                  type="submit"
-                  className="w-full bg-app hover:bg-app/90 text-white"
-                  disabled={isSubmitting || !isValid}>
-                  {isSubmitting ? 'Creating account...' : 'Sign up'}
-                </Button>
-              </form>
+                      <Input
+                        disabled={isSubmitting}
+                        id="confirmPassword"
+                        type="password"
+                        value={confirmPassword}
+                        placeholder="••••••••"
+                        autoComplete="new-password"
+                        className="form-input"
+                        required
+                        {...register('confirmPassword')}
+                      />
+                      <InputMessage
+                        field={confirmPassword}
+                        errorField={errors.confirmPassword}
+                      />
+                    </div>
+
+                    <Button
+                      type="submit"
+                      className="w-full bg-app hover:bg-app/90 text-white"
+                      disabled={isSubmitting || !isValid}>
+                      {isSubmitting ? 'Creating account...' : 'Sign up'}
+                    </Button>
+                  </form>
+                </>
+              )}
+              {emailSent && <VerifyEmailSent />}
             </CardContent>
             <CardFooter className="flex justify-center">
               <div className="text-center">
@@ -437,6 +456,26 @@ export const RegisterPage = () => {
           </Card>
         </div>
       </div>
+    </div>
+  );
+};
+
+const VerifyEmailSent = () => {
+  const navigate = useRouter();
+  return (
+    <div className="text-center p-4">
+      <div className="bg-green-100 text-green-800 p-4 rounded-md mb-4">
+        Verification link sent! Check your email inbox.
+      </div>
+      <p>
+        Didn't receive an email? Check your spam folder or request another link.
+      </p>
+      <Button
+        onClick={() => navigate.push('/verify-email')}
+        variant="outline"
+        className="mt-4">
+        Send Another Link
+      </Button>
     </div>
   );
 };

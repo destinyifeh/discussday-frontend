@@ -27,3 +27,7 @@ export const HTTP_STATUS_CODE = {
   SERVICE_UNAVAILABLE: 503,
   GATEWAY_TIMEOUT: 504,
 };
+
+export const EMAIL_VERIFICATION_ERROR = 'Invalid or expired verification link';
+export const UNVERIFIED_EMAIL_ERROR =
+  'Please verify your email before logging in.';

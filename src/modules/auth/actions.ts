@@ -31,10 +31,13 @@ export async function registerRequestAction(
   });
 }
 
-export async function emailVerificationRequestAction(
-  token: string | null,
-): Promise<AxiosResponse> {
-  return await api.post(`/auth/verify-email?token=${token}`);
+export async function emailVerificationRequestAction(token: string | null) {
+  try {
+    const response = await api.get(`/auth/verify-email?token=${token}`);
+    return response.data;
+  } catch (err: any) {
+    throw err?.response?.data ?? err;
+  }
 }
 
 export async function resendEmailVerificationLinkRequestAction(data: object) {
