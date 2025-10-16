@@ -27,14 +27,12 @@ import {Separator} from '@/components/ui/separator';
 import {Switch} from '@/components/ui/switch';
 import {Textarea} from '@/components/ui/textarea';
 import {toast} from '@/components/ui/toast';
-import {HTTP_STATUS_CODE} from '@/constants/api-resources';
 import {ChangePasswordErrorMessages} from '@/constants/messages';
 import {ALLOW_DEACTIVATION} from '@/constants/settings';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {
   changePasswordRequestAction,
   deleteUserRequest,
-  logoutRequestAction,
 } from '@/modules/auth/actions';
 import {InputMessage} from '@/modules/components/form-info';
 import {zodResolver} from '@hookform/resolvers/zod';
@@ -194,12 +192,11 @@ export const SettingsPage = () => {
 
     deleteAccount(currentUser?._id as string, {
       onSuccess(response) {
-        console.log(response, 'respoo');
-        onSuccessAccountDeletion();
-        // toast.success('Account deleted.');
-        // setShowDeleteDialog(false);
-        // logout();
-        //router.push('/login');
+        toast.success('Account deleted.');
+        logout();
+        setTimeout(() => {
+          router.push('/login');
+        }, 100);
       },
       onError(error: any, variables, context) {
         const {data} = error?.response ?? {};
@@ -210,26 +207,12 @@ export const SettingsPage = () => {
         );
       },
       onSettled(data, error, variables, context) {
+        setShowDeleteDialog(false);
         setIsDeleting(false);
       },
     });
   };
 
-  const onSuccessAccountDeletion = async () => {
-    try {
-      const res = await logoutRequestAction();
-      if (res?.data?.code === HTTP_STATUS_CODE.OK) {
-        logout();
-        toast.success('Account deleted.');
-        setShowDeleteDialog(false);
-        router.push('/login');
-      } else {
-        toast.error(
-          'Something went wrong while logging you out. Please try again.',
-        );
-      }
-    } catch (err) {}
-  };
   return (
     <div>
       <PageHeader title="Settings" />
