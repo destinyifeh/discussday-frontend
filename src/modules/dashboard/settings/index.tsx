@@ -201,7 +201,6 @@ export const SettingsPage = () => {
       onError(error: any, variables, context) {
         const {data} = error?.response ?? {};
         console.log(data, 'error data');
-
         toast.error(
           'Account could not be deleted due to a server error. Please try again in a few minutes.',
         );
@@ -466,11 +465,12 @@ export const SettingsPage = () => {
                     <AlertDialogCancel disabled={isDeleting}>
                       Cancel
                     </AlertDialogCancel>
-                    <AlertDialogAction
-                      className="bg-red-500 hover:bg-red-600 dark:text-white"
-                      onClick={handleAccountDeletion}>
+                    <Button
+                      onClick={handleAccountDeletion}
+                      disabled={isDeleting}
+                      className="bg-red-500 hover:bg-red-600 dark:text-white">
                       {isDeleting ? 'Deleting...' : 'Yes, Delete Forever'}
-                    </AlertDialogAction>
+                    </Button>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
