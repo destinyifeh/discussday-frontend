@@ -8,10 +8,11 @@ export default function robots(): MetadataRoute.Robots {
       disallow: [
         '/advertise/ad-performance',
         '/settings',
-        '/api',
+        '/api/',
         '/auth',
         '/admin',
         '/notifications',
+        '/_next/',
       ],
       allow: ['/'],
     },
