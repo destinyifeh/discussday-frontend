@@ -117,12 +117,12 @@ const CommentCard = ({
                     <AvatarImage
                       src={comment.quotedComment.quotedUserImage ?? undefined}
                     />
-                    <AvatarFallback className="text-sm font-semibold text-app capitalize bg-gray-200">
+                    <AvatarFallback className="text-sm font-semibold text-app bg-gray-200">
                       {comment.quotedComment.quotedUser.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
                 </Link>
-                <p className="text-sm font-semibold text-app capitalize">
+                <p className="text-sm font-semibold text-app">
                   <Link href={`/user/${quoteName}`}>{quoteName}</Link>
                 </p>
                 {quotedContentCreatedDate && (
@@ -176,12 +176,12 @@ const CommentCard = ({
                   <AvatarImage
                     src={comment.quotedComment.quotedUserImage ?? undefined}
                   />
-                  <AvatarFallback className="text-sm font-semibold text-app capitalize bg-gray-200">
+                  <AvatarFallback className="text-sm font-semibold text-app bg-gray-200">
                     {comment.quotedComment.quotedUser.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
               </Link>
-              <p className="text-sm font-semibold text-app capitalize">
+              <p className="text-sm font-semibold text-app">
                 <Link href={`/user/${quoteName}`}>{quoteName}</Link>
               </p>
             </div>
@@ -219,7 +219,7 @@ const CommentCard = ({
           className="w-10 h-10 active:scale-90 transition-transform duration-150"
           onClick={navigateToUserProfile}>
           <AvatarImage src={comment.commentBy.avatar} />
-          <AvatarFallback className="capitalize text-app text-3xl">
+          <AvatarFallback className="text-app text-3xl">
             {comment.commentBy.username.charAt(0)}
           </AvatarFallback>
         </Avatar>
@@ -229,7 +229,7 @@ const CommentCard = ({
             <div className="flex items-center gap-1">
               <Link
                 href={`/user/${comment.commentBy.username}`}
-                className="font-bold hover:underline capitalize active:scale-90 transition-transform duration-150">
+                className="font-bold hover:underline active:scale-90 transition-transform duration-150">
                 {comment.commentBy.username}
               </Link>
 

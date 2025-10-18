@@ -125,7 +125,7 @@ export const WebCommentSection = ({
             <div className="flex items-center mb-3">
               <Avatar className="h-8 w-8 mr-2">
                 <AvatarImage src={currentUser?.avatar ?? undefined} />
-                <AvatarFallback className="capitalize text-app text-3xl">
+                <AvatarFallback className="text-app text-3xl">
                   {currentUser?.username.charAt(0)}
                 </AvatarFallback>
               </Avatar>
@@ -145,12 +145,12 @@ export const WebCommentSection = ({
                   <Link href={`/user/${quotedUser}`}>
                     <Avatar className="w-5 h-5">
                       <AvatarImage src={quotedUserImage ?? undefined} />
-                      <AvatarFallback className="text-sm font-semibold text-app capitalize bg-gray-200">
+                      <AvatarFallback className="text-sm font-semibold text-app bg-gray-200">
                         {quotedUser.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                   </Link>
-                  <p className="text-sm font-semibold text-app capitalize">
+                  <p className="text-sm font-semibold text-app">
                     <Link href={`/user/${quotedUser}`}>{quotedUser}</Link>
                   </p>
                   <span className="text-app-gray">

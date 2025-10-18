@@ -149,7 +149,7 @@ const AdCard = ({
           className="w-10 h-10 cursor-pointer"
           onClick={navigateToUserProfile}>
           <AvatarImage src={ad?.owner?.avatar ?? undefined} />
-          <AvatarFallback className="capitalize text-app text-3xl">
+          <AvatarFallback className="text-app text-3xl">
             {ad.owner?.username?.charAt(0)}
           </AvatarFallback>
         </Avatar>
@@ -159,9 +159,7 @@ const AdCard = ({
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-1 overflow-hidden">
                 <div className="font-bold hover:underline truncate cursor-pointer">
-                  <Link
-                    href={`/user/${ad?.owner?.username}`}
-                    className="capitalize">
+                  <Link href={`/user/${ad?.owner?.username}`} className="">
                     {ad?.owner?.username}
                   </Link>
                 </div>

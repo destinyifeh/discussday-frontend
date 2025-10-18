@@ -18,14 +18,22 @@ import {
 import {Sections} from '@/constants/data';
 import {
   BASIC_PLAN_DESCRIPTION,
+  basicDurations,
   ctaBtn,
   ENTERPRISE_PLAN_DESCRIPTION,
   enterpriseDurations,
   PROFESSIONAL_PLAN_DESCRIPTION,
+  professionalDurations,
 } from '@/fixtures/ad';
 import {useAdStore} from '@/hooks/stores/use-ad-store';
 import {urlFormatter} from '@/lib/formatter';
-import {AdCTA, AdPlan, AdType, DurationValue} from '@/types/ad-types';
+import {
+  AdCTA,
+  AdPlan,
+  AdType,
+  DurationOption,
+  DurationValue,
+} from '@/types/ad-types';
 import {ArrowRight, Upload} from 'lucide-react';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {ChangeEvent, Fragment, useRef, useState} from 'react';
@@ -216,17 +224,23 @@ export const AdPlanPage = () => {
   };
 
   let planDescription = '';
+  let planDurations: DurationOption[] = [];
 
   switch (plan) {
     case 'basic':
       planDescription = BASIC_PLAN_DESCRIPTION;
+      planDurations = basicDurations;
       break;
     case 'professional':
       planDescription = PROFESSIONAL_PLAN_DESCRIPTION;
+      planDurations = professionalDurations;
       break;
     case 'enterprise':
-    default:
       planDescription = ENTERPRISE_PLAN_DESCRIPTION;
+      planDurations = enterpriseDurations;
+      break;
+    default:
+      planDescription = 'Custom';
       break;
   }
 
@@ -265,7 +279,7 @@ export const AdPlanPage = () => {
                     <SelectValue placeholder="Select duration" />
                   </SelectTrigger>
                   <SelectContent>
-                    {enterpriseDurations.map(duration => (
+                    {planDurations.map(duration => (
                       <SelectItem key={duration.value} value={duration.value}>
                         <div className="flex items-center justify-between w-full">
                           <span>{duration.label}</span>

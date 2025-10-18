@@ -213,7 +213,7 @@ const PostCard = ({
           className="w-10 h-10 cursor-pointer active:scale-90 transition-transform duration-150"
           onClick={navigateToUserProfile}>
           <AvatarImage src={post.user.avatar ?? undefined} />
-          <AvatarFallback className="capitalize text-app text-3xl">
+          <AvatarFallback className="text-app text-3xl">
             {post.user.username.charAt(0)}
           </AvatarFallback>
         </Avatar>
@@ -225,7 +225,7 @@ const PostCard = ({
                 <div className="font-bold hover:underline truncate cursor-pointer active:scale-90 transition-transform duration-150">
                   <Link
                     href={`/user/${post.user.username}`}
-                    className="capitalize active:scale-90 transition-transform duration-150">
+                    className="active:scale-90 transition-transform duration-150">
                     {truncateText(post.user.username, 20)}
                   </Link>
                 </div>
