@@ -240,7 +240,7 @@ export const AdPlanPage = () => {
       planDurations = enterpriseDurations;
       break;
     default:
-      planDescription = 'Custom';
+      planDescription = 'Custom plan';
       break;
   }
 
