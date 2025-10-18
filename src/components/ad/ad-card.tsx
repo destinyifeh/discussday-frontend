@@ -86,6 +86,7 @@ const AdCard = ({
     } else {
       // ✅ External → full redirect
       window.location.href = url;
+      //  window.open(url, '_blank', 'noopener,noreferrer');
     }
   };
 
