@@ -157,7 +157,7 @@ export const AdPlanPage = () => {
       reader.onloadend = () => {
         const img = new Image();
         img.onload = () => {
-          // ✅ You now have width & height
+          // You now have width & height
           const width = img.width;
           const height = img.height;
 
@@ -213,7 +213,7 @@ export const AdPlanPage = () => {
     const isCommonInvalid =
       title.length < 5 || !duration || (requiresSection && !section);
 
-    // ✅ Fix: Ensure content is not empty and has min length
+    // Fix: Ensure content is not empty and has min length
     const isContentInvalid = !content || content.trim().length < 50;
 
     if (isContentInvalid || isCommonInvalid) {
