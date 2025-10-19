@@ -93,10 +93,9 @@ const AdCard = ({
   const liked = true;
 
   const handleReport = () => {
-    toast.success('Post Reported', {
-      description:
-        'Thank you for reporting this post. Our team will review it.',
-    });
+    toast.success(
+      'Thank you for reporting this post. Our team will review it.',
+    );
   };
 
   const handleEditPost = (e: React.MouseEvent) => {
@@ -125,15 +124,11 @@ const AdCard = ({
     const postUrl = `${window.location.origin}/post/${ad?._id}`;
     try {
       copy(postUrl);
-      toast.success('Link Copied', {
-        description: 'Post link has been copied to clipboard.',
-      });
+      toast.success('Post link has been copied to clipboard.');
       setTimeout(() => setSharePopoverOpen(false), 500);
     } catch (err) {
       console.error('Failed to copy link: ', err);
-      toast.error('Copy Failed', {
-        description: 'Failed to copy link, please try again.',
-      });
+      toast.error('Failed to copy link, please try again.');
     }
   };
 

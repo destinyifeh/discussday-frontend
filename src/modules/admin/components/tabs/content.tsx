@@ -133,10 +133,9 @@ export const ContentTab: FC<ContentProps> = ({
         },
         onError(error: any, variables, context) {
           console.log(error, 'comment close err');
-          toast.error('Post delete failed', {
-            description:
-              error?.response?.data?.message ?? 'Oops! Something went wrong.',
-          });
+          toast.error(
+            error?.response?.data?.message ?? 'Oops! Something went wrong.',
+          );
           setIsLoading(false);
           setContentActionDialog(false);
         },
@@ -165,10 +164,9 @@ export const ContentTab: FC<ContentProps> = ({
         },
         onError(error: any, variables, context) {
           console.log(error, 'comment close err');
-          toast.error('Failed', {
-            description:
-              error?.response?.data?.message ?? 'Oops! Something went wrong.',
-          });
+          toast.error(
+            error?.response?.data?.message ?? 'Oops! Something went wrong.',
+          );
           setIsLoading(false);
           setContentActionDialog(false);
         },

@@ -65,18 +65,16 @@ const CommentCard = ({
       onSuccess(data, variables, context) {
         console.log(data, 'report data');
 
-        toast.success('Comment Reported', {
-          description:
-            'Thank you for reporting this comment. Our team will review it.',
-        });
+        toast.success(
+          'Thank you for reporting this comment. Our team will review it.',
+        );
       },
       onError(error, variables, context) {
         console.log(error, 'comment report err');
 
-        toast.error('Report Failed', {
-          description:
-            'Sorry, we were unable to submit your report. Please try again.',
-        });
+        toast.error(
+          'Sorry, we were unable to submit your report. Please try again.',
+        );
       },
     });
   };

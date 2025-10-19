@@ -482,10 +482,9 @@ export const PeoplePage = () => {
       onError(error, variables, context) {
         console.log(error, 'user report err');
 
-        toast.error('Report Failed', {
-          description:
-            'Sorry, we were unable to submit your report. Please try again.',
-        });
+        toast.error(
+          'Sorry, we were unable to submit your report. Please try again.',
+        );
       },
     });
   };

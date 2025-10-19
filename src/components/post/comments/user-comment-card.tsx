@@ -53,10 +53,9 @@ const UserCommentCard = ({
     usePostStore(state => state);
 
   const handleReport = () => {
-    toast.success('Comment Reported', {
-      description:
-        'Thank you for reporting this comment. Our team will review it.',
-    });
+    toast.success(
+      'Thank you for reporting this comment. Our team will review it.',
+    );
   };
 
   const handleQuote = () => {

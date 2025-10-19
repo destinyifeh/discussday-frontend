@@ -123,10 +123,9 @@ export const AdTab: FC<AdProps> = ({
       },
       onError(error, variables, context) {
         console.log(error, 'ad rejection err');
-        toast.error('Oops! Couldn’t Reject Ad', {
-          description:
-            'There was an issue rejecting this ad. Please try again in a few moments.',
-        });
+        toast.error(
+          'There was an issue rejecting this ad. Please try again in a few moments.',
+        );
       },
       onSettled(data, error, variables, context) {
         setSubmittingRejection(false);
@@ -179,10 +178,9 @@ export const AdTab: FC<AdProps> = ({
       },
       onError(error, variables, context) {
         console.log(error, 'ad pause err');
-        toast.error('Oops! Couldn’t Pause Ad', {
-          description:
-            'There was an issue pausing this ad. Please try again in a few moments.',
-        });
+        toast.error(
+          'There was an issue pausing this ad. Please try again in a few moments.',
+        );
       },
       onSettled(data, error, variables, context) {
         setSubmittingPause(false);
@@ -223,10 +221,9 @@ export const AdTab: FC<AdProps> = ({
       },
       onError(error, variables, context) {
         console.log(error, 'ad approval err');
-        toast.error('Oops! Couldn’t Approve Ad', {
-          description:
-            'There was an issue approving this ad. Please try again in a few moments.',
-        });
+        toast.error(
+          'There was an issue approving this ad. Please try again in a few moments.',
+        );
       },
       onSettled(data, error, variables, context) {
         setSubmittingApproval(false);
@@ -256,10 +253,9 @@ export const AdTab: FC<AdProps> = ({
       },
       onError(error, variables, context) {
         console.log(error, 'ad resume err');
-        toast.error('Oops! Couldn’t Resume Ad', {
-          description:
-            'There was an issue resuming this ad. Please try again in a few moments.',
-        });
+        toast.error(
+          'There was an issue resuming this ad. Please try again in a few moments.',
+        );
       },
       onSettled(data, error, variables, context) {
         setSubmittingResume(false);
@@ -288,10 +284,9 @@ export const AdTab: FC<AdProps> = ({
       },
       onError(error, variables, context) {
         console.log(error, 'ad activate err');
-        toast.error('Oops! Couldn’t Activate Ad', {
-          description:
-            'There was an issue activating this ad. Please try again in a few moments.',
-        });
+        toast.error(
+          'There was an issue activating this ad. Please try again in a few moments.',
+        );
       },
       onSettled(data, error, variables, context) {
         setSubmittingActivation(false);

@@ -52,10 +52,9 @@ export default function ReportPage() {
       onError(error, variables, context) {
         console.log(error, 'post report err');
 
-        toast.error('Report Failed', {
-          description:
-            'Sorry, we were unable to submit your report. Please try again.',
-        });
+        toast.error(
+          'Sorry, we were unable to submit your report. Please try again.',
+        );
       },
     });
   };

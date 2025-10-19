@@ -89,18 +89,15 @@ const PostCard = ({
     reportPost.mutate(payload, {
       onSuccess(data, variables, context) {
         console.log(data, 'report data');
-        toast.success('Post Reported', {
-          description:
-            'Thank you for reporting this post. Our team will review it.',
-        });
+        toast.success(
+          'Thank you for reporting this post. Our team will review it.',
+        );
       },
       onError(error, variables, context) {
         console.log(error, 'post report err');
-
-        toast.error('Report Failed', {
-          description:
-            'Sorry, we were unable to submit your report. Please try again.',
-        });
+        toast.error(
+          'Sorry, we were unable to submit your report. Please try again.',
+        );
       },
     });
   };

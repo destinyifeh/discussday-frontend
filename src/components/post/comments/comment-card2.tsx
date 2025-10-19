@@ -35,7 +35,6 @@ const CommentCard2 = ({
 
   const handleReport = () => {
     toast.success(
-      // "Comment Reported",
       'Thank you for reporting this comment. Our team will review it.',
     );
   };
