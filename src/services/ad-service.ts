@@ -1,7 +1,44 @@
-import api from '@/lib/auth/api';
+import api from '@/lib/client/api';
 import {AdPlacementProps} from '@/types/ad-types';
 import {AxiosResponse} from 'axios';
-import {CreateAdDto} from '../advertise/dto/create-ad.dto';
+
+import {AdCTA, AdPlan, DurationValue} from '@/types/ad-types';
+import {SectionName} from '@/types/section';
+
+type AdType = 'sponsored' | 'banner';
+export interface CreateAdDto {
+  type: AdType;
+
+  title: string;
+
+  content?: string;
+
+  plan: AdPlan;
+
+  section: SectionName | string;
+
+  price: string;
+
+  targetUrl: string;
+
+  callToAction: AdCTA;
+
+  duration: DurationValue;
+
+  image?: File | null;
+
+  imageUrl?: string;
+
+  targetType?: string;
+
+  whatsappNumber?: string;
+
+  adId?: string;
+
+  removedImageId?: string;
+
+  image_public_id?: string;
+}
 
 class AdService {
   async createdAdRequest(data: CreateAdDto): Promise<AxiosResponse> {

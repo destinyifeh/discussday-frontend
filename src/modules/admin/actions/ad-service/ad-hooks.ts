@@ -1,30 +1,30 @@
 'use client';
 
+import {adminService} from '@/services/admin-service';
 import {useMutation} from '@tanstack/react-query';
-import {adminAdService} from './ad';
 
 export const useAdminAdActions = () => {
   const approveAdRequest = useMutation({
-    mutationFn: adminAdService.approveAd,
+    mutationFn: adminService.approveAd,
   });
   const activateAdRequest = useMutation({
-    mutationFn: adminAdService.activateAd,
+    mutationFn: adminService.activateAd,
   });
 
   const rejectAdRequest = useMutation({
-    mutationFn: adminAdService.rejectAd,
+    mutationFn: adminService.rejectAd,
   });
 
   const deleteAdRequest = useMutation({
-    mutationFn: adminAdService.deleteAd,
+    mutationFn: adminService.deleteAd,
   });
 
   const pauseAdRequest = useMutation({
-    mutationFn: adminAdService.pauseAd,
+    mutationFn: adminService.pauseAd,
   });
 
   const resumeAdRequest = useMutation({
-    mutationFn: adminAdService.resumeAd,
+    mutationFn: adminService.resumeAd,
   });
 
   return {

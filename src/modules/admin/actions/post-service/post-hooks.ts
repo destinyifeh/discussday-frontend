@@ -1,23 +1,23 @@
 'use client';
 
+import {adminService} from '@/services/admin-service';
 import {useMutation} from '@tanstack/react-query';
-import {adminPostService} from './post';
 
 export const useAdminPostActions = () => {
   const closeComment = useMutation({
-    mutationFn: adminPostService.onCloseComment,
+    mutationFn: adminService.onCloseComment,
   });
 
   const deletePost = useMutation({
-    mutationFn: adminPostService.deletePost,
+    mutationFn: adminService.deletePost,
   });
 
   const promotePost = useMutation({
-    mutationFn: adminPostService.promotePost,
+    mutationFn: adminService.promotePost,
   });
 
   const demotePost = useMutation({
-    mutationFn: adminPostService.demotePost,
+    mutationFn: adminService.demotePost,
   });
 
   return {

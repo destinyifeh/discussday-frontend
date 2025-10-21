@@ -2,7 +2,8 @@
 
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {queryClient} from '@/lib/client/query-client';
-import {postService} from '@/modules/posts/actions';
+
+import {postService} from '@/services/post-service';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import ErrorFeedback from '../feedbacks/error-feedback';
 import PostSkeleton from '../skeleton/post-skeleton';

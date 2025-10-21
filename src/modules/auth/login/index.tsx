@@ -19,7 +19,9 @@ import {
 } from '@/constants/api-resources';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {useGlobalStore} from '@/hooks/stores/use-global-store';
+import {getDeviceId} from '@/lib/auth/device';
 import {InputLabel, InputMessage} from '@/modules/components/form-info';
+import {authService} from '@/services/auth-service';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation} from '@tanstack/react-query';
 import Link from 'next/link';
@@ -27,7 +29,7 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
-import {loginRequestAction} from '../actions';
+
 const formSchema = z.object({
   username: z
     .string()
@@ -55,7 +57,7 @@ export const LoginPage = () => {
   const sessionExpired = searchParams.get('reason');
 
   const {mutate: loginUser} = useMutation({
-    mutationFn: loginRequestAction,
+    mutationFn: authService.loginRequestAction,
   });
 
   console.log(sessionExpired, 'sesExpired');
@@ -93,8 +95,14 @@ export const LoginPage = () => {
   const handleLogin = async (credentials: loginFormData) => {
     setIsSubmitting(true);
     resetFormError();
+    const deviceId = getDeviceId();
 
-    loginUser(credentials, {
+    const data = {
+      ...credentials,
+      deviceId: deviceId,
+    };
+
+    loginUser(data, {
       onSuccess(response) {
         console.log(response, 'respoo');
         const {user} = response?.data ?? {};

@@ -22,6 +22,7 @@ import {toast} from '@/components/ui/toast';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {useGlobalStore} from '@/hooks/stores/use-global-store';
 import {queryClient} from '@/lib/client/query-client';
+import {commentService} from '@/services/comment-service';
 import {
   CommentFeedProps,
   CommentProps,
@@ -34,7 +35,8 @@ import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {useMediaQuery} from 'react-responsive';
 import {Virtuoso, VirtuosoHandle} from 'react-virtuoso';
-import {postService} from '../actions';
+
+import {postService} from '@/services/post-service';
 import {CommentDto, UpdateCommentDto} from '../dto/post-dto';
 import {usePostActions} from '../post-hooks';
 import {MobileCommentSection} from './components/mobile-comment-section';
@@ -111,7 +113,7 @@ export const PostDetailPage = ({params}: PostDetailPageProps) => {
   } = useInfiniteQuery({
     queryKey: ['comment-feed-posts', post?._id],
     queryFn: ({pageParam = 1}) =>
-      postService.getCommentFeeds(post?._id, pageParam, 10),
+      commentService.getCommentFeeds(post?._id, pageParam, 10),
     initialPageParam: 1,
     getNextPageParam: lastPage => {
       const {page, pages} = lastPage.pagination;
@@ -206,7 +208,7 @@ export const PostDetailPage = ({params}: PostDetailPageProps) => {
   //comment liking
   const likeCommentMutation = useMutation({
     mutationFn: (commentId: string) =>
-      postService.likeCommentRequestAction(commentId),
+      commentService.likeCommentRequestAction(commentId),
 
     onMutate: async (commentId: any) => {
       await queryClient.cancelQueries({
@@ -282,7 +284,7 @@ export const PostDetailPage = ({params}: PostDetailPageProps) => {
 
   const dislikeCommentMutation = useMutation({
     mutationFn: (commentId: string) =>
-      postService.dislikeCommentRequestAction(commentId),
+      commentService.dislikeCommentRequestAction(commentId),
 
     onMutate: async (commentId: any) => {
       await queryClient.cancelQueries({

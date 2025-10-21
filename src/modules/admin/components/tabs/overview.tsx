@@ -28,9 +28,8 @@ import {
 } from '@/components/ui/dialog';
 import {getTimeAgo} from '@/lib/formatter';
 import {useQuery} from '@tanstack/react-query';
-import {adminAdService} from '../../actions/ad-service/ad';
-import {adminPostService} from '../../actions/post-service/post';
-import {adminService} from '../../actions/user';
+
+import {adminService} from '@/services/admin-service';
 import {COLORS} from '../../data';
 
 type OverviewProps = {
@@ -72,7 +71,7 @@ export const OverViewTab: FC<OverviewProps> = ({
     data: sectionData,
   } = useQuery({
     queryKey: ['section-post-comment-stats'],
-    queryFn: () => adminPostService.getSectionPostCommentStats(),
+    queryFn: () => adminService.getSectionPostCommentStats(),
     retry: true,
   });
   console.log('section data', sectionErr);
@@ -85,7 +84,7 @@ export const OverViewTab: FC<OverviewProps> = ({
     data: postStatsData,
   } = useQuery({
     queryKey: ['post-stats'],
-    queryFn: () => adminPostService.getPostStats(),
+    queryFn: () => adminService.getPostStats(),
     retry: true,
   });
 
@@ -95,7 +94,7 @@ export const OverViewTab: FC<OverviewProps> = ({
     data: pendingAdData,
   } = useQuery({
     queryKey: ['pending-ads'],
-    queryFn: () => adminAdService.getCountAdByStatus('pending'),
+    queryFn: () => adminService.getCountAdByStatus('pending'),
     retry: true,
   });
   console.log('ad err', adStatsErr);

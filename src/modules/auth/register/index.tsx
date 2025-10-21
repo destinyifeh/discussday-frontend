@@ -15,6 +15,7 @@ import {Input} from '@/components/ui/input';
 import {toast} from '@/components/ui/toast';
 import {GOOGLE_SIGNIN_URL} from '@/constants/api-resources';
 import {InputLabel, InputMessage} from '@/modules/components/form-info';
+import {authService} from '@/services/auth-service';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation} from '@tanstack/react-query';
 import {Camera} from 'lucide-react';
@@ -23,7 +24,6 @@ import {useRouter} from 'next/navigation';
 import {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
-import {registerRequestAction} from '../actions';
 
 const formSchema = z
   .object({
@@ -65,7 +65,7 @@ export const RegisterPage = () => {
 
   const navigate = useRouter();
   const {mutate: createUser} = useMutation({
-    mutationFn: registerRequestAction,
+    mutationFn: authService.registerRequestAction,
   });
   const {
     register,

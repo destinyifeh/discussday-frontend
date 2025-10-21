@@ -28,7 +28,8 @@ import {
   truncateText,
 } from '@/lib/formatter';
 import {useReportActions} from '@/modules/dashboard/actions/action-hooks/report.action-hooks';
-import {userService} from '@/modules/dashboard/actions/user.actions';
+
+import {userService} from '@/services/user-management';
 import {UserProps} from '@/types/user.types';
 import {useMutation} from '@tanstack/react-query';
 import ErrorFeedback from '../feedbacks/error-feedback';

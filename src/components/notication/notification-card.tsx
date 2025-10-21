@@ -6,6 +6,7 @@ import {NotificationItemProps} from '@/types/user.types';
 import {BellIcon} from 'lucide-react';
 import moment from 'moment';
 import Link from 'next/link';
+import {useRouter} from 'next/navigation';
 import {Avatar, AvatarFallback, AvatarImage} from '../ui/avatar';
 
 export const NotificationCard = ({
@@ -14,6 +15,17 @@ export const NotificationCard = ({
   notification: NotificationItemProps;
 }) => {
   const {currentUser} = useAuthStore(state => state);
+  const router = useRouter();
+
+  const handleNavigation = () => {
+    if (
+      notification?.senderName === 'Admin' ||
+      notification?.senderName === 'System'
+    ) {
+      return false;
+    }
+    router.push(`/user/${notification.senderName}`);
+  };
   return (
     <div
       key={notification._id}
@@ -22,19 +34,17 @@ export const NotificationCard = ({
         !notification.read ? 'bg-blue-50 dark:bg-app-dark-bg/10' : '',
       )}>
       <div className="flex gap-3">
-        <Link href={`/user/${notification.senderName}`}>
-          <Avatar>
-            <AvatarImage src={notification.senderAvatar} />
-            <AvatarFallback>{notification.senderName.charAt(0)}</AvatarFallback>
-          </Avatar>
-        </Link>
+        <Avatar onClick={handleNavigation}>
+          <AvatarImage src={notification.senderAvatar} />
+          <AvatarFallback>{notification.senderName.charAt(0)}</AvatarFallback>
+        </Avatar>
+
         <div className="flex-1">
           <div className="flex flex-wrap gap-1">
-            <Link href={`/user/${notification.senderName}`}>
-              <span className="font-bold capitalize">
-                {notification.senderName}
-              </span>
-            </Link>
+            <span className="font-bold capitalize" onClick={handleNavigation}>
+              {notification.senderName}
+            </span>
+
             <span className="">{notification.content}.</span>
             {(notification.type === 'mentioned' ||
               notification.type === 'liked') && (
@@ -44,7 +54,7 @@ export const NotificationCard = ({
                   <Link
                     className="ml-1 text-blue-500"
                     href={{
-                      pathname: `/profile/${currentUser?.username}`,
+                      pathname: '/profile',
                       query: {
                         ref:
                           notification.type === 'mentioned'

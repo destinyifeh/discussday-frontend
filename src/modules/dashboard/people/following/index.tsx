@@ -9,6 +9,7 @@ import {Button} from '@/components/ui/button';
 import {toast} from '@/components/ui/toast';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {cn} from '@/lib/utils';
+import {userService} from '@/services/user-management';
 import {UserProps} from '@/types/user.types';
 import {useInfiniteQuery, useMutation} from '@tanstack/react-query';
 import {ArrowUp} from 'lucide-react';
@@ -16,7 +17,6 @@ import Link from 'next/link';
 import {useParams, useRouter} from 'next/navigation';
 import {useMemo, useRef, useState} from 'react';
 import {Virtuoso, VirtuosoHandle} from 'react-virtuoso';
-import {userService} from '../../actions/user.actions';
 
 export const UserFollowingPage = () => {
   const {user} = useParams<{user: string}>();

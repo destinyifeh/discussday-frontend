@@ -1,7 +1,8 @@
 'use client';
 import {cn} from '@/lib/utils';
 import {useAdActions} from '@/modules/dashboard/actions/action-hooks/ad.action-hooks';
-import {adService} from '@/modules/dashboard/actions/ad.actions';
+
+import {adService} from '@/services/ad-service';
 import {AdProps} from '@/types/ad-types';
 import {useQuery} from '@tanstack/react-query';
 import copy from 'copy-to-clipboard';

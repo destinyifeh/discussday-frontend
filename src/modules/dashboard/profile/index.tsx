@@ -19,7 +19,10 @@ import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {usePostStore} from '@/hooks/stores/use-post-store';
 import {queryClient} from '@/lib/client/query-client';
 import {normalizeDomain, urlFormatter} from '@/lib/formatter';
-import {postService} from '@/modules/posts/actions';
+
+import {commentService} from '@/services/comment-service';
+import {postService} from '@/services/post-service';
+import {userService} from '@/services/user-management';
 import {useInfiniteQuery, useMutation} from '@tanstack/react-query';
 import {Calendar, Link as LinkIcon, Settings} from 'lucide-react';
 import moment from 'moment';
@@ -27,7 +30,7 @@ import Link from 'next/link';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {Virtuoso, VirtuosoHandle} from 'react-virtuoso';
-import {userService} from '../actions/user.actions';
+
 export const PostPlaceholder = ({
   tab,
   isOwnProfile = false,
@@ -278,7 +281,7 @@ export const ProfilePage = () => {
 
   const likeCommentMutation = useMutation({
     mutationFn: (commentId: string) =>
-      postService.likeCommentRequestAction(commentId),
+      commentService.likeCommentRequestAction(commentId),
 
     onMutate: async (commentId: any) => {
       await queryClient.cancelQueries({
@@ -353,7 +356,7 @@ export const ProfilePage = () => {
 
   const dislikeCommentMutation = useMutation({
     mutationFn: (commentId: string) =>
-      postService.dislikeCommentRequestAction(commentId),
+      commentService.dislikeCommentRequestAction(commentId),
 
     onMutate: async (commentId: any) => {
       await queryClient.cancelQueries({

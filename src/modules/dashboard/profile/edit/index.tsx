@@ -20,6 +20,7 @@ import {Textarea} from '@/components/ui/textarea';
 import {toast} from '@/components/ui/toast';
 import {FILE_SIZE_LIMIT} from '@/constants/api-resources';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
+import {userService} from '@/services/user-management';
 import {UserProps} from '@/types/user.types';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation} from '@tanstack/react-query';
@@ -27,7 +28,6 @@ import {Camera, X} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {useForm} from 'react-hook-form';
 import * as z from 'zod';
-import {userService} from '../../actions/user.actions';
 
 const profileSchema = z.object({
   username: z

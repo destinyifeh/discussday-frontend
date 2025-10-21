@@ -14,6 +14,7 @@ import {
 import {Input} from '@/components/ui/input';
 import {toast} from '@/components/ui/toast';
 import {InputLabel, InputMessage} from '@/modules/components/form-info';
+import {authService} from '@/services/auth-service';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation} from '@tanstack/react-query';
 import {Eye, EyeOff} from 'lucide-react';
@@ -21,7 +22,6 @@ import Link from 'next/link';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
-import {resetPasswordRequestAction} from '../actions';
 
 const formSchema = z
   .object({
@@ -58,7 +58,7 @@ export const ResetPasswordPage = () => {
   console.log(token, 'tokennn');
 
   const {mutate: resetPass} = useMutation({
-    mutationFn: resetPasswordRequestAction,
+    mutationFn: authService.resetPasswordRequestAction,
   });
 
   const {

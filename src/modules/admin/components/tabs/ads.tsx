@@ -26,7 +26,8 @@ import {ArrowUp, CheckCircle, XCircle} from 'lucide-react';
 import moment from 'moment';
 import {Virtuoso, VirtuosoHandle} from 'react-virtuoso';
 import {useDebounce} from 'use-debounce';
-import {adminAdService} from '../../actions/ad-service/ad';
+
+import {adminService} from '@/services/admin-service';
 import {useAdminAdActions} from '../../actions/ad-service/ad-hooks';
 
 type AdProps = {
@@ -78,7 +79,7 @@ export const AdTab: FC<AdProps> = ({
   } = useInfiniteQuery({
     queryKey: ['admin-ads', debouncedSearch],
     queryFn: ({pageParam = 1}) =>
-      adminAdService.getAds(pageParam, 10, debouncedSearch),
+      adminService.getAds(pageParam, 10, debouncedSearch),
     initialPageParam: 1,
     getNextPageParam: lastPage => {
       const {page, pages} = lastPage.pagination;

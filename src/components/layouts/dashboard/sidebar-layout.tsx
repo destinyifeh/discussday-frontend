@@ -13,8 +13,9 @@ import {HTTP_STATUS_CODE} from '@/constants/api-resources';
 import {resourceItems, Sections} from '@/constants/data';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {cn} from '@/lib/utils';
-import {logoutRequestAction} from '@/modules/auth/actions';
-import {getUnreadNotificationsCounntRequestAction} from '@/modules/dashboard/notifications/actions';
+
+import {authService} from '@/services/auth-service';
+import {notificationService} from '@/services/notification-service';
 import {Role} from '@/types/user.types';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {
@@ -81,14 +82,15 @@ export const SidebarLayoutLeft = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const isActive = (path: string) => location === path;
   const {mutate: logoutRequest} = useMutation({
-    mutationFn: logoutRequestAction,
+    mutationFn: authService.logoutRequestAction,
   });
   const {logout, currentUser} = useAuthStore(state => state);
   const [mounted, setMounted] = useState(false);
 
   const {error, data: unreadCount} = useQuery({
     queryKey: ['unreadCount'],
-    queryFn: () => getUnreadNotificationsCounntRequestAction(),
+    queryFn: () =>
+      notificationService.getUnreadNotificationsCounntRequestAction(),
     retry: 1,
     refetchInterval: 5000,
     refetchIntervalInBackground: false,
@@ -161,7 +163,7 @@ export const SidebarLayoutLeft = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await logoutRequestAction();
+      const res = await authService.logoutRequestAction();
       if (res?.data?.code === HTTP_STATUS_CODE.OK) {
         logout();
         toast.success('Successfully logged out.');

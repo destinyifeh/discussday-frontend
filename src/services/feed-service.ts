@@ -1,4 +1,4 @@
-import api from '@/lib/auth/api';
+import api from '@/lib/client/api';
 import {AdPlacementProps, AdPlan} from '@/types/ad-types';
 
 class FeedService {

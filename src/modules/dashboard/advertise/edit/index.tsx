@@ -28,7 +28,8 @@ import {useQuery} from '@tanstack/react-query';
 import {ArrowRight, Upload} from 'lucide-react';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {ChangeEvent, Fragment, useEffect, useRef, useState} from 'react';
-import {adService} from '../../actions/ad.actions';
+
+import {adService} from '@/services/ad-service';
 import {CreateAdDto} from '../dto/create-ad.dto';
 import {AdPreviewPage} from '../preview';
 

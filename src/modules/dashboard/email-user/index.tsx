@@ -11,6 +11,7 @@ import {Textarea} from '@/components/ui/textarea';
 import {toast} from '@/components/ui/toast';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {InputMessage} from '@/modules/components/form-info';
+import {userService} from '@/services/user-management';
 import {MailUserDto} from '@/types/user.types';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useQuery} from '@tanstack/react-query';
@@ -19,7 +20,6 @@ import {useParams, useRouter} from 'next/navigation';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
 import {useUserActions} from '../actions/action-hooks/user.action-hooks';
-import {userService} from '../actions/user.actions';
 
 const formSchema = z.object({
   message: z

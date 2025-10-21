@@ -1,11 +1,22 @@
-import api from '@/lib/auth/api';
-import {AdPlacementProps} from '@/types/ad-types';
-import {
-  CommentDto,
-  PostDto,
-  UpdateCommentDto,
-  UpdatePostDto,
-} from './dto/post-dto';
+import api from '@/lib/client/api';
+
+import {SectionName} from '@/types/section';
+
+export type PostDto = {
+  images?: File[];
+  content: string;
+  title: string;
+  section: SectionName;
+};
+
+export type UpdatePostDto = {
+  images?: File[];
+  content: string;
+  title: string;
+  section: SectionName;
+  postId: string;
+  removedImageIds?: string[];
+};
 
 class PostService {
   async createPostRequestAction(post: PostDto) {
@@ -112,77 +123,6 @@ class PostService {
 
   async getRelatedPostRequestAction(postId: string) {
     const response = await api.get(`/posts/${postId}/related`);
-    return response.data;
-  }
-
-  //comments
-
-  async createCommentRequestAction(comment: CommentDto) {
-    const formData = new FormData();
-
-    formData.append('postId', comment.postId);
-    formData.append('content', comment.content);
-    if (comment.quotedComment) {
-      formData.append('quotedComment', JSON.stringify(comment.quotedComment));
-    }
-    comment.images?.forEach((image: File) => {
-      formData.append('images', image);
-    });
-    try {
-      return await api.post('/comment', formData, {
-        headers: {'Content-Type': 'multipart/form-data'},
-      });
-    } catch (err: any) {
-      throw err?.response?.data ?? err;
-    }
-  }
-  async getCommentFeeds(
-    postId: string,
-    page = 1,
-    limit = 10,
-    search?: string,
-    pattern: string = '4, 9, 15',
-    mode: string = 'pattern',
-    placement: AdPlacementProps = 'details_feed',
-  ) {
-    const params: any = {page, limit, mode, placement};
-    if (search) params.search = search;
-    if (pattern) params.pattern = pattern;
-
-    const response = await api.get(`/feeds/comments/${postId}`, {params});
-    return response.data?.data;
-  }
-
-  //update comment
-  async updateCommentRequestAction(comment: UpdateCommentDto) {
-    const formData = new FormData();
-
-    formData.append('postId', comment.postId);
-    formData.append('content', comment.content);
-
-    comment.images?.forEach((image: File) => {
-      formData.append('images', image);
-    });
-
-    comment.removedImageIds?.forEach(id => {
-      formData.append('removedImageIds', id);
-    });
-    try {
-      return await api.patch(`/comment/update/${comment.commentId}`, formData, {
-        headers: {'Content-Type': 'multipart/form-data'},
-      });
-    } catch (err: any) {
-      throw err?.response?.data ?? err;
-    }
-  }
-
-  async likeCommentRequestAction(commentId: string) {
-    const response = await api.patch(`/comment/${commentId}/like`);
-    return response.data;
-  }
-
-  async dislikeCommentRequestAction(commentId: string) {
-    const response = await api.patch(`/comment/${commentId}/dislike`);
     return response.data;
   }
 }

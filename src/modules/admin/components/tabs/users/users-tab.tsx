@@ -17,7 +17,8 @@ import {Role} from '@/types/user.types';
 import {useInfiniteQuery, useMutation} from '@tanstack/react-query';
 import {useRouter} from 'next/navigation';
 import {Virtuoso, VirtuosoHandle} from 'react-virtuoso';
-import {adminService} from '../../../actions/user';
+
+import {adminService} from '@/services/admin-service';
 import {AdminUserActionDialog} from './user-action-dialog';
 import {AdminUserCard} from './user-card';
 import {AdminRoleManagementDialog} from './user-role-dialog';

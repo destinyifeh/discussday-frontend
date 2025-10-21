@@ -11,15 +11,12 @@ import NotificationSkeleton from '@/components/skeleton/notification-skeleton';
 import {Button} from '@/components/ui/button';
 import {Tabs, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {queryClient} from '@/lib/client/query-client';
+import {notificationService} from '@/services/notification-service';
 import {useInfiniteQuery, useMutation} from '@tanstack/react-query';
 import {ArrowUp} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {Fragment, useEffect, useMemo, useRef, useState} from 'react';
 import {Virtuoso, VirtuosoHandle} from 'react-virtuoso';
-import {
-  getNotificationsRequestAction,
-  markAllAsReadRequestAction,
-} from './actions';
 
 export const NotificationsPage = () => {
   const [activeTab, setActiveTab] = useState('all');
@@ -35,7 +32,7 @@ export const NotificationsPage = () => {
     isError,
     error: markError,
   } = useMutation({
-    mutationFn: markAllAsReadRequestAction,
+    mutationFn: notificationService.markAllAsReadRequestAction,
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['notifications', activeTab]});
       queryClient.invalidateQueries({queryKey: ['unreadCount']});
@@ -55,7 +52,11 @@ export const NotificationsPage = () => {
   } = useInfiniteQuery({
     queryKey: ['notifications', activeTab],
     queryFn: ({pageParam = 1}) =>
-      getNotificationsRequestAction(pageParam, 10, activeTab),
+      notificationService.getNotificationsRequestAction(
+        pageParam,
+        10,
+        activeTab,
+      ),
     initialPageParam: 1,
     getNextPageParam: lastPage => {
       const {page, pages} = lastPage.pagination;

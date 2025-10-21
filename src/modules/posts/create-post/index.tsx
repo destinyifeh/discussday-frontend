@@ -26,7 +26,8 @@ import {useQuery} from '@tanstack/react-query';
 import {ChevronLeft, FileImage, Trash2, X} from 'lucide-react';
 import {useParams, useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useRef, useState} from 'react';
-import {postService} from '../actions';
+
+import {postService} from '@/services/post-service';
 import {formattedPostTitle, PostDto, UpdatePostDto} from '../dto/post-dto';
 import {usePostActions} from '../post-hooks';
 

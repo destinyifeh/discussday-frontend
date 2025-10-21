@@ -19,12 +19,12 @@ import {Label} from '@/components/ui/label';
 import {Separator} from '@/components/ui/separator';
 import {toast} from '@/components/ui/toast';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
+import {adService} from '@/services/ad-service';
 import {useQuery} from '@tanstack/react-query';
 import {CheckCircle, ShieldCheck} from 'lucide-react';
 import {useParams, useRouter} from 'next/navigation';
 import {Fragment, useEffect, useState} from 'react';
 import {useAdActions} from '../../actions/action-hooks/ad.action-hooks';
-import {adService} from '../../actions/ad.actions';
 
 export const AdPaymentPage = () => {
   const params = useParams();

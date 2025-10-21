@@ -26,7 +26,10 @@ import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {queryClient} from '@/lib/client/query-client';
 import {normalizeDomain} from '@/lib/formatter';
 import {cn} from '@/lib/utils';
-import {postService} from '@/modules/posts/actions';
+
+import {commentService} from '@/services/comment-service';
+import {postService} from '@/services/post-service';
+import {userService} from '@/services/user-management';
 import {UserProps} from '@/types/user.types';
 import {useInfiniteQuery, useMutation, useQuery} from '@tanstack/react-query';
 import {
@@ -42,7 +45,6 @@ import {useParams, useRouter} from 'next/navigation';
 import {useMemo, useRef, useState} from 'react';
 import {Virtuoso, VirtuosoHandle} from 'react-virtuoso';
 import {useReportActions} from '../actions/action-hooks/report.action-hooks';
-import {userService} from '../actions/user.actions';
 
 export const PostPlaceholder = ({
   tab,
@@ -306,7 +308,7 @@ export const PeoplePage = () => {
 
   const likeCommentMutation = useMutation({
     mutationFn: (commentId: string) =>
-      postService.likeCommentRequestAction(commentId),
+      commentService.likeCommentRequestAction(commentId),
 
     onMutate: async (commentId: any) => {
       await queryClient.cancelQueries({
@@ -381,7 +383,7 @@ export const PeoplePage = () => {
 
   const dislikeCommentMutation = useMutation({
     mutationFn: (commentId: string) =>
-      postService.dislikeCommentRequestAction(commentId),
+      commentService.dislikeCommentRequestAction(commentId),
 
     onMutate: async (commentId: any) => {
       await queryClient.cancelQueries({

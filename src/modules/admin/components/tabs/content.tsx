@@ -27,7 +27,8 @@ import {useInfiniteQuery} from '@tanstack/react-query';
 import {useRouter} from 'next/navigation';
 import {Virtuoso, VirtuosoHandle} from 'react-virtuoso';
 import {useDebounce} from 'use-debounce';
-import {adminPostService} from '../../actions/post-service/post';
+
+import {adminService} from '@/services/admin-service';
 import {useAdminPostActions} from '../../actions/post-service/post-hooks';
 
 type ContentProps = {
@@ -77,7 +78,7 @@ export const ContentTab: FC<ContentProps> = ({
   } = useInfiniteQuery({
     queryKey: ['admin-posts-content-with-comment-count', debouncedSearch],
     queryFn: ({pageParam = 1}) =>
-      adminPostService.getPostsContent(pageParam, 10, debouncedSearch),
+      adminService.getPostsContent(pageParam, 10, debouncedSearch),
     initialPageParam: 1,
     getNextPageParam: lastPage => {
       const {page, pages} = lastPage.pagination;

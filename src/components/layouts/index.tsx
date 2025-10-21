@@ -9,8 +9,6 @@ interface AppContainerProps {
 const AppContainer = ({children}: AppContainerProps) => {
   const {setTheme} = useTheme();
 
-  // useAuthGuard();
-
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {

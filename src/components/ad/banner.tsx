@@ -2,7 +2,8 @@
 
 import {useGlobalStore} from '@/hooks/stores/use-global-store';
 import {cn} from '@/lib/utils';
-import {adService} from '@/modules/dashboard/actions/ad.actions';
+import {adService} from '@/services/ad-service';
+
 import {AdPlacementProps, AdProps} from '@/types/ad-types';
 import {useQuery} from '@tanstack/react-query';
 import {ExternalLink} from 'lucide-react';

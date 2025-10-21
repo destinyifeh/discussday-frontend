@@ -4,9 +4,10 @@ import {ALLOW_FIXED_MOBILE_BOTTOM_TAB} from '@/constants/settings';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {useGlobalStore} from '@/hooks/stores/use-global-store';
 import {queryClient} from '@/lib/client/query-client';
-import {feedService} from '@/modules/dashboard/actions/feed.actions';
-import {userService} from '@/modules/dashboard/actions/user.actions';
-import {postService} from '@/modules/posts/actions';
+
+import {feedService} from '@/services/feed-service';
+import {postService} from '@/services/post-service';
+import {userService} from '@/services/user-management';
 import {UserProps} from '@/types/user.types';
 import {useInfiniteQuery, useMutation} from '@tanstack/react-query';
 import {BookmarkIcon, PenSquare} from 'lucide-react';

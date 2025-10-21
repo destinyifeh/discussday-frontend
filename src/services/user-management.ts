@@ -1,11 +1,20 @@
-import api from '@/lib/auth/api';
+import api from '@/lib/client/api';
 import {UserUpdateRequestProps} from '@/modules/auth/types';
 import {AdPlacementProps} from '@/types/ad-types';
 import {MailUserDto} from '@/types/user.types';
 import {AxiosResponse} from 'axios';
-import {UsersResponse} from './type.actions';
 
-class UserService {
+export interface UsersResponse {
+  users: any[];
+  pagination: {
+    totalPages: number;
+    currentPage: number;
+    totalItems: number;
+    perPage: number;
+  };
+}
+
+class UserManagementService {
   async getFollowingRequestAction(username: string, page = 1, limit = 10) {
     const params: any = {page, limit};
     try {
@@ -136,4 +145,4 @@ class UserService {
   }
 }
 
-export const userService = new UserService();
+export const userService = new UserManagementService();

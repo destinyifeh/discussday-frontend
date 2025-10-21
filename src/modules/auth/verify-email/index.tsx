@@ -16,6 +16,7 @@ import {Input} from '@/components/ui/input';
 import {toast} from '@/components/ui/toast';
 import {EMAIL_VERIFICATION_ERROR} from '@/constants/api-resources';
 import {InputLabel, InputMessage} from '@/modules/components/form-info';
+import {authService} from '@/services/auth-service';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import Link from 'next/link';
@@ -23,10 +24,6 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
-import {
-  emailVerificationRequestAction,
-  resendEmailVerificationLinkRequestAction,
-} from '../actions';
 
 const formSchema = z.object({
   email: z.string().trim().email({message: 'Invalid email address'}),
@@ -39,7 +36,7 @@ export const VerifyEmailPage = () => {
   const [cooldown, setCooldown] = useState(0);
 
   const {mutate: resendVerificationLink} = useMutation({
-    mutationFn: resendEmailVerificationLinkRequestAction,
+    mutationFn: authService.resendEmailVerificationLinkRequestAction,
   });
 
   const searchParams = useSearchParams();
@@ -49,7 +46,7 @@ export const VerifyEmailPage = () => {
   const emailFromQuery = searchParams.get('email');
   const {isLoading, isError, isSuccess, data, error, refetch} = useQuery({
     queryKey: ['verifyEmail', token],
-    queryFn: () => emailVerificationRequestAction(token),
+    queryFn: () => authService.emailVerificationRequestAction(token),
     enabled: !!token,
     retry: false,
   });

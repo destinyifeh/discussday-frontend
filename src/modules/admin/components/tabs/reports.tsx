@@ -31,7 +31,8 @@ import {
 import {Textarea} from '@/components/ui/textarea';
 import {queryClient} from '@/lib/client/query-client';
 import {useReportActions} from '@/modules/dashboard/actions/action-hooks/report.action-hooks';
-import {reportService} from '@/modules/dashboard/actions/report.actions';
+
+import {reportService} from '@/services/report-service';
 import {useInfiniteQuery} from '@tanstack/react-query';
 import {ArrowUp} from 'lucide-react';
 import moment from 'moment';

@@ -1,7 +1,7 @@
 'use client';
 
+import {reportService} from '@/services/report-service';
 import {useMutation} from '@tanstack/react-query';
-import {reportService} from '../report.actions';
 
 export const useReportActions = () => {
   const reportUser = useMutation({

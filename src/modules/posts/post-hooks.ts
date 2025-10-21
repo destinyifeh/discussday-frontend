@@ -1,7 +1,9 @@
 'use client';
 
+import {commentService} from './../../services/comment-service';
+
+import {postService} from '@/services/post-service';
 import {useMutation} from '@tanstack/react-query';
-import {postService} from './actions';
 
 export const usePostActions = () => {
   const create = useMutation({
@@ -21,19 +23,19 @@ export const usePostActions = () => {
   });
 
   const createComment = useMutation({
-    mutationFn: postService.createCommentRequestAction,
+    mutationFn: commentService.createCommentRequestAction,
   });
 
   const updateComment = useMutation({
-    mutationFn: postService.updateCommentRequestAction,
+    mutationFn: commentService.updateCommentRequestAction,
   });
 
   const likeComment = useMutation({
-    mutationFn: postService.likeCommentRequestAction,
+    mutationFn: commentService.likeCommentRequestAction,
   });
 
   const dislikeComment = useMutation({
-    mutationFn: postService.dislikeCommentRequestAction,
+    mutationFn: commentService.dislikeCommentRequestAction,
   });
 
   return {

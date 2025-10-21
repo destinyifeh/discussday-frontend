@@ -13,8 +13,9 @@ import {
 import {HTTP_STATUS_CODE} from '@/constants/api-resources';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {cn} from '@/lib/utils';
-import {logoutRequestAction} from '@/modules/auth/actions';
-import {getUnreadNotificationsCounntRequestAction} from '@/modules/dashboard/notifications/actions';
+import {authService} from '@/services/auth-service';
+
+import {notificationService} from '@/services/notification-service';
 import {Role} from '@/types/user.types';
 import {VisuallyHidden} from '@radix-ui/react-visually-hidden';
 import {useQuery} from '@tanstack/react-query';
@@ -46,7 +47,8 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({children, title}) => {
 
   const {error, data: unreadCount} = useQuery({
     queryKey: ['unreadCount'],
-    queryFn: () => getUnreadNotificationsCounntRequestAction(),
+    queryFn: () =>
+      notificationService.getUnreadNotificationsCounntRequestAction(),
     retry: 1,
     refetchInterval: 5000,
     refetchIntervalInBackground: false,
@@ -56,7 +58,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({children, title}) => {
 
   const handleLogout = async () => {
     try {
-      const res = await logoutRequestAction();
+      const res = await authService.logoutRequestAction();
       if (res?.data?.code === HTTP_STATUS_CODE.OK) {
         logout();
         toast.success('Successfully logged out.');

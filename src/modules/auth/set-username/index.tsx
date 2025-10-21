@@ -21,6 +21,7 @@ import {
 import {Input} from '@/components/ui/input';
 import {toast} from '@/components/ui/toast';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
+import {authService} from '@/services/auth-service';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation} from '@tanstack/react-query';
 import Link from 'next/link';
@@ -28,7 +29,6 @@ import {useRouter} from 'next/navigation';
 import {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
-import {setGoogleUserUsername} from '../actions';
 
 const formSchema = z.object({
   username: z
@@ -54,7 +54,7 @@ export const SetUsernamePage = ({params}: PageParams) => {
   const [emailSent, setEmailSent] = useState(false);
   const router = useRouter();
   const {mutate: setupUser} = useMutation({
-    mutationFn: setGoogleUserUsername,
+    mutationFn: authService.setGoogleUserUsername,
   });
 
   const form = useForm<usernameFormData>({

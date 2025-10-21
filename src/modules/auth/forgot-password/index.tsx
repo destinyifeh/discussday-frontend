@@ -13,13 +13,13 @@ import {
 import {Input} from '@/components/ui/input';
 import {toast} from '@/components/ui/toast';
 import {InputLabel, InputMessage} from '@/modules/components/form-info';
+import {authService} from '@/services/auth-service';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation} from '@tanstack/react-query';
 import Link from 'next/link';
 import {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
-import {forgotPasswordRequestAction} from '../actions';
 
 const formSchema = z.object({
   email: z.string().trim().email({message: 'Invalid email address'}),
@@ -31,7 +31,7 @@ export const ForgotPasswordPage = () => {
   const [emailSent, setEmailSent] = useState(false);
 
   const {mutate: forgotPass} = useMutation({
-    mutationFn: forgotPasswordRequestAction,
+    mutationFn: authService.forgotPasswordRequestAction,
   });
 
   const {

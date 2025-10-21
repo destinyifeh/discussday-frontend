@@ -30,11 +30,9 @@ import {toast} from '@/components/ui/toast';
 import {ChangePasswordErrorMessages} from '@/constants/messages';
 import {ALLOW_DEACTIVATION} from '@/constants/settings';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
-import {
-  changePasswordRequestAction,
-  deleteUserRequest,
-} from '@/modules/auth/actions';
+
 import {InputMessage} from '@/modules/components/form-info';
+import {authService} from '@/services/auth-service';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation} from '@tanstack/react-query';
 import {AlertTriangle, HelpCircle, Lock, Moon, Sun} from 'lucide-react';
@@ -83,10 +81,10 @@ export const SettingsPage = () => {
   const {theme, setTheme} = useTheme();
   const {currentUser} = useAuthStore(state => state);
   const {mutate: chagePass} = useMutation({
-    mutationFn: changePasswordRequestAction,
+    mutationFn: authService.changePasswordRequestAction,
   });
   const {mutate: deleteAccount} = useMutation({
-    mutationFn: deleteUserRequest,
+    mutationFn: authService.deleteUserRequest,
   });
 
   useEffect(() => {

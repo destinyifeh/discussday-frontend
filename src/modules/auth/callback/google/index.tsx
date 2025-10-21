@@ -4,11 +4,11 @@ import ScreenLoader from '@/components/feedbacks/screen-loader';
 import {toast} from '@/components/ui/toast';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {useGlobalStore} from '@/hooks/stores/use-global-store';
+import {authService} from '@/services/auth-service';
 import {AccountStatus} from '@/types/user.types';
 import {useQuery} from '@tanstack/react-query';
 import {useRouter} from 'next/navigation';
 import {useEffect} from 'react';
-import {getGoogleUser} from '../../actions';
 
 export const GoogleCallbackPage = () => {
   const router = useRouter();
@@ -21,7 +21,7 @@ export const GoogleCallbackPage = () => {
     data: googleUser,
   } = useQuery({
     queryKey: ['google-user'],
-    queryFn: () => getGoogleUser(),
+    queryFn: () => authService.getGoogleUser(),
     retry: false,
   });
   console.log({error, googleUser});
