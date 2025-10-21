@@ -22,7 +22,8 @@ import {
 import {useRouter} from 'next/navigation';
 import {CSSProperties, ReactNode, useMemo, useRef, useState} from 'react';
 import {Virtuoso, VirtuosoHandle} from 'react-virtuoso';
-import {adService} from '../../actions/ad.actions';
+
+import {adService} from '@/services/ad-service';
 import {AdPerformanceNav} from './components/ad-performance-nav';
 
 type AdStatus =
