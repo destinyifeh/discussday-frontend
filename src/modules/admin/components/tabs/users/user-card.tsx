@@ -7,8 +7,8 @@ import {Ban, Calendar, Crown, Shield, User} from 'lucide-react';
 
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {UserActionType} from '@/modules/admin/admin-types';
+import {AdminUserProps} from '@/services/admin-service';
 import {Role} from '@/types/user.types';
-import {AdminUserProps} from '../../../actions/user';
 
 export const AdminUserCard = ({
   user,
