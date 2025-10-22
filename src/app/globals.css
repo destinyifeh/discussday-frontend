@@ -1,17 +1,15 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-/* @custom-variant dark (&:is(.dark *)); */
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *)); */
 
 @layer base {
   :root {
     --app-background-color:#ffffff;
     --app-foreground-color-: #0f172a; 
-    --app-color: #0a66c2; /* LinkedIn blue */
+    --app-color: #0a66c2;
     --app-black: #0f1419;
     --app-gray: #536471;
     --app-lightGray: #e7e7e8;
@@ -21,7 +19,7 @@
     --app-dark-bg: #536471;
     --app-dark-text: #536471;
     --app-dark-border: #536471;
-    --primary:#1e40af; /* LinkedIn blue color */
+    --primary:#1e40af;
     --primary-foreground:#f8fafc; 
     --muted: #1C2431;
     --muted-foreground: #64748B;
@@ -34,7 +32,7 @@
   .dark {
     --app-background-color: #ffffff;
     --app-foreground-color: #f8fafc;
-    --app-color: #0a66c2; /* LinkedIn blue */
+    --app-color: #0a66c2;
     --app-black: #0f1419;
     --app-gray: #536471;
     --app-lightGray: #e7e7e8;
@@ -45,7 +43,7 @@
     --app-dark-bg: #536471;
     --app-dark-text: #536471;
     --app-dark-border: #536471;
-    --app-primary:#1e40af;  /* LinkedIn blue */
+    --app-primary:#1e40af;
     --app-primary-foreground:#f8fafc;
     --app-muted: #94a3b8;
     --app-muted-foreground:#94a3b8;
@@ -55,8 +53,6 @@
 }
 
 @theme {
-  /* --color-background: var(--background);
-  --color-foreground: var(--foreground); */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --color-app: var(--app-color);
@@ -205,10 +201,7 @@
   * {
     @apply border-border outline-ring/50;
   }
-  /* body {
-    @apply bg-background text-foreground;
-
-    } */
+  
    .form-input{
     @apply focus:!border-app focus:!outline-none focus:!ring-0
    }
@@ -229,7 +222,7 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #0a66c2; /* Blue */
+  background-color: #0a66c2;
   border-radius: 4px;
 }
 
