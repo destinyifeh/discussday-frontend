@@ -22,9 +22,7 @@ export const AdminUserCard = ({
   const {currentUser} = useAuthStore(state => state);
   return (
     <div className="divide-y divide-app-border border border-app-border">
-      <div
-        //key={user._id}
-        className="grid grid-cols-1 md:grid-cols-6 items-center p-4">
+      <div className="grid grid-cols-1 md:grid-cols-6 items-center p-4">
         <div className="flex items-center gap-2 mb-2 md:mb-0">
           <Avatar className="h-8 w-8">
             <AvatarImage src={user.avatar} />

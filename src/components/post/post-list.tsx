@@ -372,75 +372,6 @@ export const HomePostList = () => {
 
   console.log(postsData, 'postdaaa');
 
-  const likePostMutation2 = useMutation({
-    mutationFn: (postId: string) => postService.likePostRequestAction(postId), // Your API call
-
-    // Optimistic update logic
-    onMutate: async postId => {
-      // Cancel any outgoing refetches for the query to avoid race conditions
-
-      console.log(postId, 'getting it');
-      await queryClient.cancelQueries({
-        queryKey: ['home-feed-posts', activeTab],
-      });
-
-      // Snapshot the old value of the infinite query cache
-      const previousPosts = queryClient.getQueryData([
-        'home-feed-posts',
-        activeTab,
-      ]);
-
-      // Optimistically update the infinite query cache
-      queryClient.setQueryData(
-        ['home-feed-posts', activeTab],
-        (oldData: any) => {
-          if (!oldData) return previousPosts;
-
-          return {
-            ...oldData,
-            pages: oldData.pages.map((page: any) => ({
-              ...page,
-              posts: page.posts.map((post: any) => {
-                if (post._type !== 'ad' && post._id === postId) {
-                  const isLiked = !post.likedBy.includes(currentUser?._id);
-                  const newLikedBy = isLiked
-                    ? [...post.likedBy, currentUser?._id]
-                    : post.likedBy.filter((id: any) => id !== currentUser?._id);
-
-                  return {
-                    ...post,
-                    likedBy: newLikedBy,
-                  };
-                }
-                return post;
-              }),
-            })),
-          };
-        },
-      );
-
-      return {previousPosts};
-    },
-
-    // Roll back on error
-    onError: (err, postId, context: any) => {
-      queryClient.setQueryData(
-        ['home-feed-posts', activeTab],
-        context.previousPosts,
-      );
-      // You can also display an error toast here
-      toast.error('Oops! Something went wrong, try again');
-    },
-
-    // Invalidate after success or failure to ensure eventual consistency
-    onSettled: () => {
-      queryClient.invalidateQueries({queryKey: ['home-feed-posts', activeTab]});
-      // Invalidate other relevant caches as well
-      queryClient.invalidateQueries({queryKey: ['bookmarked-feed-posts']});
-      // etc.
-    },
-  });
-
   const likePostMutation = useMutation({
     mutationFn: (postId: string) => postService.likePostRequestAction(postId),
 
@@ -487,7 +418,7 @@ export const HomePostList = () => {
         },
       );
 
-      // ✅ This makes UI update immediately
+      // This makes UI update immediately
       return {previousPosts};
     },
 
@@ -500,7 +431,7 @@ export const HomePostList = () => {
     },
 
     onSettled: () => {
-      // ⚠️ This re-fetch causes the delay — it’s optional
+      // This re-fetch causes the delay — it’s optional
       // queryClient.invalidateQueries({ queryKey: ['home-feed-posts', activeTab] });
     },
   });
@@ -567,7 +498,7 @@ export const HomePostList = () => {
     },
 
     onSettled: () => {
-      // ⚠️ This re-fetch causes the delay — it’s optional
+      //  This re-fetch causes the delay — it’s optional
       // queryClient.invalidateQueries({ queryKey: ['home-feed-posts', activeTab] });
     },
   });
@@ -620,7 +551,7 @@ export const HomePostList = () => {
         className={`md:hidden fixed top-0 left-0 right-0 bg-background w-full z-50 transition-transform duration-300 ${
           showMobileNav ? 'translate-y-0' : '-translate-y-full'
         }`}>
-        <MobileNavigation />
+        <MobileNavigation title="Discussday" />
       </div>
 
       <Virtuoso
@@ -986,7 +917,7 @@ export const ExplorePostList = () => {
   const handleScroll: React.UIEventHandler<HTMLDivElement> = event => {
     const scrollTop = event.currentTarget.scrollTop;
 
-    // 🧭 Hide the special element after 50px
+    // Hide the special element after 50px
     if (scrollTop > 50) {
       setShowTopElement(false);
     } else {
