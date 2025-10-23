@@ -42,7 +42,6 @@ export const AdminDashboardPage = () => {
   useAdminGuard(currentUser);
   useEffect(() => {
     // Simulate loading
-
     setTimeout(() => setIsLoading(false), 800);
   }, []);
 

@@ -14,7 +14,7 @@ export function useAdminGuard(currentUser?: UserProps | null) {
       currentUser.role !== Role.ADMIN && currentUser.role !== Role.SUPER_ADMIN;
 
     if (notAdmin) {
-      navigate.back();
+      window.location.href = '/home';
     }
   }, [currentUser, navigate]);
 }
