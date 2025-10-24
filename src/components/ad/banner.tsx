@@ -26,7 +26,7 @@ export function BannerAd({
   animation,
 }: BannerAdProps) {
   const {theme} = useGlobalStore(state => state);
-  const [imgSrc, setImgSrc] = useState(ad.imageUrl || '/public/logo_blue.png');
+  const [imgSrc, setImgSrc] = useState(ad.imageUrl || '/public/logo_blue.webp');
   const sizeClasses = {
     small: 'h-[90px]',
     medium: 'h-[120px]',

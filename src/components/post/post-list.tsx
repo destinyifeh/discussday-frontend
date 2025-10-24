@@ -551,7 +551,7 @@ export const HomePostList = () => {
         className={`md:hidden fixed top-0 left-0 right-0 bg-background w-full z-50 transition-transform duration-300 ${
           showMobileNav ? 'translate-y-0' : '-translate-y-full'
         }`}>
-        <MobileNavigation title="Discussday" />
+        <MobileNavigation />
       </div>
 
       <Virtuoso
@@ -986,14 +986,20 @@ export const ExplorePostList = () => {
         className={`md:hidden fixed top-0 left-0 right-0 bg-background w-full z-50 transition-transform duration-300 ${
           showMobileNav ? 'translate-y-0' : '-translate-y-full'
         }`}>
-        <MobileNavigation />
-        {showTopElement && (
+        <MobileNavigation
+          showSearch
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          searchRef={searchRef}
+          showLogo={false}
+        />
+        {/* {showTopElement && (
           <SearchBarList
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             ref={searchRef}
           />
-        )}
+        )} */}
 
         {/* <ExploreMobileHeader
           searchTerm={searchTerm}
@@ -1018,7 +1024,7 @@ export const ExplorePostList = () => {
         ref={virtuosoRef}
         components={{
           Header: () => (
-            <div className="mt-33 md:mt-0">
+            <div className="mt-20 md:mt-0">
               <Tabs
                 defaultValue="for-you"
                 value={activeTab}

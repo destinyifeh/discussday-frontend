@@ -5,8 +5,8 @@ import React, {forwardRef} from 'react';
 import {Input} from '../ui/input';
 
 type Props = {
-  searchTerm: string;
-  setSearchTerm: (search: string) => void;
+  searchTerm?: string;
+  setSearchTerm?: (search: string) => void;
 };
 
 // Forward the ref to the input element
@@ -23,7 +23,7 @@ const SearchBarList = forwardRef<HTMLInputElement, Props>(
             placeholder="Search"
             className="bg-gray-100 border-0 rounded-full pl-10 form-input"
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm?.(e.target.value)}
             ref={ref}
           />
         </div>

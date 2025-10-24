@@ -200,7 +200,7 @@ export const VerifyEmailPage = () => {
                 </g>
               </svg> */}
             <Link href="/" className="">
-              <CustomLogo logo="/logo_white.png" width={200} height={100} />
+              <CustomLogo logo="/logo_white.webp" width={200} height={100} />
             </Link>
             <h1 className="text-3xl font-bold mb-4">Verify your email</h1>
             <p className="text-lg mb-6">
@@ -241,7 +241,7 @@ export const VerifyEmailPage = () => {
                   </g>
                 </svg> */}
                 <Link href="/" className="">
-                  <CustomLogo logo="/logo_blue.png" width={200} height={100} />
+                  <CustomLogo logo="/logo_blue.webp" width={200} height={100} />
                 </Link>
               </div>
               <CardTitle className="text-2xl text-center">

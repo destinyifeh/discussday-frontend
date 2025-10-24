@@ -33,7 +33,7 @@ export async function generateMetadata({
   const previewText = post.content?.slice(0, 120) ?? 'Check out this post';
   const firstImage =
     post.images?.[0]?.secure_url ??
-    `${process.env.NEXT_PUBLIC_APP_URL}/logo_blue.png`;
+    `${process.env.NEXT_PUBLIC_APP_URL}/logo_blue.webp`;
 
   return {
     title: `${post.title} | ${capitalizeName(post.section)} | ${APP_NAME}`,

@@ -14,7 +14,6 @@ import {HTTP_STATUS_CODE} from '@/constants/api-resources';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {cn} from '@/lib/utils';
 import {authService} from '@/services/auth-service';
-
 import {notificationService} from '@/services/notification-service';
 import {Role} from '@/types/user.types';
 import {VisuallyHidden} from '@radix-ui/react-visually-hidden';
@@ -33,13 +32,25 @@ import Link from 'next/link';
 import {usePathname, useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import {toast} from 'sonner';
+import SearchBarList from '../../forms/list-search-bar';
 
 interface MainLayoutProps {
   children?: React.ReactNode;
-  title?: string;
+  showLogo?: boolean;
+  showSearch?: boolean;
+  searchTerm?: string;
+  setSearchTerm?: (search: string) => void;
+  searchRef?: React.RefObject<HTMLInputElement | null>;
 }
 
-const MobileNavigation: React.FC<MainLayoutProps> = ({children, title}) => {
+const MobileNavigation: React.FC<MainLayoutProps> = ({
+  children,
+  showLogo = true,
+  showSearch = false,
+  searchRef,
+  searchTerm,
+  setSearchTerm,
+}) => {
   const router = useRouter();
   const location = usePathname();
   const {logout, currentUser} = useAuthStore(state => state);
@@ -177,13 +188,21 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({children, title}) => {
             </div>
           </SheetContent>
         </Sheet>
-        {title ? (
-          <h1 className="text-xl font-bold">{title}</h1>
-        ) : (
+        {showLogo && (
+          // <h1 className="text-xl font-bold">{title}</h1>
+
           <Link href="/home">
-            <CustomLogo logo="/logo_blue.png" height={100} width={125} />
+            <CustomLogo logo="/logo_blue.webp" height={100} width={125} />
           </Link>
         )}
+        {showSearch && (
+          <SearchBarList
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            ref={searchRef}
+          />
+        )}
+
         <Button
           variant="ghost"
           size="icon"

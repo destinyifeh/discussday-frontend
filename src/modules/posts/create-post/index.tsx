@@ -1,7 +1,6 @@
 'use client';
 import ErrorFeedback from '@/components/feedbacks/error-feedback';
 import {MobileBottomTab} from '@/components/layouts/dashboard/mobile-bottom-tab';
-import MobileNavigation from '@/components/layouts/dashboard/mobile-navigation';
 import {AddPostField} from '@/components/post/add-post-field';
 import CommunityGuidelines from '@/components/post/community-guidelines';
 import CreatePostSkeleton from '@/components/skeleton/create-post-skeleton';
@@ -246,7 +245,7 @@ export const CreatePostPage = () => {
   };
   return (
     <div className="pb-25">
-      <MobileNavigation />
+      {/* <MobileNavigation /> */}
       <div className="sticky top-0 backdrop-blur-sm border-b z-10 bg-white/80 border-app-border dark:bg-background">
         <div className="px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">

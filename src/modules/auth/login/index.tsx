@@ -191,7 +191,7 @@ export const LoginPage = () => {
               /> */}
 
             <Link href="/">
-              <CustomLogo logo="/logo_white.png" width={200} height={100} />
+              <CustomLogo logo="/logo_white.webp" width={200} height={100} />
             </Link>
 
             <h1 className="text-3xl font-bold mb-4">Welcome back!</h1>
@@ -237,7 +237,7 @@ export const LoginPage = () => {
                 </Link> */}
 
                 <Link href="/" className="">
-                  <CustomLogo logo="/logo_blue.png" width={200} height={100} />
+                  <CustomLogo logo="/logo_blue.webp" width={200} height={100} />
                 </Link>
               </div>
               <CardTitle className="text-2xl">Sign in to Forum</CardTitle>

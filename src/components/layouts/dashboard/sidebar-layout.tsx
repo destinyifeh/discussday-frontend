@@ -194,7 +194,7 @@ export const SidebarLayoutLeft = () => {
         <div className="p-2 flex items-center justify-between">
           {/* <h1 className="text-xl font-bold">Discussday</h1> */}
           <Link href="/home">
-            <CustomLogo logo="/logo_blue.png" />
+            <CustomLogo logo="/logo_blue.webp" />
           </Link>
 
           <Button

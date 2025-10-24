@@ -131,7 +131,7 @@ export const SetUsernamePage = ({params}: PageParams) => {
         <div className="hidden md:flex flex-1 items-center justify-center rounded-l-lg p-8 text-white bg-app/90 dark:bg-app">
           <div>
             <Link href="/">
-              <CustomLogo logo="/logo_white.png" width={200} height={100} />
+              <CustomLogo logo="/logo_white.webp" width={200} height={100} />
             </Link>
             <h1 className="text-3xl font-bold mb-4">Set your username</h1>
             <p className="text-lg mb-6">
@@ -159,7 +159,7 @@ export const SetUsernamePage = ({params}: PageParams) => {
             <CardHeader>
               <div className="flex justify-center mb-0">
                 <Link href="/">
-                  <CustomLogo logo="/logo_blue.png" width={200} height={100} />
+                  <CustomLogo logo="/logo_blue.webp" width={200} height={100} />
                 </Link>
               </div>
               <CardTitle className="text-2xl text-center">

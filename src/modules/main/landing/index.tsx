@@ -31,7 +31,7 @@ export const LandingPage = () => {
             </h1> */}
 
             <Link href="/" className="mb-0">
-              <CustomLogo logo="/logo_white.png" width={220} height={200} />
+              <CustomLogo logo="/logo_white.webp" width={220} height={200} />
             </Link>
 
             <div className="hidden md:block text-white">
@@ -75,7 +75,7 @@ export const LandingPage = () => {
           </h1> */}
 
           <Link href="/" className="mb-8 md:hidden">
-            <CustomLogo logo="/logo_blue.png" width={200} height={200} />
+            <CustomLogo logo="/logo_blue.webp" width={200} height={200} />
           </Link>
 
           {/* <h1 className="text-center text-5xl md:text-6xl font-bold mb-12">
