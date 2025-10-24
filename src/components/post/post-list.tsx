@@ -16,7 +16,7 @@ import React, {Fragment, useEffect, useMemo, useRef, useState} from 'react';
 import {Virtuoso, VirtuosoHandle} from 'react-virtuoso';
 import {useDebounce} from 'use-debounce';
 import AdCard from '../ad/ad-card';
-import {PageHeader, SectionHeader} from '../app-headers';
+import {SectionHeader} from '../app-headers';
 import {LoadingMore, LoadMoreError} from '../feedbacks';
 import ErrorFeedback from '../feedbacks/error-feedback';
 import SearchBarList from '../forms/list-search-bar';
@@ -993,19 +993,6 @@ export const ExplorePostList = () => {
           searchRef={searchRef}
           showLogo={false}
         />
-        {/* {showTopElement && (
-          <SearchBarList
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            ref={searchRef}
-          />
-        )} */}
-
-        {/* <ExploreMobileHeader
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          ref={searchRef}
-        /> */}
       </div>
 
       <div className="hidden md:block">
@@ -1024,7 +1011,7 @@ export const ExplorePostList = () => {
         ref={virtuosoRef}
         components={{
           Header: () => (
-            <div className="mt-20 md:mt-0">
+            <div className="mt-18 md:mt-0">
               <Tabs
                 defaultValue="for-you"
                 value={activeTab}
@@ -1311,16 +1298,24 @@ export const BookmarkPostList = () => {
   const handleScroll: React.UIEventHandler<HTMLDivElement> = event => {
     const scrollTop = event.currentTarget.scrollTop;
 
-    if (scrollTop > lastScrollTop.current) {
-      // Scrolling down → hide
-      setShowBottomTab(false);
+    // Hide mobile nav only when past 100px
+    if (scrollTop > 100) {
       setShowMobileNav(false);
+    } else {
+      setShowMobileNav(true);
+    }
+
+    // Detect scroll direction
+    if (scrollTop > lastScrollTop.current) {
+      // Scrolling down → hide bottom tab
+      setShowBottomTab(false);
     } else if (scrollTop < lastScrollTop.current) {
-      // Scrolling up → show
+      // Scrolling up (even slightly) → show immediately
       setShowBottomTab(true);
       setShowMobileNav(true);
     }
 
+    // Always update lastScrollTop
     lastScrollTop.current = scrollTop <= 0 ? 0 : scrollTop;
   };
 
@@ -1339,7 +1334,7 @@ export const BookmarkPostList = () => {
         className={`md:hidden fixed top-0 left-0 right-0 bg-background w-full z-50 transition-transform duration-300 ${
           showMobileNav ? 'translate-y-0' : '-translate-y-full'
         }`}>
-        <MobileNavigation />
+        <MobileNavigation title="Bookmarks" />
       </div>
 
       <Virtuoso
@@ -1349,11 +1344,7 @@ export const BookmarkPostList = () => {
         ref={virtuosoRef}
         data={bookmarkedData}
         components={{
-          Header: () => (
-            <div className="mt-15 md:mt-0">
-              <PageHeader title="Bookmarks" showBackIcon={false} />
-            </div>
-          ),
+          Header: () => <div className="mt-18 md:mt-0"></div>,
 
           EmptyPlaceholder: () => {
             if (status === 'error') {

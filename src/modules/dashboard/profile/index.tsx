@@ -5,7 +5,6 @@ import {PageHeader} from '@/components/app-headers';
 import {LoadingMore, LoadMoreError} from '@/components/feedbacks';
 import ErrorFeedback from '@/components/feedbacks/error-feedback';
 import {MobileBottomTab} from '@/components/layouts/dashboard/mobile-bottom-tab';
-import MobileNavigation from '@/components/layouts/dashboard/mobile-navigation';
 import UserCommentCard from '@/components/post/comments/user-comment-card';
 import PostCard from '@/components/post/post-card';
 import PostSkeleton from '@/components/skeleton/post-skeleton';
@@ -463,12 +462,12 @@ export const ProfilePage = () => {
 
   return (
     <div>
-      <div
+      {/* <div
         className={`lg:hidden fixed top-0 left-0 right-0 bg-background w-full z-50 transition-transform duration-300 ${
           showMobileNav ? 'translate-y-0' : '-translate-y-full'
         }`}>
         <MobileNavigation />
-      </div>
+      </div> */}
 
       <Virtuoso
         className="custom-scrollbar mb-12 md:mb-0"
@@ -478,7 +477,7 @@ export const ProfilePage = () => {
         ref={virtuosoRef}
         components={{
           Header: () => (
-            <div className="mt-15 md:mt-0">
+            <div className="mt-0 md:mt-0">
               <PageHeader
                 title={currentUser?.username}
                 description={`${totalCount} ${activeTab}`}

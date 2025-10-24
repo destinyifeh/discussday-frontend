@@ -41,6 +41,7 @@ interface MainLayoutProps {
   searchTerm?: string;
   setSearchTerm?: (search: string) => void;
   searchRef?: React.RefObject<HTMLInputElement | null>;
+  title?: string;
 }
 
 const MobileNavigation: React.FC<MainLayoutProps> = ({
@@ -50,6 +51,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
   searchRef,
   searchTerm,
   setSearchTerm,
+  title,
 }) => {
   const router = useRouter();
   const location = usePathname();
@@ -122,6 +124,97 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
         ]
       : []),
   ];
+
+  if (title) {
+    return (
+      <div className="lg:hidden">
+        <div className="border-b flex justify-between items-center h-16 px-3 z-30 border-app-border">
+          <div className="flex gap-5 items-center">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="p-0">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={currentUser?.avatar ?? undefined} />
+                    <AvatarFallback className="capitalize text-app text-2xl">
+                      {currentUser?.username.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  {/* <Menu size={24} /> */}
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-64">
+                <VisuallyHidden>
+                  <SheetTitle>Mobile Sidebar</SheetTitle>
+                </VisuallyHidden>
+                <div className="flex flex-col h-full">
+                  <div className="p-4 flex items-center gap-2">
+                    <Avatar>
+                      <AvatarImage src={currentUser?.avatar ?? undefined} />
+                      <AvatarFallback className="capitalize text-app text-3xl">
+                        {currentUser?.username.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-bold capitalize">
+                        {currentUser?.username}
+                      </p>
+                      {/* <p className="text-app-gray">@{currentUser?.username}</p> */}
+                    </div>
+                  </div>
+
+                  <nav className="flex-1 space-y-1 p-2">
+                    {navItems.map((item, index) => (
+                      <SheetClose asChild key={item.label}>
+                        <Link
+                          href={item.path}
+                          className={cn(
+                            'flex items-center gap-4 p-3 rounded-full hover:bg-app-hover transition active:scale-90 transition-transform duration-150',
+                            isActive(item.path) ? 'font-bold' : 'font-normal',
+                          )}>
+                          {item.icon}
+                          <span>{item.label}</span>
+                        </Link>
+                      </SheetClose>
+                    ))}
+                  </nav>
+
+                  <div className="p-4">
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start active:scale-90 transition-transform duration-150"
+                      onClick={handleLogout}>
+                      <LogOut size={18} className="mr-2" />
+                      Log out
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            <h1 className="text-xl font-bold">{title}</h1>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push('/notifications')}
+            className="relative active:scale-90 transition-transform duration-150">
+            <Bell size={24} />
+
+            {unreadCount && unreadCount > 0 && (
+              <Badge
+                variant="destructive"
+                className={cn(
+                  'absolute -top-1 -right-1 h-5 flex items-center justify-center p-0 text-xs font-bold rounded-full',
+                  unreadCount > 99 ? 'w-7' : 'w-5',
+                )}>
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </Badge>
+            )}
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
