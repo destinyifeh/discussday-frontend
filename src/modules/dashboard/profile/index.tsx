@@ -478,7 +478,7 @@ export const ProfilePage = () => {
         ref={virtuosoRef}
         components={{
           Header: () => (
-            <div className="mt-0 md:mt-0">
+            <div className="mt-15 md:mt-0">
               <PageHeader
                 title={currentUser?.username}
                 description={`${totalCount} ${activeTab}`}
