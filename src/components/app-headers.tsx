@@ -4,6 +4,7 @@ import {usegoBack} from '@/hooks/use-smart-back';
 import {ChevronLeft} from 'lucide-react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
+import {CustomLogo} from './app-logo';
 import {Button} from './ui/button';
 
 export const PageHeader = ({
@@ -81,9 +82,12 @@ export const AppHeader = () => {
   return (
     <header className="border-b border-app-border">
       <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold text-app">
+        <div className="flex items-center justify-between h-9">
+          {/* <Link href="/" className="text-2xl font-bold text-app">
             Discussday
+          </Link> */}
+          <Link href="/">
+            <CustomLogo logo="/logo_blue.webp" width={150} height={10} />
           </Link>
           <div className="space-x-4">
             <Link href="/login">
