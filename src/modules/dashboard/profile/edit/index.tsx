@@ -430,9 +430,7 @@ export const EditProfilePage = () => {
                   type="button"
                   variant="outline"
                   className="border-app-border"
-                  onClick={() =>
-                    router.push(`/profile/${currentUser?.username}`)
-                  }>
+                  onClick={() => router.push('/profile')}>
                   Cancel
                 </Button>
                 <Button

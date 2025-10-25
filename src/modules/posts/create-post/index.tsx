@@ -22,7 +22,7 @@ import {queryClient} from '@/lib/client/query-client';
 import {capitalizeName} from '@/lib/formatter';
 import {SectionName} from '@/types/section';
 import {useQuery} from '@tanstack/react-query';
-import {ChevronLeft, FileImage, Trash2, X} from 'lucide-react';
+import {ChevronLeft, FileImage, Trash2} from 'lucide-react';
 import {useParams, useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useRef, useState} from 'react';
 
@@ -376,13 +376,7 @@ export const CreatePostPage = () => {
             {showGuidelines && (
               <Card className="mt-4">
                 <CardContent className="px-4">
-                  <div className="flex justify-end mb-1">
-                    <X
-                      className="cursor-pointer"
-                      onClick={() => setShowGuidelines(false)}
-                    />
-                  </div>
-                  <CommunityGuidelines />
+                  <CommunityGuidelines setShowGuidelines={setShowGuidelines} />
                 </CardContent>
               </Card>
             )}

@@ -67,6 +67,7 @@ const UserCommentCard = ({
       quotedImage:
         comment.images && comment.images.map((img: any) => img.secure_url),
       quotedUserImage: comment.commentBy.avatar,
+      quotedContentCreatedDate: comment.createdAt as string,
     };
 
     setQuotedComment(payload);
@@ -80,31 +81,37 @@ const UserCommentCard = ({
   };
 
   const handleEdit = () => {
-    setPost(comment.post as PostFeedProps);
-    if (comment.quotedComment) {
-      const quotedImg = comment.quotedComment.quotedImage
-        ? comment.quotedComment.quotedImage.map((url: string) => url)
-        : [];
-      const pay = {
-        quotedContent: comment.quotedComment.quotedContent,
-        quotedUser: comment.quotedComment.quotedUser,
-        quotedId: comment.quotedComment.quotedId,
-        quotedUserId: comment.quotedComment.quotedUserId,
-        quotedImage: quotedImg,
-        quotedUserImage: comment.quotedComment.quotedUserImage,
-      };
+    try {
+      setPost(comment.post as PostFeedProps);
+      if (comment.quotedComment) {
+        const quotedImg = comment.quotedComment.quotedImage
+          ? comment.quotedComment.quotedImage.map((url: string) => url)
+          : [];
+        const pay = {
+          quotedContent: comment.quotedComment.quotedContent,
+          quotedUser: comment.quotedComment.quotedUser,
+          quotedId: comment.quotedComment.quotedId,
+          quotedUserId: comment.quotedComment.quotedUserId,
+          quotedImage: quotedImg,
+          quotedUserImage: comment.quotedComment.quotedUserImage,
+          quotedContentCreatedDate:
+            comment.quotedComment.quotedContentCreatedDate,
+        };
 
-      setQuotedComment(pay);
-      setPostComment(comment);
-    } else {
-      setPostComment(comment);
+        setQuotedComment(pay);
+        setPostComment(comment);
+      } else {
+        setPostComment(comment);
+      }
+      //navigate.push(`/post/${comment.post._id}/reply`);
+      navigate.push(
+        `/discuss/${comment.post.section.toLowerCase()}/${
+          comment.post.slugId
+        }/${comment.post.slug}/reply`,
+      );
+    } catch (err) {
+      console.log(err, 'editErr');
     }
-    //navigate.push(`/post/${comment.post._id}/reply`);
-    navigate.push(
-      `/discuss/${comment.post.section.toLowerCase()}/${comment.post.slugId}/${
-        comment.post.slug
-      }/reply`,
-    );
   };
 
   const renderCommentContent = () => {
@@ -260,7 +267,7 @@ const UserCommentCard = ({
               </span>
             </div>
             {checkUser && (
-              <DropdownMenu>
+              <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="h-8 w-8">
                     <MoreHorizontal size={16} className="hidden md:block" />

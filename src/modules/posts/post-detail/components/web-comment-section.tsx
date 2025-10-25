@@ -1,6 +1,5 @@
 'use client';
 
-import CommunityGuidelines from '@/components/post/community-guidelines';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
@@ -129,14 +128,13 @@ export const WebCommentSection = ({
                   {currentUser?.username.charAt(0)}
                 </AvatarFallback>
               </Avatar>
-              {/* <div className="text-sm text-app">
-                  <span>Community Guidelines</span>
-                  <span className="mx-1">•</span>
-                  <span className="text-[#666]">
-                    Be respectful and constructive in your comments.
-                  </span>
-                </div> */}
-              <CommunityGuidelines />
+              <div className="text-sm text-app">
+                <Link href="/community-guidelines">Community Guidelines</Link>
+                <span className="mx-1">•</span>
+                <span className="text-[#666]">
+                  Be respectful and constructive in your comments.
+                </span>
+              </div>
             </div>
 
             {quotedUser && (
@@ -188,7 +186,7 @@ export const WebCommentSection = ({
             )}
 
             <Textarea
-              placeholder="What's on your mind?"
+              placeholder="Type your thoughts…"
               value={comment}
               onChange={e => setComment(e.target.value)}
               className="max-h-[100px] resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 px-0"

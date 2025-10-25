@@ -191,7 +191,7 @@ export const MobileCommentSection = ({
             )}
 
             <Textarea
-              placeholder="What's on your mind?"
+              placeholder="Type your thoughts…"
               value={comment}
               onChange={e => setComment(e.target.value)}
               className="max-h-[100px] resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 px-0"

@@ -5,12 +5,12 @@ import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
 
 import {PageHeader} from '@/components/app-headers';
-import CommunityGuidelines from '@/components/post/community-guidelines';
 import PostCard from '@/components/post/post-card';
 import {toast} from '@/components/ui/toast';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {usePostStore} from '@/hooks/stores/use-post-store';
 import {useIsMobile} from '@/hooks/use-mobile';
+import {formatTimeAgo} from '@/lib/formatter';
 import {
   CommentFeedProps,
   ImageProps,
@@ -80,6 +80,7 @@ export const CreateCommentPage = () => {
           quotedId: QuotedComment.quotedId,
           quotedUserId: QuotedComment.quotedUserId,
           quotedUserImage: QuotedComment.quotedUserImage,
+          quotedContentCreatedDate: QuotedComment.quotedContentCreatedDate,
         };
       }
 
@@ -201,6 +202,12 @@ export const CreateCommentPage = () => {
               <p className="text-sm font-semibold text-app capitalize">
                 <Link href={`/user/${quotedUser}`}>{quotedUser}</Link>
               </p>
+              <span className="text-app-gray">
+                · replied{' '}
+                {formatTimeAgo(
+                  QuotedComment.quotedContentCreatedDate as string,
+                )}
+              </span>
             </div>
             <div className="text-sm">
               <p
@@ -304,9 +311,12 @@ export const CreateCommentPage = () => {
         {/* Original post */}
         <PostCard post={thePost as PostFeedProps} showActions={false} />
 
-        {/* Community Guidelines */}
-        <div className="px-4 pt-4">
-          <CommunityGuidelines />
+        <div className="text-sm text-app px-4 pt-4">
+          <Link href="/community-guidelines">Community Guidelines</Link>
+          <span className="mx-1">•</span>
+          <span className="text-[#666]">
+            Be respectful and constructive in your comments.
+          </span>
         </div>
 
         {/* Reply compose area */}

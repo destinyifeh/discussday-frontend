@@ -1,10 +1,10 @@
 'use client';
 
 import AdCard from '@/components/ad/ad-card';
-import {PageHeader} from '@/components/app-headers';
 import {LoadingMore, LoadMoreError} from '@/components/feedbacks';
 import ErrorFeedback from '@/components/feedbacks/error-feedback';
 import {MobileBottomTab} from '@/components/layouts/dashboard/mobile-bottom-tab';
+import MobileNavigation from '@/components/layouts/dashboard/mobile-navigation';
 import UserCommentCard from '@/components/post/comments/user-comment-card';
 import PostCard from '@/components/post/post-card';
 import PostSkeleton from '@/components/skeleton/post-skeleton';
@@ -23,7 +23,7 @@ import {commentService} from '@/services/comment-service';
 import {postService} from '@/services/post-service';
 import {userService} from '@/services/user-management';
 import {useInfiniteQuery, useMutation} from '@tanstack/react-query';
-import {Calendar, Link as LinkIcon, Settings} from 'lucide-react';
+import {Calendar, Link as LinkIcon, MapPin, Settings} from 'lucide-react';
 import moment from 'moment';
 import Link from 'next/link';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -462,12 +462,12 @@ export const ProfilePage = () => {
 
   return (
     <div>
-      {/* <div
+      <div
         className={`lg:hidden fixed top-0 left-0 right-0 bg-background w-full z-50 transition-transform duration-300 ${
           showMobileNav ? 'translate-y-0' : '-translate-y-full'
         }`}>
-        <MobileNavigation />
-      </div> */}
+        <MobileNavigation title="Profile" />
+      </div>
 
       <Virtuoso
         className="custom-scrollbar mb-12 md:mb-0"
@@ -478,10 +478,11 @@ export const ProfilePage = () => {
         components={{
           Header: () => (
             <div className="mt-0 md:mt-0">
-              <PageHeader
+              {/* <PageHeader
                 title={currentUser?.username}
                 description={`${totalCount} ${activeTab}`}
-              />
+                showBackIcon={false}
+              /> */}
 
               <div className="border-b overflow-y-auto border-app-border">
                 <div className="h-40 bg-app/20 relative overflow-hidden">
@@ -528,7 +529,7 @@ export const ProfilePage = () => {
                     </div>
                   </div>
 
-                  <div className="mt-16">
+                  <div className="mt-8">
                     <h2 className="font-bold text-xl capitalize">
                       {currentUser?.username}
                     </h2>
@@ -552,6 +553,13 @@ export const ProfilePage = () => {
                               className="text-app">
                               {normalizeDomain(currentUser?.website)}
                             </Link>
+                          </div>
+                        )}
+
+                        {currentUser?.location && (
+                          <div className="flex items-center gap-2">
+                            <MapPin size={16} />
+                            <p className="text-base">{currentUser.location}</p>
                           </div>
                         )}
                         <div className="flex items-center gap-2">
