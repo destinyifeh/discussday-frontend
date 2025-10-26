@@ -14,10 +14,10 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-export const metadata2: Metadata = {
-  title: `${APP_NAME} | Account Access`,
-  description: `Access your ${APP_NAME} account or create a new one to join our community. Secure login and easy signup.`,
-};
+// export const metadata: Metadata = {
+//   title: `${APP_NAME} | Account Access`,
+//   description: `Access your ${APP_NAME} account or create a new one to join our community. Secure login and easy signup.`,
+// };
 
 export const metadata: Metadata = {
   title: `${APP_NAME} | Join the Conversation`,
