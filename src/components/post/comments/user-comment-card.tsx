@@ -324,6 +324,7 @@ const UserCommentCard = ({
 
           <div className="flex gap-6 mt-3">
             <Button
+              disabled={!currentUser}
               variant="ghost"
               size="sm"
               className="text-app-gray hover:text-app p-0 h-auto active:scale-90 transition-transform duration-150"
@@ -343,6 +344,7 @@ const UserCommentCard = ({
             </Button> */}
 
             <Button
+              disabled={!currentUser}
               variant="ghost"
               size="sm"
               className={cn(
@@ -372,6 +374,7 @@ const UserCommentCard = ({
             </Button> */}
 
             <Button
+              disabled={!currentUser}
               variant="ghost"
               size="sm"
               className="text-app-gray hover:text-app p-0 h-auto active:scale-90 transition-transform duration-150"

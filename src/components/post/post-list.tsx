@@ -615,20 +615,24 @@ export const HomePostList = () => {
                     ))}
                   </div>
                 </div>
-                <div className="px-4 flex flex-wrap gap-2 mb-2 border-t pt-3 border-app-border">
-                  {SectionOptions.map(section => (
-                    <Badge
-                      key={section.id}
-                      variant="outline"
-                      className="py-1 px-3 cursor-pointer dark:bg-muted hover:bg-app-hover text-app active:scale-90 transition-transform duration-150"
-                      //className="py-1 px-3 cursor-pointer hover:bg-app-hover"
-                      onClick={() =>
-                        onSectionOptionsNavigate(section.description as string)
-                      }>
-                      {section.name}
-                    </Badge>
-                  ))}
-                </div>
+                {currentUser && (
+                  <div className="px-4 flex flex-wrap gap-2 mb-2 border-t pt-3 border-app-border">
+                    {SectionOptions.map(section => (
+                      <Badge
+                        key={section.id}
+                        variant="outline"
+                        className="py-1 px-3 cursor-pointer dark:bg-muted hover:bg-app-hover text-app active:scale-90 transition-transform duration-150"
+                        //className="py-1 px-3 cursor-pointer hover:bg-app-hover"
+                        onClick={() =>
+                          onSectionOptionsNavigate(
+                            section.description as string,
+                          )
+                        }>
+                        {section.name}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           ),
@@ -1418,6 +1422,7 @@ export const BookmarkPostList = () => {
 
 export const PostPlaceholder = ({tab}: {tab: string}) => {
   const navigate = useRouter();
+  const {currentUser} = useAuthStore(state => state);
   return (
     <div className="p-8 text-center">
       {tab === 'for-you' ? (
@@ -1427,15 +1432,33 @@ export const PostPlaceholder = ({tab}: {tab: string}) => {
         </>
       ) : (
         <>
-          <h2 className="text-xl font-bold mb-2">No posts from your follows</h2>
-          <p className="text-app-gray mb-4">
-            Follow more people to see their posts here!
-          </p>
-          <button
-            className="bg-app hover:bg-app/90 text-white px-5 py-2 rounded-full text-sm font-medium"
-            onClick={() => navigate.push('/users')}>
-            Find people to follow
-          </button>
+          {!currentUser ? (
+            <>
+              <h2 className="text-xl font-bold mb-2">Sign in to see posts</h2>
+              <p className="text-app-gray mb-4">
+                Log in to follow people and see their latest posts here.
+              </p>
+              <button
+                className="bg-app hover:bg-app/90 text-white px-5 py-2 rounded-full text-sm font-medium"
+                onClick={() => navigate.push('/login')}>
+                Log In
+              </button>
+            </>
+          ) : (
+            <>
+              <h2 className="text-xl font-bold mb-2">
+                No posts from your follows
+              </h2>
+              <p className="text-app-gray mb-4">
+                Follow more people to see their posts here!
+              </p>
+              <button
+                className="bg-app hover:bg-app/90 text-white px-5 py-2 rounded-full text-sm font-medium"
+                onClick={() => navigate.push('/users')}>
+                Find people to follow
+              </button>
+            </>
+          )}
         </>
       )}
     </div>
@@ -1511,6 +1534,7 @@ export const ExplorePlaceholder = ({
   data: any;
 }) => {
   const navigate = useRouter();
+  const {currentUser} = useAuthStore(state => state);
   return (
     <div className="p-8 text-center">
       {/* Search results empty */}
@@ -1544,7 +1568,7 @@ export const ExplorePlaceholder = ({
         )}
 
       {/* Following empty */}
-      {activeTab === 'following' && !data.length && !query && (
+      {currentUser && activeTab === 'following' && !data.length && !query && (
         <>
           <h2 className="text-xl font-bold mb-2">No posts from your follows</h2>
           <p className="text-app-gray mb-4">
@@ -1554,6 +1578,20 @@ export const ExplorePlaceholder = ({
             className="bg-app hover:bg-app/90 text-white px-5 py-2 rounded-full text-sm font-medium"
             onClick={() => navigate.push('/users')}>
             Find people to follow
+          </button>
+        </>
+      )}
+
+      {!currentUser && activeTab === 'following' && (
+        <>
+          <h2 className="text-xl font-bold mb-2">Sign in to see posts</h2>
+          <p className="text-app-gray mb-4">
+            Log in to follow people and see their latest posts here.
+          </p>
+          <button
+            className="bg-app hover:bg-app/90 text-white px-5 py-2 rounded-full text-sm font-medium"
+            onClick={() => navigate.push('/login')}>
+            Log In
           </button>
         </>
       )}

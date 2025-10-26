@@ -1,5 +1,6 @@
 'use client';
 
+import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {truncateText} from '@/lib/formatter';
 import {cn} from '@/lib/utils';
 import {useRouter} from 'next/navigation';
@@ -20,6 +21,7 @@ export const UserCard = ({
   isFollowing,
 }: UserCardProps) => {
   const navigate = useRouter();
+  const {currentUser} = useAuthStore(state => state);
   return (
     <div key={user._id} className="flex items-center justify-between p-4">
       <div className="flex items-center gap-3 cursor-pointer flex-1">
@@ -32,7 +34,9 @@ export const UserCard = ({
           </AvatarFallback>
         </Avatar>
         <div className="flex-1">
-          <div className="flex items-center gap-2">
+          <div
+            className="flex items-center gap-2"
+            onClick={() => navigate.push(`/user/${user.username}`)}>
             <h3 className="font-bold capitalize">
               {truncateText(user.username, 20)}
             </h3>
@@ -52,6 +56,7 @@ export const UserCard = ({
       </div>
       {!isCurrentUser && (
         <Button
+          disabled={!currentUser}
           className={`rounded-full ml-3 active:scale-90 transition-transform duration-150 ${
             isFollowing
               ? 'bg-transparent text-black border border-gray-300 hover:bg-red-50 hover:text-red-600 hover:border-red-300 dark:text-white'

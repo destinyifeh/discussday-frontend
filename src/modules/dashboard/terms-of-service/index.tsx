@@ -1,10 +1,12 @@
 'use client';
 
+import {PageHeader} from '@/components/app-headers';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 
 export const TermsOfServicePage = () => {
   return (
     <div>
+      <PageHeader title="Terms of Service" />
       <div>
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="text-center mb-8">

@@ -245,23 +245,32 @@ const CommentCard = ({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {!isCommentedUser && (
+                {currentUser ? (
+                  <>
+                    {!isCommentedUser && (
+                      <DropdownMenuItem
+                        onClick={() => handleReport(comment._id)}
+                        className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
+                        {/* <Flag size={16} className="mr-2" /> */}
+                        Report
+                      </DropdownMenuItem>
+                    )}
+                    {isCommentedUser && (
+                      <DropdownMenuItem
+                        onClick={handleEdit}
+                        className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
+                        {/* <Pencil size={16} className="mr-2" /> */}
+                        Edit
+                      </DropdownMenuItem>
+                    )}
+                  </>
+                ) : (
                   <DropdownMenuItem
-                    onClick={() => handleReport(comment._id)}
+                    onClick={() => navigate.push('/login')}
                     className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
-                    {/* <Flag size={16} className="mr-2" /> */}
-                    Report
+                    Login
                   </DropdownMenuItem>
                 )}
-                {isCommentedUser && (
-                  <DropdownMenuItem
-                    onClick={handleEdit}
-                    className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
-                    {/* <Pencil size={16} className="mr-2" /> */}
-                    Edit
-                  </DropdownMenuItem>
-                )}
-
                 <DropdownMenuItem className="cursor-pointer text-app justify-center active:scale-90 transition-transform duration-150">
                   Cancel
                 </DropdownMenuItem>
@@ -317,7 +326,7 @@ const CommentCard = ({
                 'cursor-pointer text-app-gray hover:text-red-500 p-0 h-auto active:scale-90 transition-transform duration-150',
                 commentLiked && 'text-red-500',
               )}
-              disabled={liking}
+              disabled={liking || !currentUser}
               onClick={e => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -344,7 +353,7 @@ const CommentCard = ({
             <Button
               variant="ghost"
               size="sm"
-              disabled={liking}
+              disabled={liking || !currentUser}
               className="cursor-pointer text-app-gray hover:text-app p-0 h-auto active:scale-90 transition-transform duration-150"
               onClick={e => {
                 e.preventDefault();

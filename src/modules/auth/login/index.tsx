@@ -52,7 +52,7 @@ export const LoginPage = () => {
   const router = useRouter();
 
   const searchParams = useSearchParams();
-  const next = searchParams.get('next') || '/home';
+  const next = searchParams.get('next') || '/';
 
   const sessionExpired = searchParams.get('reason');
 

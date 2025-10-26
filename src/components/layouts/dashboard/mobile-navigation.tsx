@@ -1,4 +1,5 @@
 'use client';
+import {AppFooter} from '@/components/app-footer';
 import {CustomLogo} from '@/components/app-logo';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import {Badge} from '@/components/ui/badge';
@@ -70,6 +71,9 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
   const isActive = (path: string) => location === path;
 
   const handleLogout = async () => {
+    if (!currentUser) {
+      return router.push('/login');
+    }
     try {
       const res = await authService.logoutRequestAction();
       if (res?.data?.code === HTTP_STATUS_CODE.OK) {
@@ -90,28 +94,40 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
   };
 
   const navItems = [
-    {icon: <Home size={24} />, label: 'Home', path: '/home'},
+    {icon: <Home size={24} />, label: 'Home', path: '/'},
     {icon: <Search size={24} />, label: 'Explore', path: '/explore'},
-    {icon: <Bell size={24} />, label: 'Notifications', path: '/notifications'},
-    // {icon: <Mail size={24} />, label: 'Messages', path: '/messages'},
-    {icon: <BookmarkIcon size={24} />, label: 'Bookmarks', path: '/bookmarks'},
+    ...(currentUser
+      ? [
+          {
+            icon: <Bell size={24} />,
+            label: 'Notifications',
+            path: '/notifications',
+          },
 
-    {
-      icon: <User size={24} />,
-      label: 'Profile',
-      path: `/profile`,
-    },
+          {
+            icon: <BookmarkIcon size={24} />,
+            label: 'Bookmarks',
+            path: '/bookmarks',
+          },
 
-    {
-      label: 'Settings',
-      icon: <Settings size={24} />,
-      path: '/settings',
-    },
-    {
-      label: 'My Ads',
-      icon: <BarChart2 size={24} />,
-      path: '/advertise/ad-performance',
-    },
+          {
+            icon: <User size={24} />,
+            label: 'Profile',
+            path: `/profile`,
+          },
+
+          {
+            label: 'Settings',
+            icon: <Settings size={24} />,
+            path: '/settings',
+          },
+          {
+            label: 'My Ads',
+            icon: <BarChart2 size={24} />,
+            path: '/advertise/ad-performance',
+          },
+        ]
+      : []),
 
     ...(currentUser?.role === Role.SUPER_ADMIN ||
     currentUser?.role === Role.ADMIN
@@ -151,12 +167,12 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
                     <Avatar>
                       <AvatarImage src={currentUser?.avatar ?? undefined} />
                       <AvatarFallback className="capitalize text-app text-3xl">
-                        {currentUser?.username.charAt(0)}
+                        {currentUser?.username.charAt(0) ?? 'G'}
                       </AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="font-bold capitalize">
-                        {currentUser?.username}
+                        {currentUser?.username ?? 'Guest'}
                       </p>
                       {/* <p className="text-app-gray">@{currentUser?.username}</p> */}
                     </div>
@@ -184,7 +200,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
                       className="w-full justify-start active:scale-90 transition-transform duration-150"
                       onClick={handleLogout}>
                       <LogOut size={18} className="mr-2" />
-                      Log out
+                      {currentUser ? '  Log out' : 'Log In'}
                     </Button>
                   </div>
                 </div>
@@ -193,24 +209,32 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
 
             <h1 className="text-xl font-bold">{title}</h1>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => router.push('/notifications')}
-            className="relative active:scale-90 transition-transform duration-150">
-            <Bell size={24} />
+          {currentUser ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => router.push('/notifications')}
+              className="relative active:scale-90 transition-transform duration-150">
+              <Bell size={24} />
 
-            {unreadCount && unreadCount > 0 && (
-              <Badge
-                variant="destructive"
-                className={cn(
-                  'absolute -top-1 -right-1 h-5 flex items-center justify-center p-0 text-xs font-bold rounded-full',
-                  unreadCount > 99 ? 'w-7' : 'w-5',
-                )}>
-                {unreadCount > 99 ? '99+' : unreadCount}
-              </Badge>
-            )}
-          </Button>
+              {unreadCount && unreadCount > 0 && (
+                <Badge
+                  variant="destructive"
+                  className={cn(
+                    'absolute -top-1 -right-1 h-5 flex items-center justify-center p-0 text-xs font-bold rounded-full',
+                    unreadCount > 99 ? 'w-7' : 'w-5',
+                  )}>
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </Badge>
+              )}
+            </Button>
+          ) : (
+            <Link href="/login">
+              <Button variant="ghost" className="text-app">
+                Sign In
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     );
@@ -227,7 +251,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
               <Avatar className="h-8 w-8">
                 <AvatarImage src={currentUser?.avatar ?? undefined} />
                 <AvatarFallback className="capitalize text-app text-2xl">
-                  {currentUser?.username.charAt(0)}
+                  {currentUser?.username.charAt(0) ?? 'G'}
                 </AvatarFallback>
               </Avatar>
               {/* <Menu size={24} /> */}
@@ -242,12 +266,12 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
                 <Avatar>
                   <AvatarImage src={currentUser?.avatar ?? undefined} />
                   <AvatarFallback className="capitalize text-app text-3xl">
-                    {currentUser?.username.charAt(0)}
+                    {currentUser?.username.charAt(0) ?? 'G'}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="font-bold capitalize">
-                    {currentUser?.username}
+                    {currentUser?.username ?? 'Guest'}
                   </p>
                   {/* <p className="text-app-gray">@{currentUser?.username}</p> */}
                 </div>
@@ -275,16 +299,17 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
                   className="w-full justify-start active:scale-90 transition-transform duration-150"
                   onClick={handleLogout}>
                   <LogOut size={18} className="mr-2" />
-                  Log out
+                  {currentUser ? '  Log out' : 'Log In'}
                 </Button>
               </div>
+              <AppFooter />
             </div>
           </SheetContent>
         </Sheet>
         {showLogo && (
           // <h1 className="text-xl font-bold">{title}</h1>
 
-          <Link href="/home">
+          <Link href="/">
             <CustomLogo logo="/logo_blue.webp" height={100} width={125} />
           </Link>
         )}
@@ -295,25 +320,32 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
             ref={searchRef}
           />
         )}
+        {currentUser ? (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push('/notifications')}
+            className="relative active:scale-90 transition-transform duration-150">
+            <Bell size={24} />
 
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => router.push('/notifications')}
-          className="relative active:scale-90 transition-transform duration-150">
-          <Bell size={24} />
-
-          {unreadCount && unreadCount > 0 && (
-            <Badge
-              variant="destructive"
-              className={cn(
-                'absolute -top-1 -right-1 h-5 flex items-center justify-center p-0 text-xs font-bold rounded-full',
-                unreadCount > 99 ? 'w-7' : 'w-5',
-              )}>
-              {unreadCount > 99 ? '99+' : unreadCount}
-            </Badge>
-          )}
-        </Button>
+            {unreadCount && unreadCount > 0 && (
+              <Badge
+                variant="destructive"
+                className={cn(
+                  'absolute -top-1 -right-1 h-5 flex items-center justify-center p-0 text-xs font-bold rounded-full',
+                  unreadCount > 99 ? 'w-7' : 'w-5',
+                )}>
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </Badge>
+            )}
+          </Button>
+        ) : (
+          <Link href="/login">
+            <Button variant="ghost" className="text-app">
+              Sign In
+            </Button>
+          </Link>
+        )}
       </div>
     </div>
   );

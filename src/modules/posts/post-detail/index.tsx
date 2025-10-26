@@ -623,7 +623,7 @@ export const PostDetailPage = ({params}: PostDetailPageProps) => {
   };
 
   const onComment = () => {
-    navigate.push(`/post/${post._id}/reply`);
+    navigate.push(`/login`);
   };
 
   const getButtonLabel = () => {
@@ -914,74 +914,88 @@ export const PostDetailPage = ({params}: PostDetailPageProps) => {
       {!post?.commentsClosed && (
         <>
           {/* Mobile comment section - slides up from bottom */}
-          {!mob ? (
-            <Button
-              className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-app hover:bg-app/90 text-white"
-              size="icon"
-              onClick={onComment}>
-              <MessageSquare size={24} />
-            </Button>
-          ) : (
-            <MobileCommentSection
-              showMobileComment={showMobileComment}
-              setShowMobileComment={setShowMobileComment}
-              setQuoteContent={setQuoteContent}
-              setQuotedUser={setQuotedUser}
-              imagePreview={imagePreview}
-              isSubmitting={isSubmitting}
-              handleImageUpload={handleImageUpload}
-              removeImage={removeImage}
-              imageUrls={imageUrls}
-              setComment={setComment}
-              setImagePreview={setImagePreview}
-              quoteContent={quoteContent}
-              quotedUser={quotedUser}
-              comment={comment}
-              virtuosoRef={virtuosoRef}
-              fileInputRef={fileInputRef}
-              handleSubmitComment={handleSubmitComment}
-              setEditComment={setEditComment}
-              setIsEditing={setIsEditing}
-              setImageUrls={setImageUrls}
-              setImages={setImages}
-              isEditing={isEditing}
-              getButtonLabel={getButtonLabel}
-              quotedImages={quotedImages}
-              setQuotedImages={setQuotedImages}
-              quotedUserImage={quotedUserImage}
-              quotedContentCreatedDate={quotedContentCreatedDate}
-            />
-          )}
+          {!currentUser ? (
+            <>
+              <Button
+                className="lg:hidden fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-app hover:bg-app/90 text-white"
+                size="icon"
+                onClick={onComment}>
+                {/* <MessageSquare size={24} /> */}
+                Login
+              </Button>
 
-          <WebCommentSection
-            showWebComment={showWebComment}
-            setShowWebComment={setShowWebComment}
-            setQuoteContent={setQuoteContent}
-            setQuotedUser={setQuotedUser}
-            imagePreview={imagePreview}
-            isSubmitting={isSubmitting}
-            handleImageUpload={handleImageUpload}
-            removeImage={removeImage}
-            imageUrls={imageUrls}
-            setComment={setComment}
-            setImagePreview={setImagePreview}
-            quoteContent={quoteContent}
-            quotedUser={quotedUser}
-            comment={comment}
-            virtuosoRef={virtuosoRef}
-            fileInputRef={fileInputRef}
-            handleSubmitComment={handleSubmitComment}
-            setEditComment={setEditComment}
-            setIsEditing={setIsEditing}
-            setImageUrls={setImageUrls}
-            setImages={setImages}
-            isEditing={isEditing}
-            getButtonLabel={getButtonLabel}
-            quotedImages={quotedImages}
-            setQuotedImages={setQuotedImages}
-            quotedUserImage={quotedUserImage}
-            quotedContentCreatedDate={quotedContentCreatedDate}
-          />
+              <Button
+                className="hidden lg:block fixedBottomBtn max-w-3xl mx-auto fixed bottom-6 right-[26%] h-14 w-14 rounded-full shadow-lg z-1 bg-app hover:bg-app/90 dark:hover:bg-app dark:bg-app/90 text-white"
+                size="icon"
+                onClick={() => {
+                  setShowWebComment(!showWebComment);
+                  virtuosoRef.current?.scrollTo({top: 0, behavior: 'smooth'});
+                }}>
+                Login
+              </Button>
+            </>
+          ) : (
+            <>
+              <MobileCommentSection
+                showMobileComment={showMobileComment}
+                setShowMobileComment={setShowMobileComment}
+                setQuoteContent={setQuoteContent}
+                setQuotedUser={setQuotedUser}
+                imagePreview={imagePreview}
+                isSubmitting={isSubmitting}
+                handleImageUpload={handleImageUpload}
+                removeImage={removeImage}
+                imageUrls={imageUrls}
+                setComment={setComment}
+                setImagePreview={setImagePreview}
+                quoteContent={quoteContent}
+                quotedUser={quotedUser}
+                comment={comment}
+                virtuosoRef={virtuosoRef}
+                fileInputRef={fileInputRef}
+                handleSubmitComment={handleSubmitComment}
+                setEditComment={setEditComment}
+                setIsEditing={setIsEditing}
+                setImageUrls={setImageUrls}
+                setImages={setImages}
+                isEditing={isEditing}
+                getButtonLabel={getButtonLabel}
+                quotedImages={quotedImages}
+                setQuotedImages={setQuotedImages}
+                quotedUserImage={quotedUserImage}
+                quotedContentCreatedDate={quotedContentCreatedDate}
+              />
+              <WebCommentSection
+                showWebComment={showWebComment}
+                setShowWebComment={setShowWebComment}
+                setQuoteContent={setQuoteContent}
+                setQuotedUser={setQuotedUser}
+                imagePreview={imagePreview}
+                isSubmitting={isSubmitting}
+                handleImageUpload={handleImageUpload}
+                removeImage={removeImage}
+                imageUrls={imageUrls}
+                setComment={setComment}
+                setImagePreview={setImagePreview}
+                quoteContent={quoteContent}
+                quotedUser={quotedUser}
+                comment={comment}
+                virtuosoRef={virtuosoRef}
+                fileInputRef={fileInputRef}
+                handleSubmitComment={handleSubmitComment}
+                setEditComment={setEditComment}
+                setIsEditing={setIsEditing}
+                setImageUrls={setImageUrls}
+                setImages={setImages}
+                isEditing={isEditing}
+                getButtonLabel={getButtonLabel}
+                quotedImages={quotedImages}
+                setQuotedImages={setQuotedImages}
+                quotedUserImage={quotedUserImage}
+                quotedContentCreatedDate={quotedContentCreatedDate}
+              />
+            </>
+          )}
         </>
       )}
       {allowMainCom && (

@@ -142,14 +142,14 @@ export const SectionOptions = [
   },
   {
     id: '4',
-    name: 'Help Center',
-    description: 'help',
+    name: 'Users',
+    description: 'users',
   },
-  {
-    id: '5',
-    name: 'Community Guidelines',
-    description: 'community-guidelines',
-  },
+  // {
+  //   id: '5',
+  //   name: 'Community Guidelines',
+  //   description: 'community-guidelines',
+  // },
 ];
 
 export const resourceItems = [
@@ -199,5 +199,63 @@ export const resourceItems = [
     label: 'Ad Guidelines',
 
     path: '/ad-guidelines',
+  },
+];
+
+export const mobileResourceItems = [
+  {
+    label: 'Create Ad',
+
+    path: '/advertise',
+  },
+  {
+    label: 'Help Center',
+
+    path: '/help',
+  },
+
+  {
+    label: 'Report',
+
+    path: '/report',
+  },
+
+  {
+    label: 'Contact Support',
+
+    path: '/contact-support',
+  },
+  {
+    label: 'Community Guidelines',
+
+    path: '/community-guidelines',
+  },
+  {
+    label: 'About Us',
+
+    path: '/about-us',
+  },
+  {
+    label: 'Privacy Policy',
+
+    path: '/privacy',
+  },
+  {
+    label: 'Terms Of Service',
+
+    path: '/terms',
+  },
+  {
+    label: 'Ad Guidelines',
+
+    path: '/ad-guidelines',
+  },
+];
+
+export const isNotLoggedInResourceItems = [
+  {
+    label: 'Community Guidelines',
+
+    path: '/community-guidelines',
   },
 ];

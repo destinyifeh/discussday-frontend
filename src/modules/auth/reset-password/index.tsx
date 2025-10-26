@@ -102,6 +102,7 @@ export const ResetPasswordPage = () => {
         console.log(response, 'respoo');
         reset();
         toast.success('Password has been reset successfully');
+        navigate.push('/login');
       },
       onError(error: any, variables, context) {
         const {data} = error?.response ?? {};

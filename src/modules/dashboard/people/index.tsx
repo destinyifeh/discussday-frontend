@@ -662,36 +662,40 @@ export const PeoplePage = () => {
                     </div>
 
                     <div className="flex-1"></div>
-                    {!isOwnProfile && (
-                      <div className="flex gap-2 mt-3">
-                        <Button
-                          onClick={handleFollowUser}
-                          disabled={isPending}
-                          className={cn(
-                            'rounded-full',
-                            isFollowing
-                              ? 'bg-transparent text-black border border-gray-300 hover:bg-gray-100 hover:text-black dark:text-white'
-                              : 'bg-app text-white hover:bg-app/90',
-                          )}>
-                          {isFollowing ? 'Following' : 'Follow'}
-                        </Button>
+                    {currentUser && (
+                      <>
+                        {!isOwnProfile && (
+                          <div className="flex gap-2 mt-3">
+                            <Button
+                              onClick={handleFollowUser}
+                              disabled={isPending}
+                              className={cn(
+                                'rounded-full',
+                                isFollowing
+                                  ? 'bg-transparent text-black border border-gray-300 hover:bg-gray-100 hover:text-black dark:text-white'
+                                  : 'bg-app text-white hover:bg-app/90',
+                              )}>
+                              {isFollowing ? 'Following' : 'Follow'}
+                            </Button>
 
-                        <Button
-                          variant="outline"
-                          className="rounded-full"
-                          onClick={handleEmailNavigation}>
-                          <Mail className="h-4 w-4 mr-2" />
-                          Email
-                        </Button>
+                            <Button
+                              variant="outline"
+                              className="rounded-full"
+                              onClick={handleEmailNavigation}>
+                              <Mail className="h-4 w-4 mr-2" />
+                              Email
+                            </Button>
 
-                        <Button
-                          onClick={() => setOpen(true)}
-                          variant="ghost"
-                          size="icon"
-                          className="rounded-full text-red-500 hover:bg-red-50 hover:text-red-600">
-                          <AlertTriangle className="h-4 w-4" />
-                        </Button>
-                      </div>
+                            <Button
+                              onClick={() => setOpen(true)}
+                              variant="ghost"
+                              size="icon"
+                              className="rounded-full text-red-500 hover:bg-red-50 hover:text-red-600">
+                              <AlertTriangle className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
 
@@ -726,7 +730,9 @@ export const PeoplePage = () => {
                     <div className="flex gap-4 mt-3">
                       <Link
                         className="flex items-center gap-1 cursor-pointer hover:underline"
-                        href={`/user/${username}/following`}>
+                        href={
+                          !currentUser ? '#' : `/user/${username}/following`
+                        }>
                         <span className="font-bold">
                           {following?.length ?? 0}
                         </span>
@@ -734,7 +740,9 @@ export const PeoplePage = () => {
                       </Link>
                       <Link
                         className="flex items-center gap-1 cursor-pointer hover:underline"
-                        href={`/user/${username}/followers`}>
+                        href={
+                          !currentUser ? '#' : `/user/${username}/followers`
+                        }>
                         <span className="font-bold">
                           {followers?.length ?? 0}
                         </span>

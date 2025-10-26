@@ -24,11 +24,13 @@ import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {queryClient} from '@/lib/client/query-client';
 import {
   capitalizeFirstLetter,
+  capitalizeName,
   formatTimeAgo,
   truncateText,
 } from '@/lib/formatter';
 import {useReportActions} from '@/modules/dashboard/actions/action-hooks/report.action-hooks';
 
+import {APP_NAME} from '@/constants/settings';
 import {userService} from '@/services/user-management';
 import {UserProps} from '@/types/user.types';
 import {useMutation} from '@tanstack/react-query';
@@ -190,6 +192,27 @@ const PostCard = ({
     }
   };
 
+  const handleShare = (post: PostFeedProps) => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: `${post.title} | ${capitalizeName(
+            post.section,
+          )} | ${APP_NAME}`,
+          text:
+            post.content?.slice(0, 120) || 'Check out this post on Discussday!',
+          url: `${process.env.NEXT_PUBLIC_BASE_URL}/discuss/${post.section}/${post.slugId}/${post.slug}`,
+        })
+        .catch(err => console.error('Error sharing:', err));
+    } else {
+      // fallback: copy link
+      navigator.clipboard.writeText(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/discuss/${post.section}/${post.slugId}/${post.slug}`,
+      );
+      toast.success('Link copied to clipboard!');
+    }
+  };
+
   if (!post || post === null) {
     return <ErrorFeedback showGoBack message="Post not found" />;
   }
@@ -262,44 +285,54 @@ const PostCard = ({
                   <DropdownMenuContent
                     align="end"
                     className="border-app-border">
-                    {post.user._id === currentUser?._id &&
-                      post.status !== (PostStatus.PROMOTED as string) && (
-                        <>
-                          <DropdownMenuItem
-                            onClick={handleEditPost}
-                            className="cursor-pointer justify-center">
-                            {/* <Pencil size={16} className="mr-2 font-bold" /> */}
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                        </>
-                      )}
-
-                    {post.user._id !== currentUser?._id && (
+                    {currentUser ? (
                       <>
-                        <DropdownMenuItem
-                          onClick={handleFollow}
-                          className="cursor-pointer">
-                          {isFollowing ? (
+                        {post.user._id === currentUser?._id &&
+                          post.status !== (PostStatus.PROMOTED as string) && (
                             <>
-                              <UserCheck size={16} className="mr-2" />
-                              Following
-                            </>
-                          ) : (
-                            <>
-                              <UserPlus size={16} className="mr-2" />
-                              Follow
+                              <DropdownMenuItem
+                                onClick={handleEditPost}
+                                className="cursor-pointer justify-center">
+                                {/* <Pencil size={16} className="mr-2 font-bold" /> */}
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
                             </>
                           )}
+
+                        {post.user._id !== currentUser?._id && (
+                          <>
+                            <DropdownMenuItem
+                              onClick={handleFollow}
+                              className="cursor-pointer">
+                              {isFollowing ? (
+                                <>
+                                  <UserCheck size={16} className="mr-2" />
+                                  Following
+                                </>
+                              ) : (
+                                <>
+                                  <UserPlus size={16} className="mr-2" />
+                                  Follow
+                                </>
+                              )}
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                          </>
+                        )}
+                        <DropdownMenuItem
+                          onClick={() => handleReport(post._id)}
+                          className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
+                          Report
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator />
                       </>
+                    ) : (
+                      <DropdownMenuItem
+                        onClick={() => navigate.push('/login')}
+                        className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
+                        Login
+                      </DropdownMenuItem>
                     )}
-                    <DropdownMenuItem
-                      onClick={() => handleReport(post._id)}
-                      className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
-                      Report
-                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => setIsMenuOpen(false)}
@@ -437,7 +470,7 @@ const PostCard = ({
                     'cursor-pointer text-app-gray hover:text-red-500 active:scale-90 transition-transform duration-150',
                     liked && 'text-red-500',
                   )}
-                  disabled={liking}
+                  disabled={liking || !currentUser}
                   onClick={e => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -470,7 +503,7 @@ const PostCard = ({
                   variant="ghost"
                   size="icon"
                   className="cursor-pointer text-app-gray hover:text-app active:scale-90 transition-transform duration-150"
-                  disabled={bookmarking}
+                  disabled={bookmarking || !currentUser}
                   onClick={e => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -499,7 +532,8 @@ const PostCard = ({
                       onClick={e => {
                         e.preventDefault();
                         e.stopPropagation();
-                        setSharePopoverOpen(!sharePopoverOpen);
+                        handleShare(post);
+                        //setSharePopoverOpen(!sharePopoverOpen);
                       }}>
                       <Share2 size={18} />
                     </Button>

@@ -10,10 +10,15 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {toast} from '@/components/ui/toast';
 import {HTTP_STATUS_CODE} from '@/constants/api-resources';
-import {resourceItems, Sections} from '@/constants/data';
+import {
+  isNotLoggedInResourceItems,
+  resourceItems,
+  Sections,
+} from '@/constants/data';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {cn} from '@/lib/utils';
 
+import {AppFooter} from '@/components/app-footer';
 import {authService} from '@/services/auth-service';
 import {notificationService} from '@/services/notification-service';
 import {Role} from '@/types/user.types';
@@ -108,57 +113,65 @@ export const SidebarLayoutLeft = () => {
     //   icon: <User size={24} className="mr-4" />,
     //   path: `/profile/${'des'}`,
     // },
-    {
-      label: 'My Ads',
-      icon: <BarChart2 size={24} className="mr-4" />,
-      path: '/advertise/ad-performance',
-    },
-
-    ...(currentUser?.role === Role.SUPER_ADMIN ||
-    currentUser?.role === Role.ADMIN
+    ...(currentUser
       ? [
           {
-            label: 'Admin',
-            icon: <User size={24} className="mr-4" />,
-            path: '/admin',
+            label: 'My Ads',
+            icon: <BarChart2 size={24} className="mr-4" />,
+            path: '/advertise/ad-performance',
+          },
+
+          ...(currentUser?.role === Role.SUPER_ADMIN ||
+          currentUser?.role === Role.ADMIN
+            ? [
+                {
+                  label: 'Admin',
+                  icon: <User size={24} className="mr-4" />,
+                  path: '/admin',
+                },
+              ]
+            : []),
+          {
+            label: 'Settings',
+            icon: <Settings size={24} className="mr-4" />,
+            path: '/settings',
           },
         ]
       : []),
-    {
-      label: 'Settings',
-      icon: <Settings size={24} className="mr-4" />,
-      path: '/settings',
-    },
   ];
 
   const navItems = [
-    {icon: <Home size={24} className="mr-4" />, label: 'Home', path: '/home'},
+    {icon: <Home size={24} className="mr-4" />, label: 'Home', path: '/'},
     {
       icon: <Search size={24} className="mr-4" />,
       label: 'Explore',
       path: '/explore',
     },
-    {
-      icon: <Bell size={24} className="mr-4" />,
-      label: 'Notifications',
-      path: '/notifications',
-      badge: unreadCount,
-    },
-    // {
-    //   icon: <Mail size={24} className="mr-4" />,
-    //   label: 'Messages',
-    //   path: '/messages',
-    // },
-    {
-      icon: <BookmarkIcon size={24} className="mr-4" />,
-      label: 'Bookmarks',
-      path: '/bookmarks',
-    },
-    {
-      icon: <User size={24} className="mr-4" />,
-      label: 'Profile',
-      path: `/profile`,
-    },
+    ...(currentUser
+      ? [
+          {
+            icon: <Bell size={24} className="mr-4" />,
+            label: 'Notifications',
+            path: '/notifications',
+            badge: unreadCount,
+          },
+          // {
+          //   icon: <Mail size={24} className="mr-4" />,
+          //   label: 'Messages',
+          //   path: '/messages',
+          // },
+          {
+            icon: <BookmarkIcon size={24} className="mr-4" />,
+            label: 'Bookmarks',
+            path: '/bookmarks',
+          },
+          {
+            icon: <User size={24} className="mr-4" />,
+            label: 'Profile',
+            path: `/profile`,
+          },
+        ]
+      : []),
   ];
 
   const handleLogout = async () => {
@@ -193,7 +206,7 @@ export const SidebarLayoutLeft = () => {
         </div> */}
         <div className="p-2 flex items-center justify-between">
           {/* <h1 className="text-xl font-bold">Discussday</h1> */}
-          <Link href="/home">
+          <Link href="/">
             <CustomLogo logo="/logo_blue.webp" />
           </Link>
 
@@ -266,8 +279,8 @@ export const SidebarLayoutLeft = () => {
         <div className="mb-10">
           <Button
             className="text-white rounded-full py-6 w-full mt-4 hover:bg-app/90 bg-app darK:hover:bg-app bg-app/90 active:scale-90 transition-transform duration-150"
-            onClick={() => navigate.push('/discuss')}>
-            Start Discussion
+            onClick={() => navigate.push(currentUser ? '/discuss' : '/login')}>
+            {currentUser ? 'Start Discussion' : 'Log In'}
           </Button>
         </div>
 
@@ -300,12 +313,12 @@ export const SidebarLayoutLeft = () => {
                 <Avatar>
                   <AvatarImage src={currentUser?.avatar ?? undefined} />
                   <AvatarFallback className="capitalize text-app text-3xl">
-                    {currentUser?.username.charAt(0)}
+                    {currentUser?.username.charAt(0) ?? 'G'}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                   <span className="font-medium capitalize">
-                    {currentUser?.username}
+                    {currentUser?.username ?? 'Guest'}
                   </span>
                 </div>
               </div>
@@ -342,6 +355,7 @@ export const SidebarLayoutLeft = () => {
 
 export const SidebarLayoutRight = () => {
   const [mounted, setMounted] = useState(false);
+  const {currentUser} = useAuthStore(state => state);
   const location = usePathname();
   const isActive = (path: string) => location === path;
   useEffect(() => {
@@ -349,6 +363,8 @@ export const SidebarLayoutRight = () => {
   }, []);
 
   const showWhoTOFollow = false;
+
+  const resources = !currentUser ? isNotLoggedInResourceItems : resourceItems;
 
   if (!mounted) return null;
   return (
@@ -398,7 +414,7 @@ export const SidebarLayoutRight = () => {
         <div className="rounded-lg p-4 bg-app-hover dark:bg-background border border-app-border">
           <h2 className="font-bold text-xl mb-4">Resources</h2>
           <div className="flex flex-row flex-wrap items-center">
-            {resourceItems.map(resource => (
+            {resources.map(resource => (
               <Link
                 key={resource.label}
                 href={`${resource.path}`}
@@ -413,6 +429,7 @@ export const SidebarLayoutRight = () => {
             ))}
           </div>
         </div>
+        <AppFooter />
       </div>
     </aside>
   );

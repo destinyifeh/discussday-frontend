@@ -1,10 +1,10 @@
-import AppContainer from '@/components/layouts';
-import {LandingPage} from '@/modules/main/landing';
+import {DashboardLayout} from '@/components/layouts/dashboard';
+import {HomePage} from '@/modules/dashboard/home';
 
-export default function Home() {
+export default function Page() {
   return (
-    <AppContainer>
-      <LandingPage />
-    </AppContainer>
+    <DashboardLayout>
+      <HomePage />
+    </DashboardLayout>
   );
 }

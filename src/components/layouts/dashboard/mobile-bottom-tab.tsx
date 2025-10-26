@@ -37,7 +37,7 @@ export const MobileBottomTab = () => {
             <Search size={24} />
           </Link>
           <Link
-            href="/discuss"
+            href={currentUser ? '/discuss' : '/login'}
             className={cn(
               'p-2 cursor-pointer active:scale-90 transition-transform duration-150',
               isActive('/discuss') && 'text-app',
@@ -45,7 +45,7 @@ export const MobileBottomTab = () => {
             <PenSquare size={24} />
           </Link>
           <Link
-            href="/bookmarks"
+            href={currentUser ? '/bookmarks' : '/login'}
             className={cn(
               'p-2 cursor-pointer active:scale-90 transition-transform duration-150',
               isActive('/bookmarks') && 'text-app',
@@ -53,7 +53,7 @@ export const MobileBottomTab = () => {
             <BookmarkIcon size={24} />
           </Link>
           <Link
-            href={`/profile`}
+            href={currentUser ? '/profile' : '/login'}
             className={cn(
               'p-2 cursor-pointer active:scale-90 transition-transform duration-150',
               isActive(`/profile`) && 'text-app',
