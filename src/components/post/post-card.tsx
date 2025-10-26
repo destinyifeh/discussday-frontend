@@ -201,13 +201,13 @@ const PostCard = ({
           )} | ${APP_NAME}`,
           text:
             post.content?.slice(0, 120) || 'Check out this post on Discussday!',
-          url: `${process.env.NEXT_PUBLIC_BASE_URL}/discuss/${post.section}/${post.slugId}/${post.slug}`,
+          url: `${window.location.origin}/discuss/${post.section}/${post.slugId}/${post.slug}`,
         })
         .catch(err => console.error('Error sharing:', err));
     } else {
       // fallback: copy link
       navigator.clipboard.writeText(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/discuss/${post.section}/${post.slugId}/${post.slug}`,
+        `${window.location.origin}/discuss/${post.section}/${post.slugId}/${post.slug}`,
       );
       toast.success('Link copied to clipboard!');
     }
