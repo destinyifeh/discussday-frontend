@@ -191,10 +191,16 @@ const PostCard = ({
   };
 
   const handleShare = (post: PostFeedProps) => {
+    const previewText = post?.content?.trim()
+      ? post.content.length > 120
+        ? `${post.content.slice(0, 120)}...`
+        : post.content
+      : 'Check out this post on Discussday!';
+
     if (navigator.share) {
       navigator
         .share({
-          //text:  post.content?.slice(0, 120) || 'Check out this post on Discussday!',
+          text: previewText,
           url: `${window.location.origin}/discuss/${post.section}/${post.slugId}/${post.slug}`,
         })
         .catch(err => console.error('Error sharing:', err));

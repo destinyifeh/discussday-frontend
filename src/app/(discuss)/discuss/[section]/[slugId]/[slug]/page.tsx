@@ -30,10 +30,12 @@ export async function generateMetadata({
 
   const post = await res.json();
 
-  const previewText =
-    post?.content?.length > 120
-      ? `${post.content?.slice(0, 120)}...`
-      : post.content ?? 'Check out this post';
+  const previewText = post?.content?.trim()
+    ? post.content.length > 120
+      ? `${post.content.slice(0, 120)}...`
+      : post.content
+    : 'Check out this post';
+
   const firstImage =
     post.images?.[0]?.secure_url ??
     `${process.env.NEXT_PUBLIC_APP_URL}/logo_blue.webp`;
