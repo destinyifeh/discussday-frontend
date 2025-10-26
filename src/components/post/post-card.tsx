@@ -24,13 +24,11 @@ import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {queryClient} from '@/lib/client/query-client';
 import {
   capitalizeFirstLetter,
-  capitalizeName,
   formatTimeAgo,
   truncateText,
 } from '@/lib/formatter';
 import {useReportActions} from '@/modules/dashboard/actions/action-hooks/report.action-hooks';
 
-import {APP_NAME} from '@/constants/settings';
 import {userService} from '@/services/user-management';
 import {UserProps} from '@/types/user.types';
 import {useMutation} from '@tanstack/react-query';
@@ -196,11 +194,7 @@ const PostCard = ({
     if (navigator.share) {
       navigator
         .share({
-          title: `${post.title} | ${capitalizeName(
-            post.section,
-          )} | ${APP_NAME}`,
-          text:
-            post.content?.slice(0, 120) || 'Check out this post on Discussday!',
+          //text:  post.content?.slice(0, 120) || 'Check out this post on Discussday!',
           url: `${window.location.origin}/discuss/${post.section}/${post.slugId}/${post.slug}`,
         })
         .catch(err => console.error('Error sharing:', err));
