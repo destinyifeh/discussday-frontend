@@ -200,7 +200,7 @@ const PostCard = ({
     if (navigator.share) {
       navigator
         .share({
-          text: previewText,
+          //text: previewText,
           url: `${window.location.origin}/discuss/${post.section}/${post.slugId}/${post.slug}`,
         })
         .catch(err => console.error('Error sharing:', err));
