@@ -140,11 +140,11 @@ export const SectionOptions = [
     name: 'Contact Support',
     description: 'contact-support',
   },
-  {
-    id: '4',
-    name: 'Users',
-    description: 'users',
-  },
+  // {
+  //   id: '4',
+  //   name: 'Users',
+  //   description: 'users',
+  // },
   // {
   //   id: '5',
   //   name: 'Community Guidelines',
