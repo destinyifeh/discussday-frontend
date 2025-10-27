@@ -162,7 +162,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
                 <VisuallyHidden>
                   <SheetTitle>Mobile Sidebar</SheetTitle>
                 </VisuallyHidden>
-                <div className="flex flex-col h-full">
+                <div className="flex flex-col h-full overflow-y-auto">
                   <div className="p-4 flex items-center gap-2">
                     <Avatar>
                       <AvatarImage src={currentUser?.avatar ?? undefined} />
@@ -203,7 +203,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
                       {currentUser ? '  Log out' : 'Log In'}
                     </Button>
                   </div>
-                  <div className="mb-5">
+                  <div className="mt-auto p-4 shrink-0">
                     <AppFooter />
                   </div>
                 </div>
@@ -264,7 +264,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
             <VisuallyHidden>
               <SheetTitle>Mobile Sidebar</SheetTitle>
             </VisuallyHidden>
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col h-full overflow-y-auto">
               <div className="p-4 flex items-center gap-2">
                 <Avatar>
                   <AvatarImage src={currentUser?.avatar ?? undefined} />
@@ -305,7 +305,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
                   {currentUser ? '  Log out' : 'Log In'}
                 </Button>
               </div>
-              <div className="mb-5">
+              <div className="mt-auto p-4 shrink-0">
                 <AppFooter />
               </div>
             </div>
