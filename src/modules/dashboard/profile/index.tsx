@@ -80,10 +80,8 @@ export const PostPlaceholder = ({
           <h2 className="text-xl font-bold mb-2">No mentions yet</h2>
           <p className="text-app-gray">
             When{' '}
-            {isOwnProfile
-              ? 'when someone mention you'
-              : 'this user is mentioned'}
-            , they'll show up here.
+            {isOwnProfile ? 'someone mention you' : 'this user is mentioned'},
+            they'll show up here.
           </p>
         </div>
       )}
