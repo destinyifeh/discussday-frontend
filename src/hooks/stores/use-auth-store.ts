@@ -36,11 +36,23 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
-        set({});
-        // logoutRequest();
+        // Clear user-related state
+        set({
+          currentUser: null,
+          isAuthenticated: false,
+          selectedUser: null,
+        });
+
+        // Also clear the persisted storage
+        localStorage.removeItem('current_user');
       },
       sessionExpiredAction: () => {
-        set({currentUser: null, isAuthenticated: false});
+        set({
+          currentUser: null,
+          isAuthenticated: false,
+          selectedUser: null,
+        });
+        localStorage.removeItem('current_user');
         toast.info('Session expired. Please log in again');
       },
     }),
