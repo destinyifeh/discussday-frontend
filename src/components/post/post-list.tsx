@@ -307,18 +307,19 @@ export const SectionPostList = ({
           }
         }}
       />
-
-      <div>
-        <Button
-          className="fixed bottom-6 h-14 w-14 right-5 lg:right-[calc(50%-24rem)] bg-app text-white p-2 rounded-full shadow-lg hover:bg-app/90 transition"
-          // className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-app hover:bg-app/90 text-white"
-          size="icon"
-          onClick={() => {
-            navigate.push(`/discuss?section=${section.toLowerCase()}`);
-          }}>
-          <PenSquare size={24} />
-        </Button>
-      </div>
+      {currentUser && (
+        <div>
+          <Button
+            className="fixed bottom-6 h-14 w-14 right-5 lg:right-[calc(50%-24rem)] bg-app text-white p-2 rounded-full shadow-lg hover:bg-app/90 transition"
+            // className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-app hover:bg-app/90 text-white"
+            size="icon"
+            onClick={() => {
+              navigate.push(`/discuss?section=${section.toLowerCase()}`);
+            }}>
+            <PenSquare size={24} />
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
