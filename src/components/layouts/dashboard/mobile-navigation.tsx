@@ -203,7 +203,9 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
                       {currentUser ? '  Log out' : 'Log In'}
                     </Button>
                   </div>
-                  <AppFooter />
+                  <div className="mb-5">
+                    <AppFooter />
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
@@ -303,7 +305,9 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
                   {currentUser ? '  Log out' : 'Log In'}
                 </Button>
               </div>
-              <AppFooter />
+              <div className="mb-5">
+                <AppFooter />
+              </div>
             </div>
           </SheetContent>
         </Sheet>

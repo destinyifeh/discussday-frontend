@@ -349,6 +349,9 @@ export const SidebarLayoutLeft = () => {
           </DropdownMenu>
         </div>
       </div>
+      <div className="mb-5 lg:hidden md:block">
+        <AppFooter />
+      </div>
     </aside>
   );
 };
