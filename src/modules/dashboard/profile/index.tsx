@@ -33,7 +33,7 @@ import {Virtuoso, VirtuosoHandle} from 'react-virtuoso';
 
 export const PostPlaceholder = ({
   tab,
-  isOwnProfile = false,
+  isOwnProfile = true,
 }: {
   tab: string;
   isOwnProfile?: boolean;
