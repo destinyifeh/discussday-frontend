@@ -62,7 +62,7 @@ export const PostPlaceholder = ({
           {isOwnProfile && (
             <Button
               className="mt-4 bg-app hover:bg-app/90"
-              onClick={() => navigate.push('/create')}>
+              onClick={() => navigate.push('/discuss')}>
               Create your first post
             </Button>
           )}
