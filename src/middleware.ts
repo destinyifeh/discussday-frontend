@@ -33,7 +33,7 @@ export async function middleware(req: NextRequest) {
 
   // Logged-in user visiting guest route
   if (token && guestRoute) {
-    return NextResponse.redirect(new URL('/home', req.url));
+    return NextResponse.redirect(new URL('/', req.url));
   }
 
   return NextResponse.next(); // all good

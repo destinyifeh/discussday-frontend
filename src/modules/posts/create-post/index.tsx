@@ -17,7 +17,6 @@ import {
 import {toast} from '@/components/ui/toast';
 import {Sections} from '@/constants/data';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
-import {usegoBack} from '@/hooks/use-smart-back';
 import {queryClient} from '@/lib/client/query-client';
 import {capitalizeName} from '@/lib/formatter';
 import {SectionName} from '@/types/section';
@@ -46,7 +45,7 @@ export const CreatePostPage = () => {
   const [showGuidelines, setShowGuidelines] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
-  const goBack = usegoBack('/home');
+
   const navigate = useRouter();
   const location = useSearchParams();
   const {slugId} = useParams<{slugId: string}>();

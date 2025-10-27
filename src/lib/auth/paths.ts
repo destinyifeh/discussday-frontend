@@ -1,5 +1,4 @@
 export const GUEST_ONLY = [
-  '/', // landing
   '/about',
   '/help-center',
   '/terms-of-service',
@@ -24,16 +23,6 @@ export const isGuestOnly = (pathname: string) =>
   );
 
 export function isPublicPath2(pathname: string) {
-  // detail pages: /discuss/{section}/{slugId}/{slug}
-  const parts = pathname.split('/').filter(Boolean);
-  if (parts[0] === 'discuss' && parts.length >= 4) {
-    return true;
-  }
-
-  return false;
-}
-
-export function isPublicPath(pathname: string) {
   const parts = pathname.split('/').filter(Boolean);
 
   // Public discussion pages
@@ -42,11 +31,28 @@ export function isPublicPath(pathname: string) {
   // Make /home public
   if (pathname === '/home') return true;
 
+  if (pathname === '/') return true;
+
   if (parts[0] === 'user') return true;
 
   if (pathname === '/explore') return true;
 
   if (pathname === '/community-guidelines') return true;
+
+  return false;
+}
+
+export function isPublicPath(pathname: string) {
+  const parts = pathname.split('/').filter(Boolean);
+
+  const publicRoutes = ['/', '/home', '/explore', '/community-guidelines'];
+
+  // Direct match for simple routes
+  if (publicRoutes.includes(pathname)) return true;
+
+  // Dynamic/public paths
+  if (parts[0] === 'discuss' && parts.length >= 2) return true;
+  if (parts[0] === 'user') return true;
 
   return false;
 }

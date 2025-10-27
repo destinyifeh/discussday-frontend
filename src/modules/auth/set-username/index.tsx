@@ -89,7 +89,7 @@ export const SetUsernamePage = ({params}: PageParams) => {
         console.log(response, 'respoo');
         setUser(response.user);
         reset();
-        router.replace('/home');
+        router.replace('/');
       },
       onError(error: any, variables, context) {
         const {data} = error?.response ?? {};

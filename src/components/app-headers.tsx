@@ -1,6 +1,5 @@
 'use client';
 
-import {usegoBack} from '@/hooks/use-smart-back';
 import {ChevronLeft} from 'lucide-react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
@@ -19,7 +18,6 @@ export const PageHeader = ({
   showBackIcon?: boolean;
 }) => {
   const navigate = useRouter();
-  const goBack = usegoBack('/home');
 
   return (
     <div className="sticky top-0 bg-white/80 dark:bg-background backdrop-blur-sm z-10 border-b md:mt-0 lg:mt-0 border-app-border">
@@ -55,7 +53,6 @@ export const SectionHeader = ({
   description?: string;
 }) => {
   const navigate = useRouter();
-  const goBack = usegoBack('/home');
 
   return (
     <div className="sticky top-0 bg-white/80 border-app-border dark:bg-background backdrop-blur-sm z-10 border-b">
@@ -115,7 +112,7 @@ export const CustomPageHeader = ({
   href?: string;
 }) => {
   const navigate = useRouter();
-  const goBack = usegoBack('/home');
+
   return (
     <div className="bg-white/80 dark:bg-background backdrop-blur-sm z-10 border-b md:mt-0 lg:mt-0 border-app-border">
       <div className="px-4 py-3 flex items-center gap-6">
