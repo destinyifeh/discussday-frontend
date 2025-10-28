@@ -15,17 +15,28 @@ import React, {useState} from 'react';
 import {formatTimeAgo} from '@/lib/formatter';
 import {
   EllipsisVertical,
+  Flag,
   Heart,
+  LogIn,
   MessageSquare,
   MoreHorizontal,
+  Pencil,
   ThumbsDown,
+  UserCheck,
+  UserPlus,
+  X,
 } from 'lucide-react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
+import {queryClient} from '@/lib/client/query-client';
 import {useReportActions} from '@/modules/dashboard/actions/action-hooks/report.action-hooks';
 import {usePostActions} from '@/modules/posts/post-hooks';
+import {userService} from '@/services/user-management';
+import {UserProps} from '@/types/user.types';
+import {useMutation} from '@tanstack/react-query';
+import {Drawer, DrawerContent, DrawerHeader, DrawerTitle} from '../ui/drawer';
 import {toast} from '../ui/toast';
 import {PostContent} from './post-content';
 
@@ -50,8 +61,13 @@ const CommentCard = ({
   const [liking, setLiking] = useState(false);
   const navigate = useRouter();
   const {likeCommentRequest, dislikeCommentRequest} = usePostActions();
-  const {currentUser} = useAuthStore(state => state);
+  const {currentUser, setUser} = useAuthStore(state => state);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+  const [menuDrawerOpen, setMenuDrawerOpen] = useState(false);
+  const {mutate} = useMutation({
+    mutationFn: userService.followUserRequestAction,
+  });
 
   const {reportComment} = useReportActions();
 
@@ -195,6 +211,45 @@ const CommentCard = ({
     }
   };
 
+  const handleFollow = () => {
+    if (!currentUser || comment.commentBy?._id === currentUser._id) return;
+
+    setIsPending(true);
+    mutate(comment.commentBy?._id, {
+      onSuccess(response, variables, context) {
+        console.log(response, 'datameee');
+
+        const {
+          currentUserFollowers,
+          currentUserFollowings,
+          message,
+          isFollowing,
+          following,
+          followers,
+        } = response.data;
+
+        setUser({
+          ...(currentUser as UserProps),
+          following: currentUserFollowings,
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: ['home-feed-posts', 'following'],
+        });
+
+        toast.success(message);
+      },
+
+      onError(error, variables, context) {
+        console.log(error, 'err');
+        toast.error('Oops! Something went wrong, please try again.');
+      },
+      onSettled(data, error, variables, context) {
+        setIsPending(false);
+      },
+    });
+  };
+
   const navigateToUserProfile = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -209,6 +264,10 @@ const CommentCard = ({
 
   const commentDisliked = comment.dislikedBy.includes(currentUser?._id ?? '');
   const dislikesCount = comment.dislikedBy.length;
+
+  const isFollowing = currentUser?.following?.includes(
+    comment.commentBy?._id?.toString(),
+  );
 
   return (
     <div className="border-b py-4 px-2 transition-colors hover:bg-app-hover border-app-border dark:hover:bg-background">
@@ -235,47 +294,151 @@ const CommentCard = ({
                 · replied {formatTimeAgo(comment.createdAt as string)}
               </span>
             </div>
+            <div className="md:hidden">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8"
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setMenuDrawerOpen(true);
+                }}>
+                <EllipsisVertical size={16} className="md:hidden" />
+                <span className="sr-only">Post menu</span>
+              </Button>
 
-            <DropdownMenu modal={false}>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 w-8">
-                  <MoreHorizontal size={16} className="hidden md:block" />
-                  <EllipsisVertical size={16} className="md:hidden" />
-                  <span className="sr-only">Comment menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {currentUser ? (
-                  <>
-                    {!isCommentedUser && (
-                      <DropdownMenuItem
-                        onClick={() => handleReport(comment._id)}
-                        className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
-                        {/* <Flag size={16} className="mr-2" /> */}
-                        Report
-                      </DropdownMenuItem>
+              <Drawer open={menuDrawerOpen} onOpenChange={setMenuDrawerOpen}>
+                <DrawerContent>
+                  <DrawerHeader>
+                    <DrawerTitle>Comment Options</DrawerTitle>
+                  </DrawerHeader>
+                  <div className="flex flex-col p-4 space-y-2">
+                    {currentUser ? (
+                      <>
+                        {isCommentedUser && (
+                          <Button
+                            variant="ghost"
+                            className="justify-start"
+                            onClick={e => {
+                              e.preventDefault();
+                              setMenuDrawerOpen(false);
+                              handleEdit();
+                            }}>
+                            <Pencil size={16} className="mr-2" />
+                            Edit comment
+                          </Button>
+                        )}
+
+                        {!isCommentedUser && (
+                          <Button
+                            variant="ghost"
+                            className="justify-start"
+                            onClick={e => {
+                              e.preventDefault();
+                              setMenuDrawerOpen(false);
+                              handleFollow();
+                            }}>
+                            {isFollowing ? (
+                              <>
+                                <UserCheck size={16} className="mr-2" />
+                                Following
+                              </>
+                            ) : (
+                              <>
+                                <UserPlus size={16} className="mr-2" />
+                                Follow
+                              </>
+                            )}
+                          </Button>
+                        )}
+                        {!isCommentedUser && (
+                          <Button
+                            variant="ghost"
+                            className="justify-start text-destructive"
+                            onClick={e => {
+                              e.preventDefault();
+                              setMenuDrawerOpen(false);
+                              handleReport(comment._id);
+                            }}>
+                            <Flag size={16} className="mr-2" />
+                            Report comment
+                          </Button>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          variant="ghost"
+                          className="justify-start text-app"
+                          onClick={e => {
+                            e.preventDefault();
+                            setMenuDrawerOpen(false);
+                            navigate.push('/login');
+                          }}>
+                          <LogIn size={16} className="mr-2" />
+                          Log In
+                        </Button>
+                      </>
                     )}
-                    {isCommentedUser && (
-                      <DropdownMenuItem
-                        onClick={handleEdit}
-                        className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
-                        {/* <Pencil size={16} className="mr-2" /> */}
-                        Edit
-                      </DropdownMenuItem>
-                    )}
-                  </>
-                ) : (
-                  <DropdownMenuItem
-                    onClick={() => navigate.push('/login')}
-                    className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
-                    Login
+
+                    <Button
+                      variant="ghost"
+                      className="justify-start text-app"
+                      onClick={e => {
+                        e.preventDefault();
+                        setMenuDrawerOpen(false);
+                      }}>
+                      <X size={16} className="mr-2" />
+                      Cancel
+                    </Button>
+                  </div>
+                </DrawerContent>
+              </Drawer>
+            </div>
+
+            <div className="hidden md:block">
+              <DropdownMenu modal={false}>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 w-8">
+                    <MoreHorizontal size={16} className="hidden md:block" />
+                    <EllipsisVertical size={16} className="md:hidden" />
+                    <span className="sr-only">Comment menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {currentUser ? (
+                    <>
+                      {!isCommentedUser && (
+                        <DropdownMenuItem
+                          onClick={() => handleReport(comment._id)}
+                          className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
+                          {/* <Flag size={16} className="mr-2" /> */}
+                          Report
+                        </DropdownMenuItem>
+                      )}
+                      {isCommentedUser && (
+                        <DropdownMenuItem
+                          onClick={handleEdit}
+                          className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
+                          {/* <Pencil size={16} className="mr-2" /> */}
+                          Edit
+                        </DropdownMenuItem>
+                      )}
+                    </>
+                  ) : (
+                    <DropdownMenuItem
+                      onClick={() => navigate.push('/login')}
+                      className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
+                      Login
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem className="cursor-pointer text-app justify-center active:scale-90 transition-transform duration-150">
+                    Cancel
                   </DropdownMenuItem>
-                )}
-                <DropdownMenuItem className="cursor-pointer text-app justify-center active:scale-90 transition-transform duration-150">
-                  Cancel
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
 
           <div className="mt-1">

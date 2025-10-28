@@ -38,7 +38,7 @@ interface ShareDrawerProps {
   postTitle: string;
 }
 
-const ShareDrawer = ({
+export const ShareDrawer = ({
   open,
   onOpenChange,
   postId,

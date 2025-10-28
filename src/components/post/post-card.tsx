@@ -8,13 +8,17 @@ import {
   BarChart3,
   Bookmark,
   EllipsisVertical,
+  Flag,
   Heart,
   LinkIcon,
+  LogIn,
   MessageSquare,
   MoreHorizontal,
+  Pencil,
   Share2,
   UserCheck,
   UserPlus,
+  X,
 } from 'lucide-react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
@@ -35,6 +39,7 @@ import {useMutation} from '@tanstack/react-query';
 import ErrorFeedback from '../feedbacks/error-feedback';
 import {Avatar, AvatarFallback, AvatarImage} from '../ui/avatar';
 import {Button} from '../ui/button';
+import {Drawer, DrawerContent, DrawerHeader, DrawerTitle} from '../ui/drawer';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -70,7 +75,7 @@ const PostCard = ({
   const [bookmarking, setBookmarking] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const [menuDrawerOpen, setMenuDrawerOpen] = useState(false);
   const [sharePopoverOpen, setSharePopoverOpen] = useState(false);
 
   const {mutate} = useMutation({
@@ -264,81 +269,195 @@ const PostCard = ({
                 </span>
               </div>
               {!hideMenu && (
-                <DropdownMenu
-                  // open={isMenuOpen}
-                  // onOpenChange={setIsMenuOpen}
-                  modal={false}>
-                  <DropdownMenuTrigger asChild>
+                <>
+                  <div className="md:hidden">
                     <Button
                       variant="ghost"
                       size="sm"
                       className="h-8 w-8"
-                      // onClick={() => setIsMenuOpen(prev => !prev)}
-                    >
-                      <MoreHorizontal size={16} className="hidden md:block" />
+                      onClick={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setMenuDrawerOpen(true);
+                      }}>
                       <EllipsisVertical size={16} className="md:hidden" />
                       <span className="sr-only">Post menu</span>
                     </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="end"
-                    className="border-app-border">
-                    {currentUser ? (
-                      <>
-                        {post.user._id === currentUser?._id &&
-                          post.status !== (PostStatus.PROMOTED as string) && (
+
+                    <Drawer
+                      open={menuDrawerOpen}
+                      onOpenChange={setMenuDrawerOpen}>
+                      <DrawerContent>
+                        <DrawerHeader>
+                          <DrawerTitle>Post Options</DrawerTitle>
+                        </DrawerHeader>
+                        <div className="flex flex-col p-4 space-y-2">
+                          {currentUser ? (
                             <>
-                              <DropdownMenuItem
-                                onClick={handleEditPost}
-                                className="cursor-pointer justify-center">
-                                {/* <Pencil size={16} className="mr-2 font-bold" /> */}
-                                Edit
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
+                              {post.user._id === currentUser?._id &&
+                                post.status !==
+                                  (PostStatus.PROMOTED as string) && (
+                                  <Button
+                                    variant="ghost"
+                                    className="justify-start"
+                                    onClick={e => {
+                                      e.preventDefault();
+                                      setMenuDrawerOpen(false);
+                                      handleEditPost(e);
+                                    }}>
+                                    <Pencil size={16} className="mr-2" />
+                                    Edit post
+                                  </Button>
+                                )}
+
+                              {post.user._id !== currentUser?._id && (
+                                <Button
+                                  variant="ghost"
+                                  className="justify-start"
+                                  onClick={e => {
+                                    e.preventDefault();
+                                    setMenuDrawerOpen(false);
+                                    handleFollow();
+                                  }}>
+                                  {isFollowing ? (
+                                    <>
+                                      <UserCheck size={16} className="mr-2" />
+                                      Following
+                                    </>
+                                  ) : (
+                                    <>
+                                      <UserPlus size={16} className="mr-2" />
+                                      Follow
+                                    </>
+                                  )}
+                                </Button>
+                              )}
+
+                              <Button
+                                variant="ghost"
+                                className="justify-start text-destructive"
+                                onClick={e => {
+                                  e.preventDefault();
+                                  setMenuDrawerOpen(false);
+                                  handleReport(post._id);
+                                }}>
+                                <Flag size={16} className="mr-2" />
+                                Report post
+                              </Button>
+                            </>
+                          ) : (
+                            <>
+                              <Button
+                                variant="ghost"
+                                className="justify-start text-app"
+                                onClick={e => {
+                                  e.preventDefault();
+                                  setMenuDrawerOpen(false);
+                                  navigate.push('/login');
+                                }}>
+                                <LogIn size={16} className="mr-2" />
+                                Log In
+                              </Button>
                             </>
                           )}
 
-                        {post.user._id !== currentUser?._id && (
+                          <Button
+                            variant="ghost"
+                            className="justify-start text-app"
+                            onClick={e => {
+                              e.preventDefault();
+                              setMenuDrawerOpen(false);
+                            }}>
+                            <X size={16} className="mr-2" />
+                            Cancel
+                          </Button>
+                        </div>
+                      </DrawerContent>
+                    </Drawer>
+                  </div>
+
+                  <div className="hidden md:block">
+                    <DropdownMenu
+                      // open={isMenuOpen}
+                      // onOpenChange={setIsMenuOpen}
+                      modal={false}>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8"
+                          // onClick={() => setIsMenuOpen(prev => !prev)}
+                        >
+                          <MoreHorizontal
+                            size={16}
+                            className="hidden md:block"
+                          />
+                          <EllipsisVertical size={16} className="md:hidden" />
+                          <span className="sr-only">Post menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        className="border-app-border">
+                        {currentUser ? (
                           <>
-                            <DropdownMenuItem
-                              onClick={handleFollow}
-                              className="cursor-pointer">
-                              {isFollowing ? (
+                            {post.user._id === currentUser?._id &&
+                              post.status !==
+                                (PostStatus.PROMOTED as string) && (
                                 <>
-                                  <UserCheck size={16} className="mr-2" />
-                                  Following
-                                </>
-                              ) : (
-                                <>
-                                  <UserPlus size={16} className="mr-2" />
-                                  Follow
+                                  <DropdownMenuItem
+                                    onClick={handleEditPost}
+                                    className="cursor-pointer justify-center">
+                                    {/* <Pencil size={16} className="mr-2 font-bold" /> */}
+                                    Edit
+                                  </DropdownMenuItem>
+                                  <DropdownMenuSeparator />
                                 </>
                               )}
+
+                            {post.user._id !== currentUser?._id && (
+                              <>
+                                <DropdownMenuItem
+                                  onClick={handleFollow}
+                                  className="cursor-pointer">
+                                  {isFollowing ? (
+                                    <>
+                                      <UserCheck size={16} className="mr-2" />
+                                      Following
+                                    </>
+                                  ) : (
+                                    <>
+                                      <UserPlus size={16} className="mr-2" />
+                                      Follow
+                                    </>
+                                  )}
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                              </>
+                            )}
+                            <DropdownMenuItem
+                              onClick={() => handleReport(post._id)}
+                              className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
+                              Report
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
                           </>
+                        ) : (
+                          <DropdownMenuItem
+                            onClick={() => navigate.push('/login')}
+                            className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
+                            Login
+                          </DropdownMenuItem>
                         )}
+                        <DropdownMenuSeparator />
                         <DropdownMenuItem
-                          onClick={() => handleReport(post._id)}
-                          className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
-                          Report
+                          onClick={() => setIsMenuOpen(false)}
+                          className="cursor-pointer text-app justify-center active:scale-90 transition-transform duration-150">
+                          Cancel
                         </DropdownMenuItem>
-                      </>
-                    ) : (
-                      <DropdownMenuItem
-                        onClick={() => navigate.push('/login')}
-                        className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
-                        Login
-                      </DropdownMenuItem>
-                    )}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => setIsMenuOpen(false)}
-                      className="cursor-pointer text-app justify-center active:scale-90 transition-transform duration-150">
-                      Cancel
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </>
               )}
             </div>
           </div>
