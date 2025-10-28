@@ -353,7 +353,7 @@ export const HomePostList = () => {
   } = useInfiniteQuery({
     queryKey: ['home-feed-posts', activeTab],
     queryFn: ({pageParam = 1}) =>
-      feedService.getHomePostFeeds(pageParam, 10, activeTab),
+      feedService.getHomePostFeeds(pageParam, 10, activeTab, currentUser?._id),
     initialPageParam: 1,
     getNextPageParam: lastPage => {
       const {page, pages} = lastPage.pagination;
@@ -745,6 +745,7 @@ export const ExplorePostList = () => {
         10,
         activeTab,
         debouncedSearch,
+        currentUser?._id,
       ),
     initialPageParam: 1,
     getNextPageParam: lastPage => {

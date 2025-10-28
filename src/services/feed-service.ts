@@ -6,6 +6,7 @@ class FeedService {
     page = 1,
     limit = 10,
     activeTab?: string,
+    userId?: string,
     search?: string,
     pattern: string = '4, 9, 15',
     adPlan: AdPlan = 'enterprise',
@@ -17,6 +18,7 @@ class FeedService {
     if (pattern) params.pattern = pattern;
     if (adPlan) params.adPlan = adPlan;
     if (activeTab) params.activeTab = activeTab;
+    if (userId) params.userId = userId;
 
     const response = await api.get(`/feeds`, {params});
     return response.data?.data;
@@ -61,6 +63,7 @@ class FeedService {
     limit = 10,
     activeTab?: string,
     search?: string,
+    userId?: string,
     pattern: string = '4, 9, 15',
     mode: string = 'pattern',
     placement: AdPlacementProps = 'homepage_feed',
@@ -69,7 +72,7 @@ class FeedService {
     if (search) params.search = search;
     if (pattern) params.pattern = pattern;
     if (activeTab) params.activeTab = activeTab;
-
+    if (userId) params.userId = userId;
     const response = await api.get(`/feeds/explore`, {params});
     return response.data?.data;
   }
