@@ -74,7 +74,7 @@ const UserCommentCard = ({
     setPost(comment.post as PostFeedProps);
 
     navigate.push(
-      `/discuss/${comment.post.section.toLowerCase()}/${comment.post.slugId}/${
+      `/${comment.post.section.toLowerCase()}/${comment.post.slugId}/${
         comment.post.slug
       }/reply`,
     );
@@ -105,9 +105,9 @@ const UserCommentCard = ({
       }
       //navigate.push(`/post/${comment.post._id}/reply`);
       navigate.push(
-        `/discuss/${comment.post.section.toLowerCase()}/${
-          comment.post.slugId
-        }/${comment.post.slug}/reply`,
+        `/${comment.post.section.toLowerCase()}/${comment.post.slugId}/${
+          comment.post.slug
+        }/reply`,
       );
     } catch (err) {
       console.log(err, 'editErr');
@@ -296,7 +296,7 @@ const UserCommentCard = ({
           <div className="flex flex-row gap-2">
             <p>Replied</p>
             <Link
-              href={`/discuss/${comment?.post?.section.toLowerCase()}/${
+              href={`/${comment?.post?.section.toLowerCase()}/${
                 comment.post?.slugId
               }/${comment.post?.slug}`}
               className="text-blue-500 active:scale-90 transition-transform duration-150">

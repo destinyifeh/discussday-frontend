@@ -147,16 +147,14 @@ const PostCard = ({
     e.stopPropagation();
 
     navigate.push(
-      `/discuss/${post.section.toLowerCase()}/${post.slugId}/${post.slug}/edit`,
+      `/${post.section.toLowerCase()}/${post.slugId}/${post.slug}/edit`,
     );
   };
 
   const handleCommentClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    navigate.push(
-      `/discuss/${post.section.toLowerCase()}/${post.slugId}/${post.slug}`,
-    );
+    navigate.push(`/${post.section.toLowerCase()}/${post.slugId}/${post.slug}`);
   };
 
   const navigateToUserProfile = (e: React.MouseEvent) => {
@@ -175,7 +173,7 @@ const PostCard = ({
     e.preventDefault();
     e.stopPropagation();
 
-    const postUrl = `${window.location.origin}/discuss/${post.section}/${post.slugId}/${post.slug}`;
+    const postUrl = `${window.location.origin}/${post.section}/${post.slugId}/${post.slug}`;
     try {
       copy(postUrl);
       toast.success('Link Copied', {
@@ -201,13 +199,13 @@ const PostCard = ({
       navigator
         .share({
           //text: previewText,
-          url: `${window.location.origin}/discuss/${post.section}/${post.slugId}/${post.slug}`,
+          url: `${window.location.origin}/${post.section}/${post.slugId}/${post.slug}`,
         })
         .catch(err => console.error('Error sharing:', err));
     } else {
       // fallback: copy link
       navigator.clipboard.writeText(
-        `${window.location.origin}/discuss/${post.section}/${post.slugId}/${post.slug}`,
+        `${window.location.origin}/${post.section}/${post.slugId}/${post.slug}`,
       );
       toast.success('Link copied to clipboard!');
     }
@@ -254,7 +252,7 @@ const PostCard = ({
                 <span className="text-app-gray">·</span>
 
                 <Link
-                  href={`/discuss/${post.section.toLowerCase()}`}
+                  href={`/${post.section.toLowerCase()}`}
                   className="text-app hover:underline truncate active:scale-90 transition-transform duration-150"
                   onClick={e => e.stopPropagation()}>
                   {capitalizeFirstLetter(post.section)}
@@ -346,9 +344,7 @@ const PostCard = ({
           </div>
 
           <Link
-            href={`/discuss/${post.section.toLowerCase()}/${post.slugId}/${
-              post.slug
-            }`}
+            href={`/${post.section.toLowerCase()}/${post.slugId}/${post.slug}`}
             className="block">
             <div className="mt-1">
               {/* <p className="whitespace-pre-wrap">{displayContent}</p> */}
@@ -362,7 +358,7 @@ const PostCard = ({
                     e.preventDefault();
                     e.stopPropagation();
                     navigate.push(
-                      `/discuss/${post.section.toLowerCase()}/${post.slugId}/${
+                      `/${post.section.toLowerCase()}/${post.slugId}/${
                         post.slug
                       }`,
                     );

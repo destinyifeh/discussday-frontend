@@ -1,3 +1,5 @@
+import {Sections} from '@/constants/data';
+
 export const GUEST_ONLY = [
   '/about',
   '/help-center',
@@ -49,6 +51,15 @@ export function isPublicPath(pathname: string) {
 
   // Direct match for simple routes
   if (publicRoutes.includes(pathname)) return true;
+
+  // Get all section slugs
+  const sectionSlugs = Sections.map(section => section.slug);
+
+  // Check for section pages: /{section}
+  if (sectionSlugs.includes(parts[0])) return true;
+
+  // Check for post details: /{section}/{slugId}/{slug}
+  if (sectionSlugs.includes(parts[0]) && parts.length >= 3) return true;
 
   // Dynamic/public paths
   if (parts[0] === 'discuss' && parts.length >= 2) return true;

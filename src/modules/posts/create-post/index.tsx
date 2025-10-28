@@ -134,7 +134,7 @@ export const CreatePostPage = () => {
         console.log(data, 'post data');
         queryClient.invalidateQueries({queryKey: ['edit-post', slugId]});
         toast.success('Your post has been updated successfully.');
-        navigate.push(`/discuss/${dataToUpdate.section}`);
+        navigate.push(`/${dataToUpdate.section}`);
       },
       onError(error, variables, context) {
         console.log(error, 'update post err');
@@ -192,7 +192,7 @@ export const CreatePostPage = () => {
       onSuccess(data, variables, context) {
         console.log(data, 'post data');
         toast.success('Your post has been published successfully.');
-        navigate.push(`/discuss/${dataToPost.section}`);
+        navigate.push(`/${dataToPost.section}`);
       },
       onError(error, variables, context) {
         console.log(error, 'post err');

@@ -145,7 +145,7 @@ export const ContentTab: FC<ContentProps> = ({
       setContentActionDialog(false);
 
       navigate.push(
-        `/discuss/${thePost.section.toLowerCase()}/${thePost.slugId}/${
+        `/${thePost.section.toLowerCase()}/${thePost.slugId}/${
           thePost.slug
         }/edit`,
       );
@@ -306,9 +306,9 @@ export const ContentTab: FC<ContentProps> = ({
                       size="sm"
                       onClick={() =>
                         navigate.push(
-                          `/discuss/${post.section.toLowerCase()}/${
-                            post.slugId
-                          }/${post.slug}`,
+                          `/${post.section.toLowerCase()}/${post.slugId}/${
+                            post.slug
+                          }`,
                         )
                       }>
                       View

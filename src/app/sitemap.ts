@@ -68,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // Dynamic sections
     ...Sections.map((section: {name: string}) => ({
-      url: `${APP_URL}/discuss/${section.name.toLowerCase()}`,
+      url: `${APP_URL}/${section.name.toLowerCase()}`,
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.7,
@@ -82,7 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         slugId: string;
         updatedAt?: string;
       }) => ({
-        url: `${APP_URL}/discuss/${post.section.toLowerCase()}/${post.slugId}/${
+        url: `${APP_URL}/${post.section.toLowerCase()}/${post.slugId}/${
           post.slug
         }`,
         lastModified: new Date(post.updatedAt || Date.now()),

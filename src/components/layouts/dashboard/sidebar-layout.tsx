@@ -380,7 +380,7 @@ export const SidebarLayoutRight = () => {
             {Sections.map(section => (
               <Link
                 key={section.id}
-                href={`/discuss/${section.name.toLowerCase()}`}
+                href={`/${section.name.toLowerCase()}`}
                 className="flex items-center justify-between p-2 rounded-md hover:bg-white dark:hover:bg-app-dark-bg/10 active:scale-90 transition-transform duration-150">
                 <span className="text-app font-semibold">{section.name}</span>
               </Link>

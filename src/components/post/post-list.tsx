@@ -528,7 +528,7 @@ export const HomePostList = () => {
       navigate.push('/advertise');
       return;
     }
-    navigate.push(`/discuss/${section.toLowerCase()}`);
+    navigate.push(`/${section.toLowerCase()}`);
   };
 
   const onSectionOptionsNavigate = (section: string) => {

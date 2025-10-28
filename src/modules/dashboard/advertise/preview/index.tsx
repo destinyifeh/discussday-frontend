@@ -47,6 +47,12 @@ const AdSubmitMessage = () => {
         Your ad has been submitted for review. We'll notify you once it's
         approved and ready to run.
       </p>
+      <p className="text-sm text-muted-foreground mb-6">
+        📩 Please check your{' '}
+        <span className="font-semibold text-foreground">email inbox</span>
+        (and <span className="font-semibold">spam or promotions folder</span>)
+        for approval updates and further instructions.
+      </p>
       <div>
         <Button asChild className="bg-app hover:bg-app/90 text-white">
           <Link href="/advertise/ad-performance">
