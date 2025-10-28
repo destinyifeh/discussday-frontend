@@ -305,7 +305,7 @@ const CommentCard = ({
                   setMenuDrawerOpen(true);
                 }}>
                 <EllipsisVertical size={16} className="md:hidden" />
-                <span className="sr-only">Post menu</span>
+                <span className="sr-only">Comment menu</span>
               </Button>
 
               <Drawer open={menuDrawerOpen} onOpenChange={setMenuDrawerOpen}>
@@ -319,13 +319,13 @@ const CommentCard = ({
                         {isCommentedUser && (
                           <Button
                             variant="ghost"
-                            className="justify-start"
+                            className="justify-start text-base"
                             onClick={e => {
                               e.preventDefault();
                               setMenuDrawerOpen(false);
                               handleEdit();
                             }}>
-                            <Pencil size={16} className="mr-2" />
+                            <Pencil className="mr-2" />
                             Edit comment
                           </Button>
                         )}
@@ -333,7 +333,7 @@ const CommentCard = ({
                         {!isCommentedUser && (
                           <Button
                             variant="ghost"
-                            className="justify-start"
+                            className="justify-start text-base"
                             onClick={e => {
                               e.preventDefault();
                               setMenuDrawerOpen(false);
@@ -341,12 +341,12 @@ const CommentCard = ({
                             }}>
                             {isFollowing ? (
                               <>
-                                <UserCheck size={16} className="mr-2" />
+                                <UserCheck className="mr-2" />
                                 Following
                               </>
                             ) : (
                               <>
-                                <UserPlus size={16} className="mr-2" />
+                                <UserPlus className="mr-2" />
                                 Follow
                               </>
                             )}
@@ -355,13 +355,13 @@ const CommentCard = ({
                         {!isCommentedUser && (
                           <Button
                             variant="ghost"
-                            className="justify-start text-destructive"
+                            className="justify-start text-destructive text-base"
                             onClick={e => {
                               e.preventDefault();
                               setMenuDrawerOpen(false);
                               handleReport(comment._id);
                             }}>
-                            <Flag size={16} className="mr-2" />
+                            <Flag className="mr-2" />
                             Report comment
                           </Button>
                         )}
@@ -370,13 +370,13 @@ const CommentCard = ({
                       <>
                         <Button
                           variant="ghost"
-                          className="justify-start text-app"
+                          className="justify-start text-base"
                           onClick={e => {
                             e.preventDefault();
                             setMenuDrawerOpen(false);
                             navigate.push('/login');
                           }}>
-                          <LogIn size={16} className="mr-2" />
+                          <LogIn className="mr-2" />
                           Log In
                         </Button>
                       </>
@@ -384,13 +384,13 @@ const CommentCard = ({
 
                     <Button
                       variant="ghost"
-                      className="justify-start text-app"
+                      className="justify-start text-base"
                       onClick={e => {
                         e.preventDefault();
                         setMenuDrawerOpen(false);
                       }}>
-                      <X size={16} className="mr-2" />
-                      Cancel
+                      <X className="mr-2" />
+                      Close
                     </Button>
                   </div>
                 </DrawerContent>
@@ -433,7 +433,7 @@ const CommentCard = ({
                       Login
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem className="cursor-pointer text-app justify-center active:scale-90 transition-transform duration-150">
+                  <DropdownMenuItem className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
                     Cancel
                   </DropdownMenuItem>
                 </DropdownMenuContent>

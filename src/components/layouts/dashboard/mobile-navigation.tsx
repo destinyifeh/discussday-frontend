@@ -153,7 +153,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={currentUser?.avatar ?? undefined} />
                     <AvatarFallback className="capitalize text-app text-2xl">
-                      {currentUser?.username.charAt(0)}
+                      {currentUser?.username.charAt(0) ?? 'G'}
                     </AvatarFallback>
                   </Avatar>
                   {/* <Menu size={24} /> */}

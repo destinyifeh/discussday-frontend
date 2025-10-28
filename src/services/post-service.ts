@@ -125,6 +125,11 @@ class PostService {
     const response = await api.get(`/posts/${postId}/related`);
     return response.data;
   }
+
+  async deletePostRequestAction(postId: string) {
+    const response = await api.delete(`/posts/${postId}`);
+    return response.data;
+  }
 }
 
 export const postService = new PostService();

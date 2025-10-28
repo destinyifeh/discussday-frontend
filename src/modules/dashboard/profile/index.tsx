@@ -3,6 +3,7 @@
 import AdCard from '@/components/ad/ad-card';
 import {PageHeader} from '@/components/app-headers';
 import {LoadingMore, LoadMoreError} from '@/components/feedbacks';
+import AuthPrompt from '@/components/feedbacks/auth-prompt';
 import ErrorFeedback from '@/components/feedbacks/error-feedback';
 import {MobileBottomTab} from '@/components/layouts/dashboard/mobile-bottom-tab';
 import MobileNavigation from '@/components/layouts/dashboard/mobile-navigation';
@@ -117,6 +118,8 @@ export const ProfilePage = () => {
     resetCommentSection();
   }, []);
 
+  const shouldQuery = !!currentUser;
+
   const {
     data, // This 'data' contains { pages: [], pageParams: [] }
     fetchNextPage,
@@ -137,6 +140,7 @@ export const ProfilePage = () => {
     },
     placeholderData: previousData => previousData,
     retry: 1,
+    enabled: shouldQuery,
   });
 
   const userData = useMemo(() => {
@@ -458,7 +462,14 @@ export const ProfilePage = () => {
       setFetchNextError('Failed to load more content.');
     }
   };
-
+  if (!currentUser) {
+    return (
+      <div>
+        <PageHeader title="Profile" />
+        <AuthPrompt page="profile" />
+      </div>
+    );
+  }
   return (
     <div>
       <div

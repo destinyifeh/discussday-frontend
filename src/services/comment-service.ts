@@ -95,6 +95,12 @@ class CommentService {
     const response = await api.patch(`/comment/${commentId}/dislike`);
     return response.data;
   }
+  async deleteCommentRequestAction(data: {commentId: string; postId: string}) {
+    const response = await api.delete(
+      `/comment/${data.commentId}/${data.postId}`,
+    );
+    return response.data;
+  }
 }
 
 export const commentService = new CommentService();

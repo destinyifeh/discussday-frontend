@@ -45,9 +45,18 @@ export function isPublicPath2(pathname: string) {
 }
 
 export function isPublicPath(pathname: string) {
+  console.log(pathname, 'opaythh');
   const parts = pathname.split('/').filter(Boolean);
 
-  const publicRoutes = ['/', '/home', '/explore', '/community-guidelines'];
+  const publicRoutes = [
+    '/',
+    '/home',
+    '/explore',
+    '/community-guidelines',
+    '/discuss',
+    '/bookmarks',
+    '/profile',
+  ];
 
   // Direct match for simple routes
   if (publicRoutes.includes(pathname)) return true;

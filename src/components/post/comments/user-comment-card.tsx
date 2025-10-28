@@ -10,25 +10,36 @@ import {
 import {useGlobalStore} from '@/hooks/stores/use-global-store';
 import {cn} from '@/lib/utils';
 import {CommentFeedProps, PostFeedProps} from '@/types/post-item.type';
-import React from 'react';
+import React, {useState} from 'react';
 
 import {formatTimeAgo} from '@/lib/formatter';
 import {
   EllipsisVertical,
   Heart,
+  LogIn,
   MessageSquare,
   MoreHorizontal,
   Pencil,
   ThumbsDown,
   Trash,
+  X,
 } from 'lucide-react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer';
 import {toast} from '@/components/ui/toast';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {usePostStore} from '@/hooks/stores/use-post-store';
+import {queryClient} from '@/lib/client/query-client';
+import {commentService} from '@/services/comment-service';
 import {UserProps} from '@/types/user.types';
+import {useMutation} from '@tanstack/react-query';
 import {PostContent} from '../post-content';
 
 interface CommentCardProps {
@@ -45,17 +56,36 @@ const UserCommentCard = ({
   onDisLike,
 }: CommentCardProps) => {
   const {theme} = useGlobalStore(state => state);
-
+  const [menuDrawerOpen, setMenuDrawerOpen] = useState(false);
   const navigate = useRouter();
 
   const {currentUser} = useAuthStore(state => state);
   const {setPostComment, setQuotedComment, setPost, resetCommentSection} =
     usePostStore(state => state);
+  const {mutate: deleteComment} = useMutation({
+    mutationFn: commentService.deleteCommentRequestAction,
+  });
+  const handleDeleteComment = (comment: CommentFeedProps) => {
+    const data = {
+      commentId: comment._id,
+      postId: comment.post._id,
+    };
 
-  const handleReport = () => {
-    toast.success(
-      'Thank you for reporting this comment. Our team will review it.',
-    );
+    deleteComment(data, {
+      onSuccess(data, variables, context) {
+        console.log(data, 'comment delete data');
+        toast.success('Comment deleted.');
+        queryClient.invalidateQueries({
+          queryKey: ['user-profile-posts', 'replies'],
+        });
+      },
+      onError(error, variables, context) {
+        console.log(error, 'comment delete err');
+        toast.error(
+          'Sorry, we were unable to delete your comment. Please try again.',
+        );
+      },
+    });
   };
 
   const handleQuote = () => {
@@ -267,30 +297,116 @@ const UserCommentCard = ({
               </span>
             </div>
             {checkUser && (
-              <DropdownMenu modal={false}>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-8 w-8">
-                    <MoreHorizontal size={16} className="hidden md:block" />
+              <>
+                <div className="md:hidden">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8"
+                    onClick={e => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setMenuDrawerOpen(true);
+                    }}>
                     <EllipsisVertical size={16} className="md:hidden" />
                     <span className="sr-only">Comment menu</span>
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={handleEdit}
-                    className="cursor-pointer active:scale-90 transition-transform duration-150">
-                    <Pencil size={16} className="mr-2" />
-                    Edit
-                  </DropdownMenuItem>
 
-                  <DropdownMenuItem
-                    onClick={handleReport}
-                    className="cursor-pointer active:scale-90 transition-transform duration-150">
-                    <Trash size={16} className="mr-2" />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  <Drawer
+                    open={menuDrawerOpen}
+                    onOpenChange={setMenuDrawerOpen}>
+                    <DrawerContent>
+                      <DrawerHeader>
+                        <DrawerTitle>Comment Options</DrawerTitle>
+                      </DrawerHeader>
+                      <div className="flex flex-col p-4 space-y-2">
+                        {currentUser ? (
+                          <>
+                            {isCommentedUser && (
+                              <Button
+                                variant="ghost"
+                                className="justify-start text-base"
+                                onClick={e => {
+                                  e.preventDefault();
+                                  setMenuDrawerOpen(false);
+                                  handleEdit();
+                                }}>
+                                <Pencil className="mr-2" />
+                                Edit comment
+                              </Button>
+                            )}
+
+                            {isCommentedUser && (
+                              <Button
+                                variant="ghost"
+                                className="justify-start text-destructive text-base"
+                                onClick={e => {
+                                  e.preventDefault();
+                                  setMenuDrawerOpen(false);
+                                  handleDeleteComment(comment);
+                                }}>
+                                <Trash className="mr-2" />
+                                Delete comment
+                              </Button>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            <Button
+                              variant="ghost"
+                              className="justify-start text-base"
+                              onClick={e => {
+                                e.preventDefault();
+                                setMenuDrawerOpen(false);
+                                navigate.push('/login');
+                              }}>
+                              <LogIn className="mr-2" />
+                              Log In
+                            </Button>
+                          </>
+                        )}
+
+                        <Button
+                          variant="ghost"
+                          className="justify-start text-base"
+                          onClick={e => {
+                            e.preventDefault();
+                            setMenuDrawerOpen(false);
+                          }}>
+                          <X className="mr-2" />
+                          Close
+                        </Button>
+                      </div>
+                    </DrawerContent>
+                  </Drawer>
+                </div>
+                <div className="hidden md:block">
+                  <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-8 w-8">
+                        <MoreHorizontal size={16} className="hidden md:block" />
+                        <EllipsisVertical size={16} className="md:hidden" />
+                        <span className="sr-only">Comment menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={handleEdit}
+                        className="cursor-pointer active:scale-90 transition-transform duration-150">
+                        <Pencil size={16} className="mr-2" />
+                        Edit
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        onClick={() => handleDeleteComment(comment)}
+                        className="cursor-pointer active:scale-90 transition-transform duration-150">
+                        <Trash size={16} className="mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </>
             )}
           </div>
           <div className="flex flex-row gap-2">

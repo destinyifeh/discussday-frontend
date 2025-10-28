@@ -16,6 +16,7 @@ import {
   MoreHorizontal,
   Pencil,
   Share2,
+  Trash,
   UserCheck,
   UserPlus,
   X,
@@ -33,6 +34,7 @@ import {
 } from '@/lib/formatter';
 import {useReportActions} from '@/modules/dashboard/actions/action-hooks/report.action-hooks';
 
+import {postService} from '@/services/post-service';
 import {userService} from '@/services/user-management';
 import {UserProps} from '@/types/user.types';
 import {useMutation} from '@tanstack/react-query';
@@ -85,6 +87,28 @@ const PostCard = ({
   const {reportPost} = useReportActions();
 
   const navigate = useRouter();
+
+  const {mutate: deletePost} = useMutation({
+    mutationFn: postService.deletePostRequestAction,
+  });
+
+  const handleDeletePost = (post: PostFeedProps) => {
+    deletePost(post._id, {
+      onSuccess(data, variables, context) {
+        console.log(data, 'post delete data');
+        toast.success('Post deleted.');
+        queryClient.invalidateQueries({
+          queryKey: ['user-profile-posts', 'posts'],
+        });
+      },
+      onError(error, variables, context) {
+        console.log(error, 'comment delete err');
+        toast.error(
+          'Sorry, we were unable to delete your post. Please try again.',
+        );
+      },
+    });
+  };
 
   const handleReport = (postId: string) => {
     const payload = {
@@ -299,21 +323,37 @@ const PostCard = ({
                                   (PostStatus.PROMOTED as string) && (
                                   <Button
                                     variant="ghost"
-                                    className="justify-start"
+                                    className="justify-start text-base"
                                     onClick={e => {
                                       e.preventDefault();
                                       setMenuDrawerOpen(false);
                                       handleEditPost(e);
                                     }}>
-                                    <Pencil size={16} className="mr-2" />
+                                    <Pencil className="mr-2" />
                                     Edit post
+                                  </Button>
+                                )}
+
+                              {post.user._id === currentUser?._id &&
+                                post.status !==
+                                  (PostStatus.PROMOTED as string) && (
+                                  <Button
+                                    variant="ghost"
+                                    className="justify-start text-base text-destructive"
+                                    onClick={e => {
+                                      e.preventDefault();
+                                      setMenuDrawerOpen(false);
+                                      handleDeletePost(post);
+                                    }}>
+                                    <Trash className="mr-2" />
+                                    Delete post
                                   </Button>
                                 )}
 
                               {post.user._id !== currentUser?._id && (
                                 <Button
                                   variant="ghost"
-                                  className="justify-start"
+                                  className="justify-start text-base"
                                   onClick={e => {
                                     e.preventDefault();
                                     setMenuDrawerOpen(false);
@@ -321,12 +361,12 @@ const PostCard = ({
                                   }}>
                                   {isFollowing ? (
                                     <>
-                                      <UserCheck size={16} className="mr-2" />
+                                      <UserCheck className="mr-2" />
                                       Following
                                     </>
                                   ) : (
                                     <>
-                                      <UserPlus size={16} className="mr-2" />
+                                      <UserPlus className="mr-2" />
                                       Follow
                                     </>
                                   )}
@@ -335,13 +375,13 @@ const PostCard = ({
 
                               <Button
                                 variant="ghost"
-                                className="justify-start text-destructive"
+                                className="justify-start text-destructive text-base"
                                 onClick={e => {
                                   e.preventDefault();
                                   setMenuDrawerOpen(false);
                                   handleReport(post._id);
                                 }}>
-                                <Flag size={16} className="mr-2" />
+                                <Flag className="mr-2" />
                                 Report post
                               </Button>
                             </>
@@ -349,13 +389,13 @@ const PostCard = ({
                             <>
                               <Button
                                 variant="ghost"
-                                className="justify-start text-app"
+                                className="justify-start text-base"
                                 onClick={e => {
                                   e.preventDefault();
                                   setMenuDrawerOpen(false);
                                   navigate.push('/login');
                                 }}>
-                                <LogIn size={16} className="mr-2" />
+                                <LogIn className="mr-2" />
                                 Log In
                               </Button>
                             </>
@@ -363,13 +403,13 @@ const PostCard = ({
 
                           <Button
                             variant="ghost"
-                            className="justify-start text-app"
+                            className="justify-start text-base"
                             onClick={e => {
                               e.preventDefault();
                               setMenuDrawerOpen(false);
                             }}>
-                            <X size={16} className="mr-2" />
-                            Cancel
+                            <X className="mr-2" />
+                            Close
                           </Button>
                         </div>
                       </DrawerContent>
@@ -415,6 +455,20 @@ const PostCard = ({
                                 </>
                               )}
 
+                            {post.user._id === currentUser?._id &&
+                              post.status !==
+                                (PostStatus.PROMOTED as string) && (
+                                <>
+                                  <DropdownMenuItem
+                                    onClick={() => handleDeletePost(post)}
+                                    className="cursor-pointer justify-center">
+                                    {/* <Trash size={16} className="mr-2 font-bold" /> */}
+                                    Delete
+                                  </DropdownMenuItem>
+                                  <DropdownMenuSeparator />
+                                </>
+                              )}
+
                             {post.user._id !== currentUser?._id && (
                               <>
                                 <DropdownMenuItem
@@ -451,7 +505,7 @@ const PostCard = ({
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           onClick={() => setIsMenuOpen(false)}
-                          className="cursor-pointer text-app justify-center active:scale-90 transition-transform duration-150">
+                          className="cursor-pointer justify-center active:scale-90 transition-transform duration-150">
                           Cancel
                         </DropdownMenuItem>
                       </DropdownMenuContent>

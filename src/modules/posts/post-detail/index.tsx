@@ -913,29 +913,9 @@ export const PostDetailPage = ({params}: PostDetailPageProps) => {
 
       {!post?.commentsClosed && (
         <>
-          {/* Mobile comment section - slides up from bottom */}
-          {!currentUser ? (
+          {currentUser && (
             <>
-              <Button
-                className="lg:hidden fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-app hover:bg-app/90 text-white"
-                size="icon"
-                onClick={onComment}>
-                {/* <MessageSquare size={24} /> */}
-                Login
-              </Button>
-
-              <Button
-                className="hidden lg:block fixedBottomBtn max-w-3xl mx-auto fixed bottom-6 right-[26%] h-14 w-14 rounded-full shadow-lg z-1 bg-app hover:bg-app/90 dark:hover:bg-app dark:bg-app/90 text-white"
-                size="icon"
-                onClick={() => {
-                  setShowWebComment(!showWebComment);
-                  virtuosoRef.current?.scrollTo({top: 0, behavior: 'smooth'});
-                }}>
-                Login
-              </Button>
-            </>
-          ) : (
-            <>
+              {/* Mobile comment section - slides up from bottom */}
               <MobileCommentSection
                 showMobileComment={showMobileComment}
                 setShowMobileComment={setShowMobileComment}
@@ -965,6 +945,7 @@ export const PostDetailPage = ({params}: PostDetailPageProps) => {
                 quotedUserImage={quotedUserImage}
                 quotedContentCreatedDate={quotedContentCreatedDate}
               />
+              {/* Web comment section - slides up from bottom */}
               <WebCommentSection
                 showWebComment={showWebComment}
                 setShowWebComment={setShowWebComment}
@@ -1077,12 +1058,6 @@ export const PostDetailPage = ({params}: PostDetailPageProps) => {
                     </div>
                   )}
 
-                  {/* <Textarea
-                placeholder="Add a comment..."
-                value={comment}
-                onChange={e => setComment(e.target.value)}
-                className="min-h-[100px] resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 px-0"
-              /> */}
                   <AddCommentField content={comment} setContent={setComment} />
 
                   {imagePreview && (
