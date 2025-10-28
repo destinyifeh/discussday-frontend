@@ -58,7 +58,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
   const location = usePathname();
   const {logout, currentUser} = useAuthStore(state => state);
   const [isDarkMode, setIsDarkMode] = useState(false);
-
+  const shouldQuery = !!currentUser;
   const {error, data: unreadCount} = useQuery({
     queryKey: ['unreadCount'],
     queryFn: () =>
@@ -66,6 +66,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
     retry: 1,
     refetchInterval: 5000,
     refetchIntervalInBackground: false,
+    enabled: shouldQuery,
   });
 
   const isActive = (path: string) => location === path;

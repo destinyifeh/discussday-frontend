@@ -91,7 +91,7 @@ export const SidebarLayoutLeft = () => {
   });
   const {logout, currentUser} = useAuthStore(state => state);
   const [mounted, setMounted] = useState(false);
-
+  const shouldQuery = !!currentUser;
   const {error, data: unreadCount} = useQuery({
     queryKey: ['unreadCount'],
     queryFn: () =>
@@ -99,6 +99,7 @@ export const SidebarLayoutLeft = () => {
     retry: 1,
     refetchInterval: 5000,
     refetchIntervalInBackground: false,
+    enabled: shouldQuery,
   });
 
   useEffect(() => {
