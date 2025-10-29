@@ -13,7 +13,7 @@
     {
       "source": "/(.*)",
       "has": [{"type": "host", "value": "discussday.com"}],
-      "destination": "https://www.discussday.com/:1",
+      "destination": "https://www.discussday.com/:path*",
       "permanent": true
     }
   ]
