@@ -37,7 +37,7 @@ export async function generateMetadata({
     : 'Check out this post';
 
   const firstImage =
-    post.images?.[0]?.secure_url ||
+    post.images?.[0]?.secure_url ??
     `${process.env.NEXT_PUBLIC_APP_URL}/logo_blue.webp`;
 
   return {
