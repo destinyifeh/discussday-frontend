@@ -476,7 +476,9 @@ export const AdPlanPage = () => {
                 <p className="text-xs text-muted-foreground mt-2">
                   {previewData.title?.length}/50 characters
                 </p>
-                <small>Title must be between 5 and 50 characters.</small>
+                <small className="text-destructive text-xs">
+                  Title must be between 5 and 50 characters.
+                </small>
               </div>
 
               <div className="mb-5 w-full md:mb-0">
@@ -497,7 +499,7 @@ export const AdPlanPage = () => {
                 <p className="text-xs text-muted-foreground mt-2">
                   {previewData?.content?.length}/200 characters
                 </p>
-                <small>
+                <small className="text-destructive text-xs">
                   Description must be between 50 and 200 characters.
                 </small>
               </div>

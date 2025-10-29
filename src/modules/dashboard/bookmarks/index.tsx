@@ -1,6 +1,7 @@
 'use client';
-import {PageHeader} from '@/components/app-headers';
 import AuthPrompt from '@/components/feedbacks/auth-prompt';
+import {MobileBottomTab} from '@/components/layouts/dashboard/mobile-bottom-tab';
+import MobileNavigation from '@/components/layouts/dashboard/mobile-navigation';
 import {BookmarkPostList} from '@/components/post/post-list';
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 
@@ -13,8 +14,11 @@ export const BookmarksPage = () => {
   if (!currentUser) {
     return (
       <div>
-        <PageHeader title="Bookmarks" />
+        <MobileNavigation title="Bookmarks" />
         <AuthPrompt page="bookmarks" />
+        <div className="md:hidden fixed bottom-0 left-0 right-0 w-full z-50">
+          <MobileBottomTab />
+        </div>
       </div>
     );
   }

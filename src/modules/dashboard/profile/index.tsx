@@ -465,8 +465,11 @@ export const ProfilePage = () => {
   if (!currentUser) {
     return (
       <div>
-        <PageHeader title="Profile" />
+        <MobileNavigation title="Profile" />
         <AuthPrompt page="profile" />
+        <div className="md:hidden fixed bottom-0 left-0 right-0 w-full z-50">
+          <MobileBottomTab />
+        </div>
       </div>
     );
   }

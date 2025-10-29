@@ -25,8 +25,8 @@ import {ChevronLeft, FileImage, Trash2} from 'lucide-react';
 import {useParams, useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useRef, useState} from 'react';
 
-import {PageHeader} from '@/components/app-headers';
 import AuthPrompt from '@/components/feedbacks/auth-prompt';
+import MobileNavigation from '@/components/layouts/dashboard/mobile-navigation';
 import {postService} from '@/services/post-service';
 import {formattedPostTitle, PostDto, UpdatePostDto} from '../dto/post-dto';
 import {usePostActions} from '../post-hooks';
@@ -248,8 +248,11 @@ export const CreatePostPage = () => {
   if (!currentUser) {
     return (
       <div>
-        <PageHeader title="Create Post" />
+        <MobileNavigation title="Create Post" />
         <AuthPrompt page="create" />
+        <div className="md:hidden fixed bottom-0 left-0 right-0 w-full z-50">
+          <MobileBottomTab />
+        </div>
       </div>
     );
   }
