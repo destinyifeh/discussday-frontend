@@ -176,6 +176,9 @@ export const SidebarLayoutLeft = () => {
   ];
 
   const handleLogout = async () => {
+    if (!currentUser) {
+      return navigate.push('/login');
+    }
     try {
       const res = await authService.logoutRequestAction();
       if (res?.data?.code === HTTP_STATUS_CODE.OK) {
@@ -344,7 +347,10 @@ export const SidebarLayoutLeft = () => {
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
-                <span className="">Log out</span>
+                <span className="">
+                  {' '}
+                  {!currentUser ? 'Log In' : ' Log out'}
+                </span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
