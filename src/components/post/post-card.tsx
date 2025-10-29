@@ -217,7 +217,11 @@ const PostCard = ({
     }
   };
 
-  const handleShare = (post: PostFeedProps) => {
+  const handleShare2 = (post: PostFeedProps) => {
+    const firstImage =
+      post.images?.[0]?.secure_url ??
+      `${process.env.NEXT_PUBLIC_APP_URL}/logo_blue.webp`;
+    console.log(firstImage, 'firstoo');
     const previewText = post?.content?.trim()
       ? post.content.length > 120
         ? `${post.content.slice(0, 120)}...`
@@ -238,6 +242,73 @@ const PostCard = ({
       );
       toast.success('Link copied to clipboard!');
     }
+  };
+
+  // Make the handler function asynchronous
+  const handleShare = async (post: PostFeedProps) => {
+    // ADD 'async' here
+    const firstImageUrl =
+      post.images?.[0]?.secure_url ??
+      `${process.env.NEXT_PUBLIC_APP_URL}/logo_blue.webp`;
+
+    // Define URL for fallback
+    const shareUrl = `${window.location.origin}/${post.section}/${post.slugId}/${post.slug}`;
+
+    const previewText = post?.content?.trim()
+      ? post.content.length > 120
+        ? `${post.content.slice(0, 120)}...`
+        : post.content
+      : 'Check out this post on Discussday!';
+
+    if (!navigator.share) {
+      // Fallback for browsers without Web Share API
+      navigator.clipboard.writeText(shareUrl);
+      toast.success('Link copied to clipboard!');
+      return;
+    }
+
+    let filesArray: File[] = [];
+
+    // --- 1. CONVERT URL TO FILE OBJECT ---
+    try {
+      const response = await fetch(firstImageUrl);
+      const blob = await response.blob();
+
+      // Create a File object. Use the blob.type for correct MIME type.
+      const file = new File([blob], 'post_image.jpg', {type: blob.type});
+      filesArray = [file];
+    } catch (error) {
+      // If fetch fails (CORS, network error, etc.), log it and proceed without files
+      console.error('Failed to fetch image for file sharing:', error);
+    }
+    // -------------------------------------
+
+    // 2. Define the base share data
+    const shareData: ShareData = {
+      title: post.title, // Highly recommended for better appearance
+      text: previewText, // Recommended
+      url: shareUrl,
+    };
+
+    // 3. Check for File Sharing support (Level 2 API)
+    const canShareFiles =
+      navigator.canShare &&
+      navigator.canShare({...shareData, files: filesArray});
+
+    if (canShareFiles) {
+      shareData.files = filesArray;
+    }
+
+    // 4. Perform the share
+    navigator
+      .share(shareData)
+      .then(() => console.log('Successful share'))
+      .catch(err => {
+        // Ignore user cancellation (AbortError)
+        if (err.name !== 'AbortError') {
+          console.error('Error sharing:', err);
+        }
+      });
   };
 
   if (!post || post === null) {
