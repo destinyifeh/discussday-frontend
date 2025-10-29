@@ -50,6 +50,9 @@ export async function generateMetadata({
       images: [
         {
           url: firstImage,
+          width: 800, // Optional: Specify dimensions if known
+          height: 600,
+          alt: post.title,
         },
       ],
       type: 'article',
