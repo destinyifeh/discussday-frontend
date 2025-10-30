@@ -49,10 +49,7 @@ export async function generateMetadata({
       siteName: APP_NAME,
       images: [
         {
-          url: firstImage,
-          width: 800, // Optional: Specify dimensions if known
-          height: 600,
-          alt: post.title,
+          url: post.images?.[0]?.secure_url,
         },
       ],
       type: 'article',
