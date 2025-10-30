@@ -49,7 +49,7 @@ export async function generateMetadata({
       siteName: APP_NAME,
       images: [
         {
-          url: post.images?.[0]?.secure_url,
+          url: firstImage,
         },
       ],
       type: 'article',
