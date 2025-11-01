@@ -3,23 +3,24 @@ import {Section} from '@/types/section';
 export const Sections: Section[] = [
   {
     id: '1',
+    name: 'News',
+    description: 'Breaking news and current events from around the world',
+    slug: 'news',
+  },
+  {
+    id: '2',
     name: 'Technology',
     description: 'Discuss the latest in technology trends and gadgets',
     slug: 'technology',
   },
-  {
-    id: '2',
-    name: 'Travel',
-    description: 'Share your travel experiences and recommendations',
-    slug: 'travel',
-  },
+
   {
     id: '3',
-    name: 'Food',
-    description:
-      'Food recipes, restaurant recommendations, and culinary adventures',
-    slug: 'food',
+    name: 'Health',
+    description: 'Wellness, fitness, medical advice, and healthy living',
+    slug: 'health',
   },
+
   {
     id: '4',
     name: 'Sports',
@@ -58,9 +59,10 @@ export const Sections: Section[] = [
   },
   {
     id: '10',
-    name: 'News',
-    description: 'Breaking news and current events from around the world',
-    slug: 'news',
+    name: 'Food',
+    description:
+      'Food recipes, restaurant recommendations, and culinary adventures',
+    slug: 'food',
   },
   {
     id: '11',
@@ -76,9 +78,9 @@ export const Sections: Section[] = [
   },
   {
     id: '13',
-    name: 'Health',
-    description: 'Wellness, fitness, medical advice, and healthy living',
-    slug: 'health',
+    name: 'Travel',
+    description: 'Share your travel experiences and recommendations',
+    slug: 'travel',
   },
   {
     id: '14',
