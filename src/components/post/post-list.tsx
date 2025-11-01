@@ -608,7 +608,7 @@ export const HomePostList = () => {
                       <Badge
                         key={section.id}
                         variant="outline"
-                        className="py-1 px-3 cursor-pointer dark:bg-muted hover:bg-app-hover text-app active:scale-90 transition-transform duration-150"
+                        className="py-1 px-3 cursor-pointer dark:bg-app-hover hover:bg-app-hover text-app active:scale-90 transition-transform duration-150"
                         // className="py-1 px-3 cursor-pointer hover:bg-app-hover"
                         onClick={() => onSectionNavigate(section.name)}>
                         {section.name}
@@ -622,7 +622,7 @@ export const HomePostList = () => {
                       <Badge
                         key={section.id}
                         variant="outline"
-                        className="py-1 px-3 cursor-pointer dark:bg-muted hover:bg-app-hover text-app active:scale-90 transition-transform duration-150"
+                        className="py-1 px-3 cursor-pointer dark:bg-app-hover hover:bg-app-hover text-app active:scale-90 transition-transform duration-150"
                         //className="py-1 px-3 cursor-pointer hover:bg-app-hover"
                         onClick={() =>
                           onSectionOptionsNavigate(

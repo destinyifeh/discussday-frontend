@@ -22,7 +22,7 @@ const AppContainer = ({children}: AppContainerProps) => {
   }, []);
 
   return (
-    <div className="app-theme min-h-dvh dark:text-muted-foreground">
+    <div className="app-theme min-h-dvh dark:text-foreground">
       {children}
       <Toaster position="top-center" />
     </div>

@@ -6,7 +6,7 @@ import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 export const PrivacyPolicyPage = () => {
   return (
     <div>
-      <PageHeader title="Privacy Policy" />
+      <PageHeader title="" />
       <div>
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="text-center mb-8">
