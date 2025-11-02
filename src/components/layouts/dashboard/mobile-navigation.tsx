@@ -136,7 +136,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
           {
             label: 'Admin',
             icon: <User size={24} />,
-            path: '/admin',
+            path: `/admin/${currentUser._id}`,
           },
         ]
       : []),

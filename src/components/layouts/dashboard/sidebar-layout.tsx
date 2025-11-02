@@ -128,7 +128,7 @@ export const SidebarLayoutLeft = () => {
                 {
                   label: 'Admin',
                   icon: <User size={24} className="mr-4" />,
-                  path: '/admin',
+                  path: `/admin/${currentUser._id}`,
                 },
               ]
             : []),
