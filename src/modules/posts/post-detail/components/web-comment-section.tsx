@@ -78,7 +78,7 @@ export const WebCommentSection = ({
     <div className="hidden lg:block">
       {/* Comment button for web */}
       <Button
-        className="fixedBottomBtn max-w-3xl mx-auto fixed bottom-6 right-[26%] h-14 w-14 rounded-full shadow-lg z-1 bg-app hover:bg-app/90 dark:hover:bg-app dark:bg-app/90 text-white"
+        className="fixedBottomBtn max-w-3xl mx-auto fixed bottom-6 right-[32%] h-14 w-14 rounded-full shadow-lg z-1 bg-app hover:bg-app/90 dark:hover:bg-app dark:bg-app/90 text-white"
         size="icon"
         onClick={() => {
           setShowWebComment(!showWebComment);

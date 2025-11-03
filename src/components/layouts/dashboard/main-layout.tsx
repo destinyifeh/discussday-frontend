@@ -18,7 +18,7 @@ export const MainLayout = ({children}: MainLayoutProps) => {
     location.includes('/profile/');
 
   return (
-    <main className="flex-1 flex flex-col max-w-3xl mx-auto border-x border-app-border">
+    <main className="flex-1 flex flex-col max-w-xl border-x border-app-border">
       <div className="pt-0 md:pt-0">{children}</div>
     </main>
   );

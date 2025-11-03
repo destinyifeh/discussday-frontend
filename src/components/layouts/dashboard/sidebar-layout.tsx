@@ -378,7 +378,7 @@ export const SidebarLayoutRight = () => {
 
   if (!mounted) return null;
   return (
-    <aside className="hidden lg:flex flex-col w-80 h-screen border-0 p-4 border-app-border ">
+    <aside className="hidden lg:flex flex-col w-80 h-screen border-0 p-0 border-app-border">
       <div className="sticky top-4 space-y-4">
         <div className="rounded-lg p-4 bg-app-hover dark:bg-background border border-app-border">
           <h2 className="font-bold text-xl mb-4">Discuss</h2>

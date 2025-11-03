@@ -12,7 +12,7 @@ type DashboardLayoutProps = {
 export const DashboardLayout = ({children}: DashboardLayoutProps) => {
   return (
     <AppContainer>
-      <div className="flex flex-row justify-between pb-4 px-1 bg-app-background w-full">
+      <div className="flex flex-row justify-center pb-4 px-0 gap-8 bg-app-background w-full">
         <SidebarLayoutLeft />
         <MainLayout>{children}</MainLayout>
         <SidebarLayoutRight />

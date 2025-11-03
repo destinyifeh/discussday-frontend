@@ -699,7 +699,7 @@ export const PeoplePage = () => {
                     )}
                   </div>
 
-                  <div className="mt-16">
+                  <div className="mt-8">
                     <h2 className="font-bold text-xl capitalize">{username}</h2>
 
                     <div className="mt-3 text-app-gray">
