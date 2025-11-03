@@ -1,6 +1,6 @@
 import {cn} from '@/lib/utils';
 import Image from 'next/image';
-import {FC} from 'react';
+import {FC, useState} from 'react';
 
 interface AppLogoProps {
   title?: string;
@@ -41,13 +41,26 @@ export const AppLogo: FC<AppLogoProps> = ({
 };
 
 export const CustomLogo: FC<CustomLogoProps> = ({logo, height, width}) => {
+  const [hasError, setHasError] = useState(false);
   return (
-    <Image
-      src={logo}
-      alt="Discussday"
-      width={width ?? 140}
-      height={height ?? 140}
-      className="text-app"
-    />
+    <div>
+      {hasError ? (
+        <AppLogo
+          smSize="text-xl"
+          mb="mb-0"
+          center="text-center"
+          color="text-app"
+        />
+      ) : (
+        <Image
+          src={logo}
+          alt="Discussday"
+          width={width ?? 140}
+          height={height ?? 140}
+          className="object-contain"
+          onError={() => setHasError(true)}
+        />
+      )}
+    </div>
   );
 };
