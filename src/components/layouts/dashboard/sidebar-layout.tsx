@@ -18,7 +18,7 @@ import {
 import {useAuthStore} from '@/hooks/stores/use-auth-store';
 import {cn} from '@/lib/utils';
 
-import {AppFooter} from '@/components/app-footer';
+import {DashboardFooter} from '@/components/app-footer';
 import {authService} from '@/services/auth-service';
 import {notificationService} from '@/services/notification-service';
 import {Role} from '@/types/user.types';
@@ -357,7 +357,7 @@ export const SidebarLayoutLeft = () => {
         </div>
       </div>
       <div className="mb-5 lg:hidden md:block">
-        <AppFooter />
+        <DashboardFooter />
       </div>
     </aside>
   );
@@ -439,7 +439,7 @@ export const SidebarLayoutRight = () => {
             ))}
           </div>
         </div>
-        <AppFooter />
+        <DashboardFooter />
       </div>
     </aside>
   );

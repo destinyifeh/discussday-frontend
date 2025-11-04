@@ -2,6 +2,12 @@ import {Sections} from '@/constants/data';
 
 export const GUEST_ONLY = [
   '/about',
+  '/about-us',
+  '/help',
+  '/terms',
+  '/privacy',
+  '/advertise',
+  '/contact-support',
   '/help-center',
   '/terms-of-service',
   '/privacy-policy',

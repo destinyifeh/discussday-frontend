@@ -8,6 +8,8 @@ import {useState} from 'react';
 import {PageHeader} from '@/components/app-headers';
 import {toast} from '@/components/ui/toast';
 import {pricingTiers} from '@/fixtures/ad';
+import {useAuthStore} from '@/hooks/stores/use-auth-store';
+import {AdsInfoPage} from '@/modules/main/ads-info';
 import clsx from 'clsx';
 import {useRouter} from 'next/navigation';
 
@@ -17,7 +19,7 @@ export const AdvertisePage = () => {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState('pricing');
   const [selectedDuration, setSelectedDuration] = useState('7');
-
+  const {currentUser} = useAuthStore(state => state);
   const onPlanSelected = (plan: string) => {
     console.log(plan, 'planooo');
     if (plan === 'Custom') {
@@ -31,6 +33,15 @@ export const AdvertisePage = () => {
     navigate.push(`/advertise/create-ad?plan=${plan.toLowerCase()}`);
   };
 
+  if (!currentUser) {
+    return (
+      <>
+        <PageHeader title="" />
+        <AdsInfoPage />
+      </>
+    );
+  }
+
   return (
     <div>
       <PageHeader
@@ -43,7 +54,7 @@ export const AdvertisePage = () => {
           <h2 className="text-lg font-bold mb-4">
             Choose Your Advertising Plan
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {pricingTiers.map(tier => (
               <Card
                 key={tier.name}
