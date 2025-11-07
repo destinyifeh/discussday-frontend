@@ -1,5 +1,5 @@
 'use client';
-import {AppFooter, DashboardFooter} from '@/components/app-footer';
+import {AppFooter} from '@/components/app-footer';
 import {CustomLogo} from '@/components/app-logo';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import {Badge} from '@/components/ui/badge';
@@ -307,7 +307,7 @@ const MobileNavigation: React.FC<MainLayoutProps> = ({
                 </Button>
               </div>
               <div className="mt-auto p-4 shrink-0">
-                <DashboardFooter />
+                <AppFooter />
               </div>
             </div>
           </SheetContent>

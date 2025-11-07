@@ -163,7 +163,7 @@ export const resourceItems = [
   {
     label: 'Help Center',
 
-    path: '/help',
+    path: '/help-center',
   },
 
   {
@@ -190,62 +190,12 @@ export const resourceItems = [
   {
     label: 'Privacy Policy',
 
-    path: '/privacy',
+    path: '/privacy-policy',
   },
   {
     label: 'Terms Of Service',
 
-    path: '/terms',
-  },
-  {
-    label: 'Ad Guidelines',
-
-    path: '/ad-guidelines',
-  },
-];
-
-export const mobileResourceItems = [
-  {
-    label: 'Create Ad',
-
-    path: '/advertise',
-  },
-  {
-    label: 'Help Center',
-
-    path: '/help',
-  },
-
-  {
-    label: 'Report',
-
-    path: '/report',
-  },
-
-  {
-    label: 'Contact Support',
-
-    path: '/contact-support',
-  },
-  {
-    label: 'Community Guidelines',
-
-    path: '/community-guidelines',
-  },
-  {
-    label: 'About Us',
-
-    path: '/about-us',
-  },
-  {
-    label: 'Privacy Policy',
-
-    path: '/privacy',
-  },
-  {
-    label: 'Terms Of Service',
-
-    path: '/terms',
+    path: '/terms-of-service',
   },
   {
     label: 'Ad Guidelines',

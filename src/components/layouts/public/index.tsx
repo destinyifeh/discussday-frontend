@@ -16,7 +16,6 @@ export const PublicLayout = ({children}: PublicLayoutProps) => {
     <AppContainer>
       <AppHeader />
       <main className="">{children}</main>
-
       <AppFooter />
     </AppContainer>
   );

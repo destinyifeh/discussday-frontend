@@ -322,7 +322,7 @@ export const SettingsPage = () => {
             <Button
               variant="outline"
               className="flex items-center gap-2 w-full justify-start border-app-border"
-              onClick={() => router.push('/help')}>
+              onClick={() => router.push('/help-center')}>
               <HelpCircle size={18} />
               Help Center
             </Button>
