@@ -24,7 +24,7 @@ export default function Page() {
     },
     hasPart: Sections.map(section => ({
       '@type': 'CollectionPage',
-      name: section,
+      name: section.name,
       url: `${baseUrl}/${section.name.toLowerCase()}`,
     })),
   };
