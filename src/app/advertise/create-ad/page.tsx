@@ -1,7 +1,9 @@
+import ScreenLoader from '@/components/feedbacks/screen-loader';
 import {DashboardLayout} from '@/components/layouts/dashboard';
 import {APP_NAME} from '@/constants/settings';
 import {AdPlanPage} from '@/modules/dashboard/advertise/plan';
 import {Metadata} from 'next';
+import {Suspense} from 'react';
 
 export const metadata: Metadata = {
   title: `Create Ad | ${APP_NAME}`,
@@ -11,7 +13,9 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <DashboardLayout>
-      <AdPlanPage />
+      <Suspense fallback={<ScreenLoader />}>
+        <AdPlanPage />
+      </Suspense>
     </DashboardLayout>
   );
 }
