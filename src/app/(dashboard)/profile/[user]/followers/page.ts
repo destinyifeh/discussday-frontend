@@ -3,7 +3,7 @@ import {UserFollowersPage} from '@/modules/dashboard/people/followers';
 import {Metadata} from 'next';
 
 export const metadata: Metadata = {
-  title: `${APP_NAME} | Followers`,
+  title: `Followers | ${APP_NAME}`,
   description: `View the users who are following your account on ${APP_NAME} and engage with your growing community.`,
 };
 

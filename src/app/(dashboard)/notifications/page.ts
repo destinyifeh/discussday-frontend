@@ -3,7 +3,7 @@ import {Metadata} from 'next';
 import {NotificationsPage} from './../../../modules/dashboard/notifications/index';
 
 export const metadata: Metadata = {
-  title: `${APP_NAME} | Notifications`,
+  title: `Notifications | ${APP_NAME}`,
   description: `Stay updated with the latest alerts, mentions, and activity related to your account on ${APP_NAME}.`,
 };
 

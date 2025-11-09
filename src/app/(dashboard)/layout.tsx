@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: `${APP_NAME} | Dashboard`,
+  title: `Dashboard | ${APP_NAME}`,
   description: `Control your account, track your contributions, and stay engaged with discussions on ${APP_NAME}.`,
 };
 

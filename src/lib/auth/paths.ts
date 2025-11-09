@@ -1,12 +1,6 @@
 import {Sections} from '@/constants/data';
 
 export const GUEST_ONLY = [
-  '/about-us',
-  '/advertise',
-  '/contact-support',
-  '/help-center',
-  '/terms-of-service',
-  '/privacy-policy',
   '/login',
   '/register',
   '/forgot-password',
@@ -57,6 +51,12 @@ export function isPublicPath(pathname: string) {
     '/discuss',
     '/bookmarks',
     '/profile',
+    '/about-us',
+    '/advertise',
+    '/contact-support',
+    '/help-center',
+    '/terms-of-service',
+    '/privacy-policy',
   ];
 
   // Direct match for simple routes
