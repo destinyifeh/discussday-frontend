@@ -45,7 +45,7 @@ export default async function Page({params}: {params: Promise<PageParams>}) {
   return (
     <>
       <Script
-        id="ld-json"
+        id="section-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{__html: JSON.stringify(structuredData)}}
       />
