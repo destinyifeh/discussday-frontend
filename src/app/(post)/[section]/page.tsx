@@ -15,6 +15,22 @@ export async function generateMetadata({params}: any): Promise<Metadata> {
   return {
     title: `${capitalize(section)} | ${APP_NAME}`,
     description: `${capitalize(section)} section`,
+    openGraph: {
+      type: 'website',
+      url: `https://discussday.com/${section}`,
+      title: `${capitalize(section)} | ${APP_NAME}`,
+      description: `${capitalize(section)} section of ${APP_NAME}`,
+      siteName: APP_NAME,
+      images: [{url: 'https://discussday.com/logo_blue.png'}],
+    },
+
+    twitter: {
+      card: 'summary_large_image',
+      title: `${capitalize(section)} | ${APP_NAME}`,
+      description: `${capitalize(section)} section of ${APP_NAME}`,
+      creator: '@Discussday',
+      images: ['https://discussday.com/logo_blue.png'],
+    },
   };
 }
 

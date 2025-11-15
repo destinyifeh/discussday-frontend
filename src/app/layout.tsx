@@ -68,10 +68,7 @@ const poppinsFont = Poppins({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://discussday.com'),
-  title: {
-    default: `${APP_NAME} | Join the Conversation`,
-    template: '%s | Discussday',
-  },
+  title: `${APP_NAME} | Join the Conversation`,
   description: `Be part of the discussions that matter. Share your thoughts, and explore trending topics on ${APP_NAME}.`,
   openGraph: {
     type: 'website',
@@ -80,6 +77,7 @@ export const metadata: Metadata = {
     description:
       'Join Discussday to share ideas, have conversations, and explore trending topics.',
     siteName: 'Discussday',
+    images: [{url: 'https://discussday.com/logo_blue.png'}],
   },
   twitter: {
     card: 'summary_large_image',
@@ -87,6 +85,7 @@ export const metadata: Metadata = {
     description:
       'Meaningful conversations, share your thoughts, and explore trending topics.',
     creator: '@Discussday',
+    images: ['https://discussday.com/logo_blue.png'],
   },
 };
 
